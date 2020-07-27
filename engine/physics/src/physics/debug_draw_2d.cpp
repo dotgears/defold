@@ -70,7 +70,7 @@ namespace dmPhysics
         }
     }
 
-    void DebugDraw2D::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color)
+    void DebugDraw2D::DrawCircle(const b2Vec2& center, float radius, const b2Color& color)
     {
         if (m_Callbacks->m_DrawLines)
         {
@@ -96,7 +96,7 @@ namespace dmPhysics
         }
     }
 
-    void DebugDraw2D::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
+    void DebugDraw2D::DrawSolidCircle(const b2Vec2& center, float radius, const b2Vec2& axis, const b2Color& color)
     {
         if (m_Callbacks->m_DrawTriangles)
         {

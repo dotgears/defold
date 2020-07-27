@@ -19,7 +19,7 @@
 #include <dlib/math.h>
 #include <dlib/profile.h>
 
-#include "Box2D/Box2D.h"
+#include "../b2d/box2d/box2d.h"
 
 #include "physics_2d.h"
 
@@ -84,7 +84,7 @@ namespace dmPhysics
         /// @param normal the normal vector at the point of intersection
         /// @return -1 to filter, 0 to terminate, fraction to clip the ray for
         /// closest hit, 1 to continue
-        virtual float32 ReportFixture(b2Fixture* fixture, int32 index, const b2Vec2& point, const b2Vec2& normal, float32 fraction);
+        virtual float ReportFixture(b2Fixture* fixture, int32 index, const b2Vec2& point, const b2Vec2& normal, float fraction);
 
         HContext2D m_Context;
         RayCastResponse m_Response;
@@ -98,18 +98,18 @@ namespace dmPhysics
         uint16_t : 15;
     };
 
-    float32 ProcessRayCastResultCallback2D::ReportFixture(b2Fixture* fixture, int32_t index, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
+    float ProcessRayCastResultCallback2D::ReportFixture(b2Fixture* fixture, int32_t index, const b2Vec2& point, const b2Vec2& normal, float fraction)
     {
         // Never hit triggers
         if (fixture->IsSensor())
             return -1.f;
         if (fixture->GetBody()->GetUserData() == m_IgnoredUserData)
             return -1.f;
-        else if ((fixture->GetFilterData(index).categoryBits & m_CollisionMask) && (fixture->GetFilterData(index).maskBits & m_CollisionGroup))
+        else if ((fixture->GetFilterData().categoryBits & m_CollisionMask) && (fixture->GetFilterData().maskBits & m_CollisionGroup))
         {
             m_Response.m_Hit                     = 1;
             m_Response.m_Fraction                = fraction;
-            m_Response.m_CollisionObjectGroup    = fixture->GetFilterData(index).categoryBits;
+            m_Response.m_CollisionObjectGroup    = fixture->GetFilterData().categoryBits;
             m_Response.m_CollisionObjectUserData = fixture->GetBody()->GetUserData();
             FromB2(normal, m_Response.m_Normal, 1.0f); // Don't scale normal
             FromB2(point, m_Response.m_Position, m_Context->m_InvScale);
@@ -160,9 +160,9 @@ namespace dmPhysics
                 if (collision_callback)
                 {
                     collision_callback(fixture_a->GetUserData(),
-                                       fixture_a->GetFilterData(index_a).categoryBits,
+                                       fixture_a->GetFilterData().categoryBits,
                                        fixture_b->GetUserData(),
-                                       fixture_b->GetFilterData(index_b).categoryBits,
+                                       fixture_b->GetFilterData().categoryBits,
                                        m_TempStepWorldContext->m_CollisionUserData);
                 }
                 if (contact_point_callback)
@@ -185,8 +185,8 @@ namespace dmPhysics
                         cp.m_AppliedImpulse = impulse->normalImpulses[i] * inv_scale;
                         cp.m_MassA          = fixture_a->GetBody()->GetMass();
                         cp.m_MassB          = fixture_b->GetBody()->GetMass();
-                        cp.m_GroupA         = fixture_a->GetFilterData(index_a).categoryBits;
-                        cp.m_GroupB         = fixture_b->GetFilterData(index_b).categoryBits;
+                        cp.m_GroupA         = fixture_a->GetFilterData().categoryBits;
+                        cp.m_GroupB         = fixture_b->GetFilterData().categoryBits;
                         contact_point_callback(cp, m_TempStepWorldContext->m_ContactPointUserData);
                     }
                 }
@@ -277,12 +277,12 @@ namespace dmPhysics
     static void FlipPolygon(b2PolygonShape* shape, float horizontal, float vertical)
     {
         shape->m_centroid = FlipPoint(shape->m_centroid, horizontal, vertical);
-        int count         = shape->m_vertexCount;
+        int count         = shape->m_count;
 
         for (int i = 0; i < count; ++i)
         {
             shape->m_vertices[i]         = FlipPoint(shape->m_vertices[i], horizontal, vertical);
-            shape->m_verticesOriginal[i] = FlipPoint(shape->m_vertices[i], horizontal, vertical);
+            shape->m_vertices[i] = FlipPoint(shape->m_vertices[i], horizontal, vertical);
         }
 
         // Switch the winding of the polygon
@@ -293,9 +293,9 @@ namespace dmPhysics
             shape->m_vertices[i]             = shape->m_vertices[count - i - 1];
             shape->m_vertices[count - i - 1] = tmp;
 
-            tmp                                      = shape->m_verticesOriginal[i];
-            shape->m_verticesOriginal[i]             = shape->m_verticesOriginal[count - i - 1];
-            shape->m_verticesOriginal[count - i - 1] = tmp;
+            tmp                                      = shape->m_vertices[i];
+            shape->m_vertices[i]             = shape->m_vertices[count - i - 1];
+            shape->m_vertices[count - i - 1] = tmp;
         }
 
         // Recalculate the normals
@@ -569,9 +569,9 @@ namespace dmPhysics
                     int32_t index_a = contact->GetChildIndexA();
                     int32_t index_b = contact->GetChildIndexB();
                     step_context.m_CollisionCallback(fixture_a->GetUserData(),
-                                                     fixture_a->GetFilterData(index_a).categoryBits,
+                                                     fixture_a->GetFilterData().categoryBits,
                                                      fixture_b->GetUserData(),
-                                                     fixture_b->GetFilterData(index_b).categoryBits,
+                                                     fixture_b->GetFilterData().categoryBits,
                                                      step_context.m_CollisionUserData);
                 }
             }
