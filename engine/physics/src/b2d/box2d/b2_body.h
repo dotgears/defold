@@ -1029,6 +1029,12 @@ inline const b2World* b2Body::GetWorld() const
 	return m_world;
 }
 
+/* Defold additions */
+inline const b2Vec2& b2Body::GetForce() const
+{
+    return m_force;
+}
+
 /* dotGears additions */
 // Added by .Gears
 inline void b2Body::SetControllable(bool flag)
