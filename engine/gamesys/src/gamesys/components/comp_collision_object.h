@@ -77,9 +77,12 @@ namespace dmGameSystem
     void SetCopyRatio(void* comp, float ratio);
     void SetCopyDisable(void* comp);
 
+    void DisableVelocityLimit(void* comp);
+    void SetVelocityLimit(void* comp, float minX, float minY, float maxX, float maxY);
+    
     //Added by dotGears / TrungA
     void SetMasterBody(void* comp, void* master_body);
-    void SetVelocityLimit(void* comp, float minX, float minY, float maxX, float maxY);
+    
     /// End of Passion
 
     bool IsCollision2D(void* _world);

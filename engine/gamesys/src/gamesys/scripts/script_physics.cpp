@@ -1296,16 +1296,18 @@ namespace dmGameSystem
      *
      * @name physics.set_velocity_limit
      * @param  collision_object [type:string|hash|url] current body
-     * @param  minX [type:number]  min velocity X
-     * @param  minY [type:number]  min velocity Y
-     * @param  maxX [type:number]  max velocity X
-     * @param  maxY [type:number]  max velocity Y
+     * @param  enable [type:boolean] enable or not
+     * @param  minX   [type:number]  min velocity X
+     * @param  minY   [type:number]  min velocity Y
+     * @param  maxX   [type:number]  max velocity X
+     * @param  maxY   [type:number]  max velocity Y
      *
      * @examples
      *
      * ```lua
      * function init(self)
-     *     physics.set_velocity_limit("#body", -8.0, -8.0, 8.0, 8.0)
+     *     physics.set_velocity_limit("#body", true, -8.0, -8.0, 8.0, 8.0)
+     *     physics.set_velocity_limit("#body", false)
      * end
      * ```
      */
@@ -1328,12 +1330,17 @@ namespace dmGameSystem
             return DM_LUA_ERROR("couldn't find collision object"); // todo: add url
         }
 
-        float minX = lua_tonumber(L, 2);
-        float minY = lua_tonumber(L, 3);
-        float maxX = lua_tonumber(L, 4);
-        float maxY = lua_tonumber(L, 5);
+        bool flag = lua_toboolean(L, 2);
 
-        dmGameSystem::SetVelocityLimit(comp, minX, minY, maxX, maxY);
+        if(flag)
+        {
+            float minX = lua_tonumber(L, 3);
+            float minY = lua_tonumber(L, 4);
+            float maxX = lua_tonumber(L, 5);
+            float maxY = lua_tonumber(L, 6);
+            dmGameSystem::SetVelocityLimit(comp, minX, minY, maxX, maxY);
+        }
+        else dmGameSystem::DisableVelocityLimit(comp);
 
         return 0;
     }

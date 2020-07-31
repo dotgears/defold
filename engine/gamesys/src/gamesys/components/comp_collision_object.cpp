@@ -1483,6 +1483,11 @@ namespace dmGameSystem
         CollisionComponent* component = (CollisionComponent*)comp;
         dmPhysics::SetVelocityLimit(component->m_Object2D, minX, minY, maxX, maxY);
     }
+    void DisableVelocityLimit(void* comp)
+    {
+        CollisionComponent* component = (CollisionComponent*)comp;
+        dmPhysics::DisableVelocityLimit(component->m_Object2D);
+    }
     void CopyState(void* comp, uint16_t state)
     {
         CollisionComponent* component = (CollisionComponent*)comp;

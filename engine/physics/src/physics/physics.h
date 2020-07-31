@@ -801,7 +801,14 @@ namespace dmPhysics
      * @param maxY max Velocity Y
      */
     void SetVelocityLimit(HCollisionObject2D collision_object, float minX, float minY, float maxX, float maxY);
-    
+
+    /**
+     * Disable Velocity limit to a body.
+     *
+     * @param collision_object Collision object 
+     */
+    void DisableVelocityLimit(HCollisionObject2D collision_object);
+
     /**
      * Add Copy State to an object body, which enable certains copy-state at runtime.
      * Added by dotGears / TheTrung

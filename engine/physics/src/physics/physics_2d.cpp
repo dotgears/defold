@@ -1099,6 +1099,11 @@ namespace dmPhysics
         b2Vec2 max      = b2Vec2(maxX, maxY);
         ((b2Body*)collision_object)->SetVelocityLimit(min, max);
     }
+    void DisableVelocityLimit(HCollisionObject2D collision_object)
+    {
+        ((b2Body*)collision_object)->DisableVelocityLimit();
+    }
+
     void CopyState(HCollisionObject2D collision_object, uint16_t state)
     {
         b2Body* b2_body = (b2Body*)collision_object;

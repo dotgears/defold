@@ -373,6 +373,9 @@ public:
     /// @param max velocity
     void SetVelocityLimit(b2Vec2 min, b2Vec2 max);
 
+	/// Disable the Velocity Limit if set.
+    void DisableVelocityLimit();
+
     /// Get the sleeping state of this body.
     /// @return true if the body is awake.
     bool IsAwake() const;
@@ -1077,11 +1080,24 @@ inline void b2Body::SetDeltaValue(float alphaX, float alphaY, float alphaZ)
 
 inline void b2Body::SetVelocityLimit(b2Vec2 min, b2Vec2 max)
 {
-   if(isLimitingVelocity()){
-	   m_minVelocity = min;
-	   m_maxVelocity = max;
+   if(!isLimitingVelocity())
+   {
+	   m_flags |= e_isVelocityLimited;   
    }
+   m_minVelocity = min;
+   m_maxVelocity = max;
+   printf("b2_body -- enabled velocity limitation\n");
 }
+
+inline void b2Body::DisableVelocityLimit()
+{
+    if (isLimitingVelocity())
+    {
+        m_flags &= ~e_isVelocityLimited;
+		printf("b2_body -- disabled velocity limitation\n");
+    }
+}
+
 inline void b2Body::SetMasterBody(b2Body* masterBody)
 {
     m_masterBody = masterBody;
@@ -1097,14 +1113,13 @@ inline void b2Body::CopyState(uint16 state)
     if ((m_copy_flags & state) == 0)
     {
         m_copy_flags |= state;
-        printf("b2Body -- added state: (%i) => flags: (%i)\n", state, m_copy_flags);
+        // printf("b2Body -- added state: (%i) => flags: (%i)\n", state, m_copy_flags);
     }
     else
     {
         m_copy_flags &= ~state;
-        printf("b2Body -- removed state: (%i) => flags: (%i)\n", state, m_copy_flags);
+        // printf("b2Body -- removed state: (%i) => flags: (%i)\n", state, m_copy_flags);
     }
-    // printf("b2Body -- added state: (%i) => flags: (%i)", state, m_copy_flags);
 }
 
 inline bool b2Body::IsControllable() const
