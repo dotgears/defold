@@ -1476,8 +1476,13 @@ namespace dmGameSystem
       CollisionComponent* master = (CollisionComponent*)master_body;
       dmPhysics::SetMasterBody(component->m_Object2D, master->m_Object2D);
     }
-
+    
     // Added by dotGears/TheTrung
+    void SetVelocityLimit(void* comp, float minX, float minY, float maxX, float maxY)
+    {
+        CollisionComponent* component = (CollisionComponent*)comp;
+        dmPhysics::SetVelocityLimit(component->m_Object2D, minX, minY, maxX, maxY);
+    }
     void CopyState(void* comp, uint16_t state)
     {
         CollisionComponent* component = (CollisionComponent*)comp;

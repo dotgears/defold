@@ -79,10 +79,10 @@ namespace dmGameSystem
 
     //Added by dotGears / TrungA
     void SetMasterBody(void* comp, void* master_body);
+    void SetVelocityLimit(void* comp, float minX, float minY, float maxX, float maxY);
     /// End of Passion
 
-    bool
-    IsCollision2D(void* _world);
+    bool IsCollision2D(void* _world);
     void SetCollisionFlipH(void* _component, bool flip);
     void SetCollisionFlipV(void* _component, bool flip);
 }

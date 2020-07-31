@@ -1291,6 +1291,52 @@ namespace dmGameSystem
 
         return 0;
     }
+    /*# Set Min/Max Velocity for an collision object
+     * Added by dotGears/TrungB
+     *
+     * @name physics.set_velocity_limit
+     * @param  collision_object [type:string|hash|url] current body
+     * @param  minX [type:number]  min velocity X
+     * @param  minY [type:number]  min velocity Y
+     * @param  maxX [type:number]  max velocity X
+     * @param  maxY [type:number]  max velocity Y
+     *
+     * @examples
+     *
+     * ```lua
+     * function init(self)
+     *     physics.set_velocity_limit("#body", -8.0, -8.0, 8.0, 8.0)
+     * end
+     * ```
+     */
+    static int Physics_SetVelocityLimit(lua_State* L)
+    {
+        DM_LUA_STACK_CHECK(L, 0);
+
+        dmGameObject::HCollection collection = dmGameObject::GetCollection(CheckGoInstance(L));
+        void* comp                           = 0x0;
+        void* comp_world                     = 0x0;
+        GetCollisionObject(L, 1, collection, &comp, &comp_world);
+
+        if (!IsCollision2D(comp_world))
+        {
+            return DM_LUA_ERROR("function only available in 2D physics");
+        }
+
+        if (!comp)
+        {
+            return DM_LUA_ERROR("couldn't find collision object"); // todo: add url
+        }
+
+        float minX = lua_tonumber(L, 2);
+        float minY = lua_tonumber(L, 3);
+        float maxX = lua_tonumber(L, 4);
+        float maxY = lua_tonumber(L, 5);
+
+        dmGameSystem::SetVelocityLimit(comp, minX, minY, maxX, maxY);
+
+        return 0;
+    }
 
     /*# Add copy State to body
      * Added by dotGears/TrungVu
@@ -1562,6 +1608,9 @@ namespace dmGameSystem
         { "set_allow_sleep", Physics_SetAllowSleep },
         { "set_gravity_scale", Physics_SetGravityScale },
         { "set_step_per_frame", Physics_SetStepPerFrame },
+
+        // Config Velocity Limitation
+        { "set_velocity_limit", Physics_SetVelocityLimit },
 
         { "set_hflip", Physics_SetFlipH },
         { "set_vflip", Physics_SetFlipV },

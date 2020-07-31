@@ -792,6 +792,17 @@ namespace dmPhysics
     void SetMasterBody(HCollisionObject2D collision_object, HCollisionObject2D master_body);
 
     /**
+     * Set Min/Max Velocity to a body.
+     *
+     * @param collision_object Collision object 
+     * @param minX min Velocity X
+     * @param minY min Velocity Y
+     * @param maxX max Velocity X
+     * @param maxY max Velocity Y
+     */
+    void SetVelocityLimit(HCollisionObject2D collision_object, float minX, float minY, float maxX, float maxY);
+    
+    /**
      * Add Copy State to an object body, which enable certains copy-state at runtime.
      * Added by dotGears / TheTrung
      *

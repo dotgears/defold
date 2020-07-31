@@ -483,6 +483,17 @@ namespace dmPhysics
             //Update Slave bodies after their Master
             for (b2Body* body = world->m_World.GetBodyList(); body; body = body->GetNext())
             {
+                if (body->isLimitingVelocity())
+                {
+                    b2Vec2 current_velocity = body->GetLinearVelocity();
+                    b2Vec2 min              = body->GetMinVelocity();
+                    b2Vec2 max              = body->GetMaxVelocity();
+                    float x                 = current_velocity.x > max.x ? max.x : current_velocity.x < min.x ? min.x : current_velocity.x;
+                    float y                 = current_velocity.y > max.y ? max.y : current_velocity.y < min.y ? min.y : current_velocity.y;
+                    b2Vec2 new_velocity     = b2Vec2(x, y);
+                    body->SetLinearVelocity  (new_velocity);
+                }
+
                 if (body->isHavingMasterBody())
                 {
                     //    dmLogInfo("bodyA has master body");
@@ -1081,13 +1092,20 @@ namespace dmPhysics
         }
     }
     /// Added by dotGears/TrungB
+    void SetVelocityLimit(HCollisionObject2D collision_object, float minX, float minY, float maxX, float maxY)
+    {
+        b2Body* b2_body = (b2Body*)collision_object;
+        b2Vec2 min      = b2Vec2(minX, minY);
+        b2Vec2 max      = b2Vec2(maxX, maxY);
+        ((b2Body*)collision_object)->SetVelocityLimit(min, max);
+    }
     void CopyState(HCollisionObject2D collision_object, uint16_t state)
     {
         b2Body* b2_body = (b2Body*)collision_object;
         if (b2_body != NULL)
         {
             b2_body->CopyState(state);
-            dmLogInfo("physics_2d.cpp -- CopyState:(%i) > (%i)", state, b2_body->GetCopyState());
+            // dmLogInfo("physics_2d.cpp -- CopyState:(%i) > (%i)", state, b2_body->GetCopyState());
         }
     }
 

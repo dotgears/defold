@@ -361,17 +361,23 @@ public:
 
     /// Set the Alpha Value to the body, so it get updated more times
     /// than others, with increment update of alpha value on every world step.
-    /// Added by .Gears
+    /// Added by dotGears
     /// @param alphaX set for alphaX position change per update.
     /// @param alphaY set for alphaY position change per update.
     /// @param alphaZ set for alphaZ rotation change per update.
     void SetDeltaValue(float alphaX, float alphaY, float alphaZ);
 
-    /// Get the sleeping state of this body.
-	/// @return true if the body is awake.
-	bool IsAwake() const;
+    /// Set min/max to this body velocity during runtime.
+    /// Added by dotGears
+    /// @param min velocity
+    /// @param max velocity
+    void SetVelocityLimit(b2Vec2 min, b2Vec2 max);
 
-	/// Set the active state of the body. An inactive body is not
+    /// Get the sleeping state of this body.
+    /// @return true if the body is awake.
+    bool IsAwake() const;
+
+    /// Set the active state of the body. An inactive body is not
 	/// simulated and cannot be collided with or woken up.
 	/// If you pass a flag of true, all fixtures will be added to the
 	/// broad-phase.
@@ -442,9 +448,13 @@ public:
     bool IsControllable() const;
     void SetMasterBody(b2Body* masterBody);
 	bool isHavingMasterBody() const;
-	b2Body* GetMasterBody();
+    bool isLimitingVelocity() const;
+    b2Body* GetMasterBody();
 
-	void CopyState(uint16 state);
+    const b2Vec2& GetMinVelocity() const;
+    const b2Vec2& GetMaxVelocity() const;
+
+    void CopyState(uint16 state);
 	uint16 GetCopyState() const;
 
 	float GetCopyRatio() const;
@@ -513,7 +523,8 @@ public:
         e_activeFlag        = 0x0020,
         e_toiFlag           = 0x0040,
         e_updateAlphaFlag   = 0x0080,
-        e_haveMasterBody    = 0x0100
+        e_haveMasterBody    = 0x0100,
+		e_isVelocityLimited = 0x0400
     };
 
     b2Body(const b2BodyDef* bd, b2World* world);
@@ -571,6 +582,9 @@ public:
 
     uint16 m_copy_flags;
     float m_copy_ratio;
+
+    b2Vec2 m_minVelocity;
+    b2Vec2 m_maxVelocity;
 
     //Added by dotGears/TrungVu
     b2Body* m_masterBody;
@@ -1061,6 +1075,13 @@ inline void b2Body::SetDeltaValue(float alphaX, float alphaY, float alphaZ)
     m_deltaZ = alphaZ;
 }
 
+inline void b2Body::SetVelocityLimit(b2Vec2 min, b2Vec2 max)
+{
+   if(isLimitingVelocity()){
+	   m_minVelocity = min;
+	   m_maxVelocity = max;
+   }
+}
 inline void b2Body::SetMasterBody(b2Body* masterBody)
 {
     m_masterBody = masterBody;
@@ -1094,6 +1115,20 @@ inline bool b2Body::IsControllable() const
 inline bool b2Body::isHavingMasterBody() const
 {
     return (m_flags & e_haveMasterBody) == e_haveMasterBody;
+}
+
+inline bool b2Body::isLimitingVelocity() const
+{
+    return (m_flags & e_isVelocityLimited) == e_isVelocityLimited;
+}
+
+inline const b2Vec2& b2Body::GetMinVelocity() const
+{
+	return m_minVelocity;
+}
+inline const b2Vec2& b2Body::GetMaxVelocity() const
+{
+    return m_maxVelocity;
 }
 
 inline b2Body* b2Body::GetMasterBody()
