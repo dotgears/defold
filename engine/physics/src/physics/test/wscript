@@ -4,7 +4,7 @@ def build(bld):
     test_physics = bld.new_task_gen(features = 'cxx cprogram test',
                                     source = 'test_physics.cpp',
                                     uselib = 'DLIB PLATFORM_THREAD BULLET',
-                                    uselib_local = 'physics',
+                                    uselib_local = 'physics box2d',
                                     includes = ['../../../src', '../../../src/b2d'],
                                     target = 'test_physics')
 
@@ -13,7 +13,7 @@ def build(bld):
     test_physics_2d = bld.new_task_gen(features = 'cxx cprogram test',
                                     source = 'test_physics_2d.cpp',
                                     uselib = 'DLIB PLATFORM_THREAD BULLET',
-                                    uselib_local = 'physics_2d',
+                                    uselib_local = 'physics_2d box2d',
                                     includes = ['../../../src', '../../../src/b2d'],
                                     target = 'test_physics_2d')
 
