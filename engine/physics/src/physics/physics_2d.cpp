@@ -111,7 +111,7 @@ namespace dmPhysics
         {
             m_Response.m_Hit                     = 1;
             m_Response.m_Fraction                = fraction;
-            m_Response.m_CollisionObjectGroup    = fixture->GetFilterData().categoryBits;
+            m_Response.m_CollisionObjectGroup    = fixture->GetFilterData(index).categoryBits;
             m_Response.m_CollisionObjectUserData = fixture->GetBody()->GetUserData();
             FromB2(normal, m_Response.m_Normal, 1.0f); // Don't scale normal
             FromB2(point, m_Response.m_Position, m_Context->m_InvScale);
@@ -162,9 +162,9 @@ namespace dmPhysics
                 if (collision_callback)
                 {
                     collision_callback(fixture_a->GetUserData(),
-                                       fixture_a->GetFilterData().categoryBits,
+                                       fixture_a->GetFilterData(index_a).categoryBits,
                                        fixture_b->GetUserData(),
-                                       fixture_b->GetFilterData().categoryBits,
+                                       fixture_b->GetFilterData(index_b).categoryBits,
                                        m_TempStepWorldContext->m_CollisionUserData);
                 }
                 if (contact_point_callback)
@@ -187,8 +187,8 @@ namespace dmPhysics
                         cp.m_AppliedImpulse = impulse->normalImpulses[i] * inv_scale;
                         cp.m_MassA          = fixture_a->GetBody()->GetMass();
                         cp.m_MassB          = fixture_b->GetBody()->GetMass();
-                        cp.m_GroupA         = fixture_a->GetFilterData().categoryBits;
-                        cp.m_GroupB         = fixture_b->GetFilterData().categoryBits;
+                        cp.m_GroupA         = fixture_a->GetFilterData(index_a).categoryBits;
+                        cp.m_GroupB         = fixture_b->GetFilterData(index_b).categoryBits;
                         contact_point_callback(cp, m_TempStepWorldContext->m_ContactPointUserData);
                     }
                 }
@@ -1068,7 +1068,7 @@ namespace dmPhysics
         ToB2(force, b2_force, scale);
         b2Vec2 b2_position;
         ToB2(position, b2_position, scale);
-        ((b2Body*)collision_object)->ApplyForce(b2_force, b2_position);
+        ((b2Body*)collision_object)->ApplyForce(b2_force, b2_position, true);
     }
 
     //Added by dotGears / TrungVu
@@ -1173,7 +1173,7 @@ namespace dmPhysics
         ToB2(force, b2_force, scale);
         b2Vec2 b2_position;
         ToB2(position, b2_position, scale);
-        ((b2Body*)collision_object)->ApplyLinearImpulse(b2_force, b2_position);
+        ((b2Body*)collision_object)->ApplyLinearImpulse(b2_force, b2_position, true);
     }
     /// End of Passion
 

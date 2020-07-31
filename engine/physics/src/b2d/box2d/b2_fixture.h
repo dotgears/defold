@@ -139,12 +139,12 @@ public:
     const b2Filter& GetFilterData(int32 index) const;
 
     /// Call this if you want to establish collision that was previously disabled by b2ContactFilter::ShouldCollide.
-	void Refilter();
+    void Refilter(bool touchProxies);
 
-	/// Get the parent body of this fixture. This is nullptr if the fixture is not attached.
-	/// @return the parent body.
-	b2Body* GetBody();
-	const b2Body* GetBody() const;
+    /// Get the parent body of this fixture. This is nullptr if the fixture is not attached.
+    /// @return the parent body.
+    b2Body* GetBody();
+    const b2Body* GetBody() const;
 
 	/// Get the next fixture in the parent body's fixture list.
 	/// @return the next shape.

@@ -48,7 +48,10 @@ namespace dmPhysics
         /// @param d direction.
         virtual void DrawArrow(const b2Vec2& p, const b2Vec2& d, const b2Color& color);
 
-    private:
+        /// Draw a point.
+        virtual void DrawPoint(const b2Vec2& p, float size, const b2Color& color);
+
+        private:
         DebugCallbacks* m_Callbacks;
     };
 }

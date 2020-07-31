@@ -166,4 +166,11 @@ namespace dmPhysics
             DrawSolidPolygon(v, 3, color);
         }
     }
+
+    /// Added by dotGears / TrungB
+    void DebugDraw2D::DrawPoint(const b2Vec2& p, float size, const b2Color& color) 
+    {
+        // Unimplemented 
+        DrawPoint(p, size, color);
+    }
 }

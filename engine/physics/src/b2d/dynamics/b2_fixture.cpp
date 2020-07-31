@@ -40,6 +40,7 @@ b2Fixture::b2Fixture()
 	m_proxyCount = 0;
 	m_shape = nullptr;
 	m_density = 0.0f;
+    m_filters = &m_singleFilter;
 }
 
 void b2Fixture::Create(b2BlockAllocator* allocator, b2Body* body, const b2FixtureDef* def)
@@ -51,9 +52,10 @@ void b2Fixture::Create(b2BlockAllocator* allocator, b2Body* body, const b2Fixtur
 	m_body = body;
 	m_next = nullptr;
 
-	m_filter = def->filter;
+    // Defold modification. Set first filter as default
+    m_filters[0] = def->filter;
 
-	m_isSensor = def->isSensor;
+    m_isSensor = def->isSensor;
 
 	m_shape = def->shape->Clone(allocator);
 
@@ -208,41 +210,46 @@ void b2Fixture::SetFilterData(const b2Filter& filter, int32 index)
     Refilter(GetType() != b2Shape::e_grid);
 }
 
-void b2Fixture::Refilter()
+void b2Fixture::Refilter(bool touchProxies)
 {
-	if (m_body == nullptr)
-	{
-		return;
-	}
+    if (m_body == NULL)
+    {
+        return;
+    }
 
-	// Flag associated contacts for filtering.
-	b2ContactEdge* edge = m_body->GetContactList();
-	while (edge)
-	{
-		b2Contact* contact = edge->contact;
-		b2Fixture* fixtureA = contact->GetFixtureA();
-		b2Fixture* fixtureB = contact->GetFixtureB();
-		if (fixtureA == this || fixtureB == this)
-		{
-			contact->FlagForFiltering();
-		}
+    // Flag associated contacts for filtering.
+    b2ContactEdge* edge = m_body->GetContactList();
+    while (edge)
+    {
+        b2Contact* contact  = edge->contact;
+        b2Fixture* fixtureA = contact->GetFixtureA();
+        b2Fixture* fixtureB = contact->GetFixtureB();
+        if (fixtureA == this || fixtureB == this)
+        {
+            contact->FlagForFiltering();
+        }
 
-		edge = edge->next;
-	}
+        edge = edge->next;
+    }
 
-	b2World* world = m_body->GetWorld();
+    if (!touchProxies)
+    {
+        return;
+    }
 
-	if (world == nullptr)
-	{
-		return;
-	}
+    b2World* world = m_body->GetWorld();
 
-	// Touch each proxy so that new pairs may be created
-	b2BroadPhase* broadPhase = &world->m_contactManager.m_broadPhase;
-	for (int32 i = 0; i < m_proxyCount; ++i)
-	{
-		broadPhase->TouchProxy(m_proxies[i].proxyId);
-	}
+    if (world == NULL)
+    {
+        return;
+    }
+
+    // Touch each proxy so that new pairs may be created
+    b2BroadPhase* broadPhase = &world->m_contactManager.m_broadPhase;
+    for (int32 i = 0; i < m_proxyCount; ++i)
+    {
+        broadPhase->TouchProxy(m_proxies[i].proxyId);
+    }
 }
 
 void b2Fixture::SetSensor(bool sensor)
@@ -261,11 +268,24 @@ void b2Fixture::Dump(int32 bodyIndex)
 	b2Log("    fd.restitution = %.15lef;\n", m_restitution);
 	b2Log("    fd.density = %.15lef;\n", m_density);
 	b2Log("    fd.isSensor = bool(%d);\n", m_isSensor);
-	b2Log("    fd.filter.categoryBits = uint16(%d);\n", m_filter.categoryBits);
-	b2Log("    fd.filter.maskBits = uint16(%d);\n", m_filter.maskBits);
-	b2Log("    fd.filter.groupIndex = int16(%d);\n", m_filter.groupIndex);
+    if (m_shape->m_filterPerChild)
+    {
+        int32 childCount = m_shape->GetChildCount();
+        for (int32 i = 0; i < childCount; ++i)
+        {
+            b2Log("    fd.filter[%d].categoryBits = uint16(%d);\n", i, m_filters[i].categoryBits);
+            b2Log("    fd.filter[%d].maskBits = uint16(%d);\n", i, m_filters[i].maskBits);
+            b2Log("    fd.filter[%d].groupIndex = int16(%d);\n", i, m_filters[i].groupIndex);
+        }
+    }
+    else
+    {
+        b2Log("    fd.filter.categoryBits = uint16(%d);\n", m_filters[0].categoryBits);
+        b2Log("    fd.filter.maskBits = uint16(%d);\n", m_filters[0].maskBits);
+        b2Log("    fd.filter.groupIndex = int16(%d);\n", m_filters[0].groupIndex);
+    }
 
-	switch (m_shape->m_type)
+    switch (m_shape->m_type)
 	{
 	case b2Shape::e_circle:
 		{
@@ -330,6 +350,7 @@ void b2Fixture::Dump(int32 bodyIndex)
 	b2Log("    bodies[%d]->CreateFixture(&fd);\n", bodyIndex);
 }
 
+// Added by dotGears 
 void b2Fixture::CopyTo(b2Body *anotherBody)
 {
     b2FixtureDef fd;
@@ -337,9 +358,9 @@ void b2Fixture::CopyTo(b2Body *anotherBody)
     fd.restitution = m_restitution;
     fd.density = m_density;
     fd.isSensor = m_isSensor;
-    fd.filter.categoryBits = m_filter.categoryBits;
-    fd.filter.maskBits = m_filter.maskBits;
-    fd.filter.groupIndex = m_filter.groupIndex;
+    fd.filter.categoryBits = m_filters[0].categoryBits;
+    fd.filter.maskBits = m_filters[0].maskBits;
+    fd.filter.groupIndex = m_filters[0].groupIndex;
     
     switch (m_shape->m_type)
     {
@@ -420,9 +441,9 @@ b2FixtureDef b2Fixture::GenerateScaledCopyDefinition(float scaleFactor)
     def.restitution = m_restitution;
     def.density = m_density;
     def.isSensor = m_isSensor;
-    def.filter.categoryBits = m_filter.categoryBits;
-    def.filter.maskBits = m_filter.maskBits;
-    def.filter.groupIndex = m_filter.groupIndex;
+    def.filter.categoryBits = m_filters[0].categoryBits;
+    def.filter.maskBits = m_filters[0].maskBits;
+    def.filter.groupIndex = m_filters[0].groupIndex;
     
     switch (m_shape->m_type)
     {
