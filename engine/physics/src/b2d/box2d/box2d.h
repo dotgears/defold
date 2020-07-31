@@ -66,4 +66,7 @@ For discussion please visit http://box2d.org/forum
 #include "b2_weld_joint.h"
 #include "b2_wheel_joint.h"
 
+// Added by dotGears/ Defold Modification
+#include "b2_grid_shape.h"
+
 #endif

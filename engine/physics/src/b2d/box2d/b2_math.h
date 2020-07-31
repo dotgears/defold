@@ -192,7 +192,7 @@ struct b2Mat22
 		ey = c2;
 	}
 
-	/// Set this to the identity matrix.
+    /// Set this to the identity matrix.
 	void SetIdentity()
 	{
 		ex.x = 1.0f; ey.x = 0.0f;
@@ -308,8 +308,14 @@ struct b2Rot
 		s = 0.0f;
 		c = 1.0f;
 	}
-
-	/// Get the angle in radians
+    /// Set using complex number representation
+    void SetComplex(float i, float j)
+    {
+        s = j;
+        c = i;
+    }
+	
+    /// Get the angle in radians
 	float GetAngle() const
 	{
 		return b2Atan2(s, c);

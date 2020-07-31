@@ -373,7 +373,10 @@ public:
 	/// Get the tagged alpha to update body.
 	bool IsControllable() const;
 
-	/// Set this body to have fixed rotation. This causes the mass
+    // Defold mod
+    void SynchronizeSingle(b2Shape* shape, int32 index);
+
+    /// Set this body to have fixed rotation. This causes the mass
 	/// to be reset.
 	void SetFixedRotation(bool flag);
 
@@ -475,8 +478,6 @@ public:
     ~b2Body();
 
     void SynchronizeFixtures();
-    // Defold mod
-    void SynchronizeSingle(b2Shape* shape, int32 index);
     void SynchronizeTransform();
 
 	// This is used to prevent connected bodies from colliding.

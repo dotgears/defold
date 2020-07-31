@@ -177,11 +177,35 @@ void b2Fixture::Synchronize(b2BroadPhase* broadPhase, const b2Transform& transfo
 	}
 }
 
-void b2Fixture::SetFilterData(const b2Filter& filter)
+void b2Fixture::SynchronizeSingle(b2BroadPhase* broadPhase, int32 index, const b2Transform& transform1, const b2Transform& transform2)
 {
-	m_filter = filter;
+    b2Assert(index < m_proxyCount);
 
-	Refilter();
+    b2FixtureProxy* proxy = m_proxies + index;
+
+    b2AABB aabb1, aabb2;
+    m_shape->ComputeAABB(&aabb1, transform1, proxy->childIndex);
+    m_shape->ComputeAABB(&aabb2, transform2, proxy->childIndex);
+
+    proxy->aabb.Combine(aabb1, aabb2);
+
+    b2Vec2 displacement = transform2.p - transform1.p;
+
+    broadPhase->MoveProxy(proxy->proxyId, proxy->aabb, displacement);
+}
+
+void b2Fixture::SetFilterData(const b2Filter& filter, int32 index)
+{
+    // Defold modifications. Added index
+    m_filters[index * m_shape->m_filterPerChild] = filter;
+
+    // Defold modifications. If the body is a grid,
+    // we skip updating the proxy list since that will
+    // potentially expand the movement buffer.
+    // Instead, we just flag the entire body for
+    // filtering, which is what the argument passed into
+    // the function is for.
+    Refilter(GetType() != b2Shape::e_grid);
 }
 
 void b2Fixture::Refilter()

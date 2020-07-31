@@ -164,7 +164,11 @@ public:
 	/// @warning This function is locked during callbacks.
 	void DestroyFixture(b2Fixture* fixture);
 
-	/// Set the position of the body's origin and rotation.
+    /// DEFOLD
+    /// A way to disable a fixture (i.e. grid shape) and it's contacts
+    void PurgeContacts(b2Fixture* fixture);
+
+    /// Set the position of the body's origin and rotation.
 	/// Manipulating a body's transform may cause non-physical behavior.
 	/// Note: contacts are updated on the next call to b2World::Step.
 	/// @param position the world position of the body's local origin.
@@ -182,8 +186,19 @@ public:
 	/// Get the angle in radians.
 	/// @return the current world rotation angle in radians.
 	float GetAngle() const;
+    /// Get the alphaX.
+    /// @return the current alphaX position.
+    float GetDeltaX() const;
 
-	/// Get the world position of the center of mass.
+    /// Get the alphaY.
+    /// @return the current alphaY position.
+    float GetDeltaY() const;
+
+    /// Get the alphaZ.
+    /// @return the current alphaZ position.
+    float GetDeltaZ() const;
+
+    /// Get the world position of the center of mass.
 	const b2Vec2& GetWorldCenter() const;
 
 	/// Get the local position of the center of mass.
@@ -338,7 +353,21 @@ public:
 	/// @param flag set to true to wake the body, false to put it to sleep.
 	void SetAwake(bool flag);
 
-	/// Get the sleeping state of this body.
+    /// Set the Alpha Tag to the body, so it get updated more times
+    /// than others, with increment update of alpha value on every world step.
+    /// Added by .Gears
+    /// @param flag set to true to put this body to update layer.
+    void SetControllable(bool flag);
+
+    /// Set the Alpha Value to the body, so it get updated more times
+    /// than others, with increment update of alpha value on every world step.
+    /// Added by .Gears
+    /// @param alphaX set for alphaX position change per update.
+    /// @param alphaY set for alphaY position change per update.
+    /// @param alphaZ set for alphaZ rotation change per update.
+    void SetDeltaValue(float alphaX, float alphaY, float alphaZ);
+
+    /// Get the sleeping state of this body.
 	/// @return true if the body is awake.
 	bool IsAwake() const;
 
@@ -405,6 +434,24 @@ public:
     /// Added by Dong Nguyen
     b2Body * CopyTo(b2World * world);
     
+    /* The following functions are added by defold */
+    /// Get the total force
+	const b2Vec2& GetForce() const;
+
+	/* The following functions are added by dotGears*/
+    bool IsControllable() const;
+    void SetMasterBody(b2Body* masterBody);
+	bool isHavingMasterBody() const;
+	b2Body* GetMasterBody();
+
+	void CopyState(uint16 state);
+	uint16 GetCopyState() const;
+
+	float GetCopyRatio() const;
+	void SetCopyRatio(float ratio);
+    void SetCopyDisable();
+    /* End */
+
     void Scale(float scale_factor);
     
 public:
@@ -432,7 +479,10 @@ public:
     int GetID();
     int GetFixtureCount();
 
-private:
+    // Defold mod
+    void SynchronizeSingle(b2Shape* shape, int32 index);
+
+    private:
 
 	friend class b2World;
 	friend class b2Island;
@@ -453,24 +503,26 @@ private:
 	friend class b2WheelJoint;
 
 	// m_flags
-	enum
-	{
-		e_islandFlag		= 0x0001,
-		e_awakeFlag			= 0x0002,
-		e_autoSleepFlag		= 0x0004,
-		e_bulletFlag		= 0x0008,
-		e_fixedRotationFlag	= 0x0010,
-		e_activeFlag		= 0x0020,
-		e_toiFlag			= 0x0040
-	};
+    enum
+    {
+        e_islandFlag        = 0x0001,
+        e_awakeFlag         = 0x0002,
+        e_autoSleepFlag     = 0x0004,
+        e_bulletFlag        = 0x0008,
+        e_fixedRotationFlag = 0x0010,
+        e_activeFlag        = 0x0020,
+        e_toiFlag           = 0x0040,
+        e_updateAlphaFlag   = 0x0080,
+        e_haveMasterBody    = 0x0100
+    };
 
-	b2Body(const b2BodyDef* bd, b2World* world);
+    b2Body(const b2BodyDef* bd, b2World* world);
 	~b2Body();
 
-	void SynchronizeFixtures();
-	void SynchronizeTransform();
+    void SynchronizeFixtures();
+    void SynchronizeTransform();
 
-	// This is used to prevent connected bodies from colliding.
+    // This is used to prevent connected bodies from colliding.
 	// It may lie, depending on the collideConnected flag.
 	bool ShouldCollide(const b2Body* other) const;
 
@@ -575,6 +627,19 @@ inline const b2Vec2& b2Body::GetPosition() const
 inline float b2Body::GetAngle() const
 {
 	return m_sweep.a;
+}
+
+inline float b2Body::GetDeltaX() const
+{
+    return m_deltaX;
+}
+inline float b2Body::GetDeltaY() const
+{
+    return m_deltaY;
+}
+inline float b2Body::GetDeltaZ() const
+{
+    return m_deltaZ;
 }
 
 inline const b2Vec2& b2Body::GetWorldCenter() const
@@ -962,6 +1027,96 @@ inline b2World* b2Body::GetWorld()
 inline const b2World* b2Body::GetWorld() const
 {
 	return m_world;
+}
+
+/* dotGears additions */
+// Added by .Gears
+inline void b2Body::SetControllable(bool flag)
+{
+    if (flag)
+    {
+        // enable updateAlphaFlag if haven't :
+        if ((m_flags & e_updateAlphaFlag) == 0)
+        {
+            m_flags |= e_updateAlphaFlag;
+        }
+    }
+    else
+    {
+        m_flags &= ~e_updateAlphaFlag;
+    }
+}
+
+inline void b2Body::SetDeltaValue(float alphaX, float alphaY, float alphaZ)
+{
+    // update value
+    m_deltaX = alphaX;
+    m_deltaY = alphaY;
+    m_deltaZ = alphaZ;
+}
+
+inline void b2Body::SetMasterBody(b2Body* masterBody)
+{
+    m_masterBody = masterBody;
+
+    if ((m_flags & e_haveMasterBody) == 0)
+    {
+        m_flags |= e_haveMasterBody;
+    }
+}
+inline void b2Body::CopyState(uint16 state)
+{
+    // printf("CopyState invoked");
+    if ((m_copy_flags & state) == 0)
+    {
+        m_copy_flags |= state;
+        printf("b2Body -- added state: (%i) => flags: (%i)\n", state, m_copy_flags);
+    }
+    else
+    {
+        m_copy_flags &= ~state;
+        printf("b2Body -- removed state: (%i) => flags: (%i)\n", state, m_copy_flags);
+    }
+    // printf("b2Body -- added state: (%i) => flags: (%i)", state, m_copy_flags);
+}
+
+inline bool b2Body::IsControllable() const
+{
+    return (m_flags & e_updateAlphaFlag) == e_updateAlphaFlag;
+}
+
+inline bool b2Body::isHavingMasterBody() const
+{
+    return (m_flags & e_haveMasterBody) == e_haveMasterBody;
+}
+
+inline b2Body* b2Body::GetMasterBody()
+{
+    return m_masterBody;
+}
+
+inline uint16 b2Body::GetCopyState() const
+{
+    return m_copy_flags;
+}
+
+inline float b2Body::GetCopyRatio() const
+{
+    return m_copy_ratio;
+}
+
+inline void b2Body::SetCopyRatio(float ratio)
+{
+    m_copy_ratio = ratio;
+}
+
+inline void b2Body::SetCopyDisable()
+{
+    if (isHavingMasterBody())
+    {
+        m_masterBody = NULL;
+        m_flags &= ~e_haveMasterBody;
+    }
 }
 
 #endif

@@ -107,7 +107,7 @@ namespace dmPhysics
             return -1.f;
         if (fixture->GetBody()->GetUserData() == m_IgnoredUserData)
             return -1.f;
-        else if ((fixture->GetFilterData().categoryBits & m_CollisionMask) && (fixture->GetFilterData().maskBits & m_CollisionGroup))
+        else if ((fixture->GetFilterData(index).categoryBits & m_CollisionMask) && (fixture->GetFilterData(index).maskBits & m_CollisionGroup))
         {
             m_Response.m_Hit                     = 1;
             m_Response.m_Fraction                = fraction;
@@ -380,7 +380,7 @@ namespace dmPhysics
                 float s                = object_scale / shape->m_creationScale;
                 for (int i = 0; i < 4; ++i)
                 {
-                    b2Vec2 p = pshape->m_verticesOriginal[i];
+                    b2Vec2 p = pshape->m_vertices[i];
                     pshape->m_vertices[i].Set(p.x * s, p.y * s);
                 }
             }
@@ -577,9 +577,9 @@ namespace dmPhysics
                     int32_t index_a = contact->GetChildIndexA();
                     int32_t index_b = contact->GetChildIndexB();
                     step_context.m_CollisionCallback(fixture_a->GetUserData(),
-                                                     fixture_a->GetFilterData().categoryBits,
+                                                     fixture_a->GetFilterData(index_a).categoryBits,
                                                      fixture_b->GetUserData(),
-                                                     fixture_b->GetFilterData().categoryBits,
+                                                     fixture_b->GetFilterData(index_b).categoryBits,
                                                      step_context.m_CollisionUserData);
                 }
             }

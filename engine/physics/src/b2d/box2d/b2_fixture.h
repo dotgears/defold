@@ -128,15 +128,17 @@ public:
 	/// @return the true if the shape is a sensor.
 	bool IsSensor() const;
 
-	/// Set the contact filtering data. This will not update contacts until the next time
-	/// step when either parent body is active and awake.
-	/// This automatically calls Refilter.
-	void SetFilterData(const b2Filter& filter);
+    /// Set the contact filtering data. This will not update contacts until the next time
+    /// step when either parent body is active and awake.
+    /// This automatically calls Refilter.
+    // Defold modifications. Added index
+    void SetFilterData(const b2Filter& filter, int32 index);
 
-	/// Get the contact filtering data.
-	const b2Filter& GetFilterData() const;
+    /// Get the contact filtering data.
+    // Defold modifications. Added index
+    const b2Filter& GetFilterData(int32 index) const;
 
-	/// Call this if you want to establish collision that was previously disabled by b2ContactFilter::ShouldCollide.
+    /// Call this if you want to establish collision that was previously disabled by b2ContactFilter::ShouldCollide.
 	void Refilter();
 
 	/// Get the parent body of this fixture. This is nullptr if the fixture is not attached.
@@ -224,8 +226,9 @@ protected:
 	void DestroyProxies(b2BroadPhase* broadPhase);
 
 	void Synchronize(b2BroadPhase* broadPhase, const b2Transform& xf1, const b2Transform& xf2);
+    void SynchronizeSingle(b2BroadPhase* broadPhase, int32 index, const b2Transform& transform1, const b2Transform& transform2);
 
-	float m_density;
+    float m_density;
 
 	b2Fixture* m_next;
 	b2Body* m_body;
@@ -238,7 +241,8 @@ protected:
 	b2FixtureProxy* m_proxies;
 	int32 m_proxyCount;
 
-	b2Filter m_filter;
+    b2Filter m_singleFilter;
+    b2Filter* m_filters;
 
 	bool m_isSensor;
 
@@ -247,7 +251,7 @@ protected:
 
 inline b2Shape::Type b2Fixture::GetType() const
 {
-	return m_shape->GetType();
+    return m_shape->GetType();
 }
 
 inline b2Shape* b2Fixture::GetShape()
@@ -265,9 +269,12 @@ inline bool b2Fixture::IsSensor() const
 	return m_isSensor;
 }
 
-inline const b2Filter& b2Fixture::GetFilterData() const
+inline const b2Filter& b2Fixture::GetFilterData(int32 index) const
 {
-	return m_filter;
+    // Defold modifications. Added index
+    // NOTE: Multiply with m_filterPerChild to force index to zero
+    // when filtering is *not* performed per child shape
+    return m_filters[index * m_shape->m_filterPerChild];
 }
 
 inline void* b2Fixture::GetUserData() const
