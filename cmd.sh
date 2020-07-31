@@ -106,11 +106,11 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     eval $BUILD_ENGINE
     exit
     ;;
-  -ev7 | --engine_ios_v7 )
+  -ev7 | --engine_armv7 )
     eval $BUILD_ENGINE_IOS_v7
     exit
     ;;
-  -e64 | --engine_ios_64 )
+  -e64 | --engine_arm64 )
     eval $BUILD_ENGINE_IOS_64
     exit
     ;;
