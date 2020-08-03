@@ -27,7 +27,7 @@ function luajit_configure() {
 	case $CONF_TARGET in
 		armv7-darwin)
 			TAR_SKIP_BIN=1
-			XFLAGS+="-DLUAJIT_NUMMODE=2 -DLUAJIT_DISABLE_JIT"
+			XFLAGS+="-DLUAJIT_NUMMODE=2" # Added by dotGears / TrungB : remove -DLUAJIT_DISABLE_JIT
 			export CROSS=""
 			export PATH=$DARWIN_TOOLCHAIN_ROOT/usr/bin:$PATH
 			export HOST_CC="clang -m32"
@@ -37,17 +37,20 @@ function luajit_configure() {
 			;;
 		arm64-darwin)
 			TAR_SKIP_BIN=1
-			XFLAGS+="-DLUAJIT_NUMMODE=2 -DLUAJIT_DISABLE_JIT"
+			XFLAGS+="-DLUAJIT_NUMMODE=2" # Added by dotGears / TrungB : remove -DLUAJIT_DISABLE_JIT
 			export CROSS=""
 			export PATH=$DARWIN_TOOLCHAIN_ROOT/usr/bin:$PATH
 			export HOST_CC="clang -m64"
 			export HOST_CFLAGS="$XFLAGS -m64 -isysroot $OSX_SDK_ROOT -I."
 			export HOST_ALDFLAGS="-m64"
 			export TARGET_FLAGS="$CFLAGS"
+			echo "picked Arm64"
+			read -n 1
+            echo "Waiting.."
 			;;
 		x86_64-ios)
 			TAR_SKIP_BIN=1
-			XFLAGS+="-DLUAJIT_NUMMODE=2 -DLUAJIT_DISABLE_JIT -DLJ_NO_SYSTEM"
+			XFLAGS+="-DLUAJIT_NUMMODE=2 -DLJ_NO_SYSTEM" # Added by dotGears / TrungB : remove -DLUAJIT_DISABLE_JIT
 			export PATH=$DARWIN_TOOLCHAIN_ROOT/usr/bin:$PATH
 			export HOST_CC="clang -m64"
 			export HOST_CFLAGS="$XFLAGS -m64 -isysroot $OSX_SDK_ROOT -I."
@@ -106,6 +109,9 @@ function luajit_configure() {
 # Use above function instead of shell scripts
 CONFIGURE_WRAPPER="luajit_configure"
 export -f luajit_configure
+
+echo "waiting for the keypress"
+read -t 3 -n 1
 
 . ../common.sh
 
