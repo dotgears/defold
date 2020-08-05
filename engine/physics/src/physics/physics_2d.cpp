@@ -475,7 +475,7 @@ namespace dmPhysics
                         }
                     }
                 }
-                world->m_World.Step(deltaStep, world->m_velocityIteration, world->m_positionIteration);
+                world->m_World.Step(deltaStep, world->m_velocityIteration, world->m_positionIteration); //printf("physics_2d -- modifying to debug v2");
             }
 
             //Update Slave bodies after their Master
@@ -889,39 +889,39 @@ namespace dmPhysics
         return ret;
     }
 
-    static void FreeShape(const b2Shape* shape)
-    {
-        switch (shape->m_type)
-        {
-            case b2Shape::e_circle: {
-                b2CircleShape* circle_shape = (b2CircleShape*)shape;
-                delete circle_shape;
-            }
-            break;
+    // static void FreeShape(const b2Shape* shape)
+    // {
+    //     switch (shape->m_type)
+    //     {
+    //         case b2Shape::e_circle: {
+    //             b2CircleShape* circle_shape = (b2CircleShape*)shape;
+    //             delete circle_shape;
+    //         }
+    //         break;
 
-            case b2Shape::e_edge: {
-                b2EdgeShape* edge_shape = (b2EdgeShape*)shape;
-                delete edge_shape;
-            }
-            break;
+    //         case b2Shape::e_edge: {
+    //             b2EdgeShape* edge_shape = (b2EdgeShape*)shape;
+    //             delete edge_shape;
+    //         }
+    //         break;
 
-            case b2Shape::e_polygon: {
-                b2PolygonShape* poly_shape = (b2PolygonShape*)shape;
-                delete poly_shape;
-            }
-            break;
+    //         case b2Shape::e_polygon: {
+    //             b2PolygonShape* poly_shape = (b2PolygonShape*)shape;
+    //             delete poly_shape;
+    //         }
+    //         break;
 
-            case b2Shape::e_grid: {
-                b2GridShape* grid_shape = (b2GridShape*)shape;
-                delete grid_shape;
-            }
-            break;
+    //         case b2Shape::e_grid: {
+    //             b2GridShape* grid_shape = (b2GridShape*)shape;
+    //             delete grid_shape;
+    //         }
+    //         break;
 
-            default:
-                // pass
-                break;
-        }
-    }
+    //         default:
+    //             // pass
+    //             break;
+    //     }
+    // }
 
     /*
           * NOTE: In order to support shape transform we create a copy of shapes using the function TransformCopyShape() above
@@ -1034,17 +1034,17 @@ namespace dmPhysics
 
         OverlapCacheRemove(&world->m_TriggerOverlaps, collision_object);
         b2Body* body       = (b2Body*)collision_object;
-        b2Fixture* fixture = body->GetFixtureList();
-        while (fixture)
-        {
-            // We must save next fixture. The next pointer is set to null in DestoryFixture()
-            b2Fixture* save_next = fixture->GetNext();
+        // b2Fixture* fixture = body->GetFixtureList();
+        // while (fixture)
+        // {
+        //     // We must save next fixture. The next pointer is set to null in DestoryFixture()
+        //     b2Fixture* save_next = fixture->GetNext();
 
-            b2Shape* shape = fixture->GetShape();
-            body->DestroyFixture(fixture);
-            FreeShape(shape); // NOTE: shape can't be freed prior to DestroyFixture
-            fixture = save_next;
-        }
+        //     b2Shape* shape = fixture->GetShape();
+        //     body->DestroyFixture(fixture);
+        //     FreeShape(shape); // NOTE: shape can't be freed prior to DestroyFixture
+        //     fixture = save_next;
+        // }
         world->m_World.DestroyBody(body);
     }
 
