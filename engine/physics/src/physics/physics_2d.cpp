@@ -452,10 +452,8 @@ namespace dmPhysics
 
             float inv_scale = world->m_Context->m_InvScale;
             /// Added by .Gears/TrungB
-
             float deltaStep = dt / world->m_stepIteration;
 
-            // dmLogInfo("world scale (%f) - invert scale (%f)", scale, inv_scale);
             for (int i = 0; i < world->m_stepIteration; i++)
             {
                 //Added by dotGears / Trung Vu
@@ -467,8 +465,8 @@ namespace dmPhysics
                         {
                             b2Vec2 b2position = body->GetPosition();
 
-                            b2position.x += (body->GetDeltaX() * scale / world->m_stepIteration);
-                            b2position.y += (body->GetDeltaY() * scale / world->m_stepIteration);
+                            b2position.x += (body->GetDeltaX() / world->m_stepIteration);
+                            b2position.y += (body->GetDeltaY() / world->m_stepIteration);
 
                             float b2angle = body->GetAngle();
                             b2angle += body->GetDeltaZ() / world->m_stepIteration;
