@@ -69,8 +69,11 @@ namespace dmGameSystem
     void SetControllable(void* comp, bool flag);
     void SetSleepingAllowed(void* comp, bool flag);
     void SetBullet(void* comp, bool flag);
+    void SetActive(void* comp, bool flag);
+    bool IsWorldLocked(void* _world);
 
-    void SetGravityScale(void* comp, float gravityScale);
+    void
+    SetGravityScale(void* comp, float gravityScale);
     void SetAllowSleep(void* comp, bool allow_sleep);
 
     void CopyState(void* comp, uint16_t state);

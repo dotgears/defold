@@ -1129,7 +1129,6 @@ namespace dmPhysics
         if (b2_body != NULL)
         {
             b2_body->SetCopyDisable();
-            dmLogInfo("physics_2d.cpp -- SetCopyDisable ()");
         }
         else
         {
@@ -1142,7 +1141,6 @@ namespace dmPhysics
         if (b2_body != NULL)
         {
             b2_body->SetSleepingAllowed(allow_sleep);
-            dmLogInfo("physics_2d.cpp -- SetSleepingAllowed ()");
         }
         else
         {
@@ -1170,6 +1168,21 @@ namespace dmPhysics
         if (b2_body != NULL)
         {
             b2_body->SetBullet(flag);
+        }
+    }
+
+    bool IsWorldLocked(HWorld2D world)
+    {
+        return world->m_World.IsLocked();
+    }
+
+    void SetActive(HCollisionObject2D collision_object, bool flag)
+    {
+        b2Body* b2_body = (b2Body*)collision_object;
+        if (b2_body != NULL)
+        {
+            b2_body->SetActive(flag);
+            printf("physics_2d.cpp -- set_active: (%s)\n", flag ? "true":"false");
         }
     }
 

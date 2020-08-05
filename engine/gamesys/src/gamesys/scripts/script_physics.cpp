@@ -1252,6 +1252,86 @@ namespace dmGameSystem
 
         return 0;
     }
+
+    /*# Set active for collision object.
+     * Added by dotGears/TrungB
+     *
+     * @name physics.set_active
+     * @param  collisionobject [type:string|hash|url] target body.
+     * @param  flag [type:boolean] mark a body to active or not.
+     *
+     * @examples
+     *
+     * ```lua
+     * function init(self)
+     *     physics.set_bullet("#body", true)
+     * end
+     * ```
+     */
+    static int
+    Physics_SetActive(lua_State* L)
+    {
+        DM_LUA_STACK_CHECK(L, 0);
+
+        dmGameObject::HCollection collection = dmGameObject::GetCollection(CheckGoInstance(L));
+        void* comp                           = 0x0;
+        void* comp_world                     = 0x0;
+        GetCollisionObject(L, 1, collection, &comp, &comp_world);
+
+        if (!IsCollision2D(comp_world))
+        {
+            return DM_LUA_ERROR("function only available in 2D physics");
+        }
+
+        if (!comp)
+        {
+            return DM_LUA_ERROR("couldn't find collision object"); // todo: add url
+        }
+
+        bool flag = lua_toboolean(L, 2);
+
+        dmGameSystem::SetActive(comp, flag);
+
+        return 0;
+    }
+    /*# Return if world is locked or not.
+     *
+     *
+     * @name physics.is_world_locked
+     * @return [type:boolean] 
+     * @examples
+     *
+     * ```lua
+     * function init(self)
+     *     if physics.is_world_locked() then
+     *          physics.set_active(body, true)
+     *     end
+     * end
+     * ```
+     */
+    static int Physics_IsWorldLocked(lua_State* L)
+    {
+        DM_LUA_STACK_CHECK(L, 1);
+
+        dmMessage::URL sender;
+        if (!dmScript::GetURL(L, &sender))
+        {
+            return DM_LUA_ERROR("could not find a requesting instance for physics.is_world_locked");
+        }
+
+        dmScript::GetGlobal(L, PHYSICS_CONTEXT_HASH);
+        PhysicsScriptContext* context = (PhysicsScriptContext*)lua_touserdata(L, -1);
+        lua_pop(L, 1);
+
+        dmGameObject::HInstance sender_instance = CheckGoInstance(L);
+        dmGameObject::HCollection collection    = dmGameObject::GetCollection(sender_instance);
+        void* world                             = dmGameObject::GetWorld(collection, context->m_ComponentIndex);
+
+        bool is_world_locked = dmGameSystem::IsWorldLocked(world);
+        lua_pushboolean(L, is_world_locked);
+
+        return 1;
+    }
     /*# Set Master Body for an collision object
      * Added by dotGears/TrungVu
      *
@@ -1267,7 +1347,8 @@ namespace dmGameSystem
      * end
      * ```
      */
-    static int Physics_SetMasterBody(lua_State* L)
+    static int
+    Physics_SetMasterBody(lua_State* L)
     {
         DM_LUA_STACK_CHECK(L, 0);
 
@@ -1610,6 +1691,8 @@ namespace dmGameSystem
         { "set_allow_sleep", Physics_SetSleepingAllowed},
         { "set_delta_value", Physics_SetDeltaValue },
         { "set_bullet", Physics_SetBullet },
+        { "set_active", Physics_SetActive },
+        { "is_world_locked", Physics_IsWorldLocked },
 
         // Config Body/World
         { "set_allow_sleep", Physics_SetAllowSleep },

@@ -873,6 +873,23 @@ namespace dmPhysics
     void SetBullet(HCollisionObject2D collision_object, bool flag);
 
     /**
+     * Set Active  to an object body.
+     * Added by dotGears / TrungB
+     * @param context Physics context
+     * @param collision_object Collision object.
+     * @param flag to disable or enable sleeping.
+     */
+    void SetActive(HCollisionObject2D collision_object, bool flag);
+
+    /**
+     * Return if the world is locked or not.
+     * Added by dotGears / TrungB
+     * @param context Physics context
+     * @param collision_object Collision object.
+     */
+    bool IsWorldLocked(HWorld2D context);
+
+    /**
      * Set delta Value to an object body, which will update its transform along with world step.
      *
      * @param context Physics context

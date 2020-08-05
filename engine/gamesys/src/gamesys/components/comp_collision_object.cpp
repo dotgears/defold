@@ -1522,6 +1522,26 @@ namespace dmGameSystem
         dmPhysics::SetBullet(component->m_Object2D, flag);
     }
 
+    void SetActive(void* comp, bool flag)
+    {
+        CollisionComponent* component = (CollisionComponent*)comp;
+        dmPhysics::SetActive(component->m_Object2D, flag);
+    }
+
+    bool IsWorldLocked(void* _world)
+    {
+        CollisionWorld* world = (CollisionWorld*)_world;
+        if (world->m_3D)
+        {
+            printf("gamesys -- didn't support Bullet3D yet.");
+            return false;
+        }
+        else
+        {
+            return dmPhysics::IsWorldLocked(world->m_World2D);
+        }
+    }
+
     void SetDeltaValue(void* comp, float alphaX, float alphaY, float alphaZ)
     {
         CollisionComponent* component = (CollisionComponent*)comp;
