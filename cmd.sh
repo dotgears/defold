@@ -19,6 +19,10 @@ BUNDLE="sh bundle_editor.sh $2"
 SUB_MODULE="sh ./scripts/submodule.sh config_in_waf $2 $3 $4 $5 $6"
 WAF_CONF="(cd $3;PREFIX=\$DYNAMO_HOME waf configure --platform=$2)"
 
+COPY_ENGINE_X8664="sh cmd.sh --copy x86_64-darwin"
+COPY_ENGINE_ARM64="sh cmd.sh --copy arm64-darwin"
+COPY_ENGINE_ARMV7="sh cmd.sh --copy armv7-darwin"
+
 BUILD_ENGINE="sudo ./scripts/build.py build_engine --platform=x86_64-darwin --skip-docs --skip-tests -- --skip-build-tests"
 BUILD_ENGINE_IOS_v7="sudo ./scripts/build.py build_engine --platform=armv7-darwin --skip-bob-light --skip-docs --skip-tests -- --skip-build-tests"
 BUILD_ENGINE_IOS_64="sudo ./scripts/build.py build_engine --platform=arm64-darwin --skip-bob-light --skip-docs --skip-tests -- --skip-build-tests"
@@ -52,6 +56,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     ;;
   -f | --fast )
     eval $SUB_MODULE
+    eval $COPY_ENGINE_X8664
     exit
     ;;
   -w | --waf )
@@ -104,14 +109,17 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     ;;
   -e | --engine )
     eval $BUILD_ENGINE
+    eval $COPY_ENGINE_X8664
     exit
     ;;
   -ev7 | --engine_armv7 )
     eval $BUILD_ENGINE_IOS_v7
+    eval $COPY_ENGINE_ARMV7
     exit
     ;;
   -e64 | --engine_arm64 )
     eval $BUILD_ENGINE_IOS_64
+    eval $COPY_ENGINE_ARM64
     exit
     ;;
   -m | --misc )
