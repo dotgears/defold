@@ -28,10 +28,11 @@ BUILD_ENGINE_IOS_v7="sudo ./scripts/build.py build_engine --platform=armv7-darwi
 BUILD_ENGINE_IOS_64="sudo ./scripts/build.py build_engine --platform=arm64-darwin --skip-bob-light --skip-docs --skip-tests -- --skip-build-tests"
 BUILD_BUILTIN="sudo ./scripts/build.py build_builtins"
 BUILD_BOB="sudo ./scripts/build.py build_bob --skip-tests"
+BUILD_DOC="sudo ./scripts/build.py build_docs --platform=x86_64-darwin"
 
 RUN_EDITOR="(cd editor/;lein run)"
 BUILD_EDITOR="(cd editor/;lein init)"
-EDITOR="(cd editor/;lein init;lein run)"
+EDITOR="(cd editor/;lein init)"
 
 FORCE="sudo chmod -R 777 ./"
 BUILD_MODULE="./scripts/submodule.sh x86_64-darwin $2 $3"
@@ -127,6 +128,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     eval $BUILD_BUILTIN
     exit
     ;;
+  -d | --doc )
+    eval $BUILD_DOC
+    ;;
   -B | --bundle )
     start=$SECONDS
     eval $BUNDLE
@@ -152,8 +156,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     echo "sh cmd.sh --engine| -e : for building engine alone"
     echo "sh cmd.sh --engine_ios_v7 | -ev7 : for building iOS armv7 engine"
     echo "sh cmd.sh --engine_ios_64 | -e64 : for building iOS arm64 engine"
-    echo "sh cmd.sh --editor| -e : for building editor + launch"
+    echo "sh cmd.sh --editor| -e : for building editor"
     echo "sh cmd.sh --misc  | -m : for building bob + builtin"
+    echo "sh cmd.sh --doc   | -d : for building editor document"
     echo "sh cmd.sh --full  | -F : to build engine/editor + launch"
     echo "sh cmd.sh --fast  | -f : to fast build part of dmengine at maximum of 4"
     echo "sh cmd.sh --waf   | -w : to waf configure with (armv7 | arm64 | x86_64)-darwin"
