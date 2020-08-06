@@ -475,7 +475,8 @@ namespace dmPhysics
                         }
                     }
                 }
-                world->m_World.Step(deltaStep, world->m_velocityIteration, world->m_positionIteration); //printf("physics_2d -- modifying to debug v2");
+                world->m_World.Step(deltaStep, world->m_velocityIteration, world->m_positionIteration); 
+                // printf("physics_2d -- modifying to debug v5 (%s)\n", "06_08_2020");
             }
 
             //Update Slave bodies after their Master
@@ -1180,7 +1181,7 @@ namespace dmPhysics
         if (b2_body != NULL)
         {
             b2_body->SetActive(flag);
-            printf("physics_2d.cpp -- set_active: (%s)\n", flag ? "true":"false");
+            // printf("physics_2d.cpp -- set_active: (%s)\n", flag ? "true":"false");
         }
     }
 

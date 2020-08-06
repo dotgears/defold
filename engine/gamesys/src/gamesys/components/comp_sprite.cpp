@@ -277,40 +277,48 @@ namespace dmGameSystem
     static bool PlayAnimation(SpriteComponent* component, dmhash_t animation, float offset, float playback_rate)
     {
         TextureSetResource* texture_set = GetTextureSet(component, component->m_Resource);
-        uint32_t* anim_id = texture_set->m_AnimationIds.Get(animation);
-        if (anim_id)
+        if (texture_set)// Added by dotGears / TrungB
         {
-            component->m_AnimationID = *anim_id;
-            component->m_CurrentAnimation = animation;
-            dmGameSystemDDF::TextureSetAnimation* animation = &texture_set->m_TextureSet->m_Animations[*anim_id];
-            uint32_t frame_count = animation->m_End - animation->m_Start;
-            if (animation->m_Playback == dmGameSystemDDF::PLAYBACK_ONCE_PINGPONG
-                    || animation->m_Playback == dmGameSystemDDF::PLAYBACK_LOOP_PINGPONG)
-                frame_count = dmMath::Max(1u, frame_count * 2 - 2);
-            component->m_AnimInvDuration = (float)animation->m_Fps / frame_count;
-            component->m_AnimPingPong = animation->m_Playback == dmGameSystemDDF::PLAYBACK_ONCE_PINGPONG || animation->m_Playback == dmGameSystemDDF::PLAYBACK_LOOP_PINGPONG;
-            component->m_AnimBackwards = animation->m_Playback == dmGameSystemDDF::PLAYBACK_ONCE_BACKWARD || animation->m_Playback == dmGameSystemDDF::PLAYBACK_LOOP_BACKWARD;
-            component->m_Playing = animation->m_Playback != dmGameSystemDDF::PLAYBACK_NONE;
-            component->m_Size = GetSize(component, texture_set->m_TextureSet, component->m_AnimationID);
+            uint32_t* anim_id = texture_set->m_AnimationIds.Get(animation);
+            if (anim_id)
+            {
+                component->m_AnimationID                        = *anim_id;
+                component->m_CurrentAnimation                   = animation;
+                dmGameSystemDDF::TextureSetAnimation* animation = &texture_set->m_TextureSet->m_Animations[*anim_id];
+                uint32_t frame_count                            = animation->m_End - animation->m_Start;
+                if (animation->m_Playback == dmGameSystemDDF::PLAYBACK_ONCE_PINGPONG || animation->m_Playback == dmGameSystemDDF::PLAYBACK_LOOP_PINGPONG)
+                    frame_count = dmMath::Max(1u, frame_count * 2 - 2);
+                component->m_AnimInvDuration = (float)animation->m_Fps / frame_count;
+                component->m_AnimPingPong    = animation->m_Playback == dmGameSystemDDF::PLAYBACK_ONCE_PINGPONG || animation->m_Playback == dmGameSystemDDF::PLAYBACK_LOOP_PINGPONG;
+                component->m_AnimBackwards   = animation->m_Playback == dmGameSystemDDF::PLAYBACK_ONCE_BACKWARD || animation->m_Playback == dmGameSystemDDF::PLAYBACK_LOOP_BACKWARD;
+                component->m_Playing         = animation->m_Playback != dmGameSystemDDF::PLAYBACK_NONE;
+                component->m_Size            = GetSize(component, texture_set->m_TextureSet, component->m_AnimationID);
 
-            offset = dmMath::Clamp(offset, 0.0f, 1.0f);
-            if (animation->m_Playback == dmGameSystemDDF::PLAYBACK_ONCE_BACKWARD || animation->m_Playback == dmGameSystemDDF::PLAYBACK_LOOP_BACKWARD) {
-                offset = 1.0f - offset;
+                offset = dmMath::Clamp(offset, 0.0f, 1.0f);
+                if (animation->m_Playback == dmGameSystemDDF::PLAYBACK_ONCE_BACKWARD || animation->m_Playback == dmGameSystemDDF::PLAYBACK_LOOP_BACKWARD)
+                {
+                    offset = 1.0f - offset;
+                }
+
+                component->m_PlaybackRate = dmMath::Max(playback_rate, 0.0f);
+                SetCursor(component, offset);
+                UpdateCurrentAnimationFrame(component);
             }
-
-            component->m_PlaybackRate = dmMath::Max(playback_rate, 0.0f);
-            SetCursor(component, offset);
-            UpdateCurrentAnimationFrame(component);
+            else
+            {
+                // TODO: Why stop the current animation? Shouldn't it continue playing the current animation?
+                component->m_Playing               = 0;
+                component->m_CurrentAnimation      = 0x0;
+                component->m_CurrentAnimationFrame = 0;
+                dmLogError("Unable to play animation '%s' from texture '%s' since it could not be found.",
+                           dmHashReverseSafe64(animation),
+                           dmHashReverseSafe64(texture_set->m_TexturePath));
+                return false;
+            }
+            return anim_id != 0;
         }
-        else
-        {
-            // TODO: Why stop the current animation? Shouldn't it continue playing the current animation?
-            component->m_Playing = 0;
-            component->m_CurrentAnimation = 0x0;
-            component->m_CurrentAnimationFrame = 0;
-            dmLogError("Unable to play animation '%s' from texture '%s' since it could not be found.", dmHashReverseSafe64(animation), dmHashReverseSafe64(texture_set->m_TexturePath));
-        }
-        return anim_id != 0;
+        dmLogInfo("dotGears - We didn't find the texture but we don't panic. Defold, you see ?");
+        return false;
     }
 
     static void ReHash(SpriteComponent* component)
