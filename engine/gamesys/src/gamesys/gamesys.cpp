@@ -219,14 +219,14 @@ namespace dmGameSystem
                 0);
 
         // Modified by dotGears / TheTrung : from 400 -> 200
-        REGISTER_COMPONENT_TYPE("collisionobjectc", 200, physics_context, &CompCollisionObjectNewWorld, &CompCollisionObjectDeleteWorld, &CompCollisionObjectCreate, &CompCollisionObjectDestroy, 0, &CompCollisionObjectFinal, &CompCollisionObjectAddToUpdate, 0, &CompCollisionObjectUpdate, 0, &CompCollisionObjectPostUpdate, &CompCollisionObjectOnMessage, 0, &CompCollisionObjectOnReload, CompCollisionObjectGetProperty, CompCollisionObjectSetProperty, 1);
+        REGISTER_COMPONENT_TYPE("collisionobjectc", 400, physics_context, &CompCollisionObjectNewWorld, &CompCollisionObjectDeleteWorld, &CompCollisionObjectCreate, &CompCollisionObjectDestroy, 0, &CompCollisionObjectFinal, &CompCollisionObjectAddToUpdate, 0, &CompCollisionObjectUpdate, 0, &CompCollisionObjectPostUpdate, &CompCollisionObjectOnMessage, 0, &CompCollisionObjectOnReload, CompCollisionObjectGetProperty, CompCollisionObjectSetProperty, 1);
         
         // See gameobject_comp.cpp for these two component types:
         // Priority 200 is reserved for scriptc (read+write transforms) -> 250
         // Priority 250 is reserved for animc (read+write transforms) -> 300
 
         // Modified by dotGears / TheTrung : from 300 -> 400
-        REGISTER_COMPONENT_TYPE("guic", 400, gui_context,
+        REGISTER_COMPONENT_TYPE("guic", 300, gui_context,
                 CompGuiNewWorld, CompGuiDeleteWorld,
                 CompGuiCreate, CompGuiDestroy, CompGuiInit, CompGuiFinal, CompGuiAddToUpdate, 0,
                 CompGuiUpdate, CompGuiRender, 0, CompGuiOnMessage, CompGuiOnInput, CompGuiOnReload, CompGuiGetProperty, CompGuiSetProperty,
