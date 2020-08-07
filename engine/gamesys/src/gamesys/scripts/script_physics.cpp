@@ -1274,7 +1274,7 @@ namespace dmGameSystem
      *
      *
      * @name physics.is_world_locked
-     * @return [type:boolean] 
+     * @return [type:boolean]
      * @examples
      *
      * ```lua
@@ -1311,7 +1311,7 @@ namespace dmGameSystem
     /*# Set Master Body for an collision object
      * Added by dotGears/TrungVu
      *
-     * @name physics.set_master_body
+     * @name physics.set_master
      * @param  collision_object [type:string|hash|url] current body
      * @param  master_body [type:string|hash|url]  target body to be copied.
      *
@@ -1319,7 +1319,7 @@ namespace dmGameSystem
      *
      * ```lua
      * function init(self)
-     *     physics.set_master_body("#body_slave", "#body_master")
+     *     physics.set_master("#body_slave", "#body_master")
      * end
      * ```
      */
@@ -1395,9 +1395,9 @@ namespace dmGameSystem
             float minY = lua_tonumber(L, 4);
             float maxX = lua_tonumber(L, 5);
             float maxY = lua_tonumber(L, 6);
-            dmGameSystem::SetVelocityLimit(comp, minX, minY, maxX, maxY);
+            // dmGameSystem::SetVelocityLimit(comp, minX, minY, maxX, maxY);
         }
-        else dmGameSystem::DisableVelocityLimit(comp);
+        // else dmGameSystem::DisableVelocityLimit(comp);
 
         return 0;
     }
@@ -1405,15 +1405,16 @@ namespace dmGameSystem
     /*# Add copy State to body
      * Added by dotGears/TrungVu
      *
-     * @name physics.copy_state
-     * @param  collision_object [type:string|hash|url] body that's cloning state.
-     * @param  state [type:constant]  add copy state [0 ~ 4]
-     *
+     * @name physics.copy
+     * @param  collision_object [type:string|hash|url] slave body.
+     * @param  state [type:constant]
+     * @param  ratio [type: float]
+     * @param  offset [type: float]
      * @examples
      *
      * ```lua
      * function init(self)
-     *     physics.copy_state("#body_slave", physics.COPY_POSITION_X)
+     *     physics.copy("#body_slave", physics.COPY_POSITION_X, 1.0, 0.0)
      * end
      * ```
      */
@@ -1437,29 +1438,31 @@ namespace dmGameSystem
         }
 
         uint16_t state = luaL_checknumber(L, 2);
+        float ratio = luaL_checknumber(L, 3);
+        float offset = luaL_checknumber(L, 4);
 
-        // dmLogInfo("Physics_CopyState -- CopyState:(%i)", state);
-        dmGameSystem::CopyState(comp, state);
+        dmGameSystem::CopyState(comp, state, ratio, offset);
 
         return 0;
     }
 
-    /*# Set copy ratio to body
-     * Added by dotGears/TheTrung
+    /*# Set limits for slave body
+     * Added by dotGears/TrungVu
      *
-     * @name physics.set_copy_ratio
-     * @param  collision_object [type:string|hash|url] body that's cloning state.
-     * @param  ratio [type:number]  set copy ratio [0.0 ~ 1.0]
-     *
+     * @name physics.set_limit
+     * @param  collision_object [type:string|hash|url] slave body.
+     * @param  state [type:constant]
+     * @param  min [type: float]
+     * @param  max [type: float]
      * @examples
      *
      * ```lua
      * function init(self)
-     *     physics.set_copy_ratio("#body_slave", 1.0)
+     *     physics.set_limit("#body_slave", physics.COPY_POSITION_X, 0.0, 2.0)
      * end
      * ```
      */
-    static int Physics_SetCopyRatio(lua_State* L)
+    static int Physics_SetStateLimit(lua_State* L)
     {
         DM_LUA_STACK_CHECK(L, 0);
 
@@ -1478,49 +1481,11 @@ namespace dmGameSystem
             return DM_LUA_ERROR("couldn't find collision object"); // todo: add url
         }
 
-        float ratio = luaL_checknumber(L, 2);
+        uint16_t state = luaL_checknumber(L, 2);
+        float min = luaL_checknumber(L, 3);
+        float max = luaL_checknumber(L, 4);
 
-        dmLogInfo("Physics_SetCopyRatio -- (%f)", ratio);
-        dmGameSystem::SetCopyRatio(comp, ratio);
-
-        return 0;
-    }
-
-    /*# Set copy ratio to body
-     * Added by dotGears/TheTrung
-     *
-     * @name physics.set_copy_disable
-     * @param  collision_object [type:string|hash|url] body that's cloning state.
-     *
-     * @examples
-     *
-     * ```lua
-     * function init(self)
-     *     physics.set_copy_disable("#body_slave")
-     * end
-     * ```
-     */
-    static int Physics_SetCopyDisable(lua_State* L)
-    {
-        DM_LUA_STACK_CHECK(L, 0);
-
-        dmGameObject::HCollection collection = dmGameObject::GetCollection(CheckGoInstance(L));
-        void* comp                           = 0x0;
-        void* comp_world                     = 0x0;
-        GetCollisionObject(L, 1, collection, &comp, &comp_world);
-
-        if (!IsCollision2D(comp_world))
-        {
-            return DM_LUA_ERROR("function only available in 2D physics");
-        }
-
-        if (!comp)
-        {
-            return DM_LUA_ERROR("couldn't find collision object"); // todo: add url
-        }
-
-        dmLogInfo("Physics_SetCopyDisable ()");
-        dmGameSystem::SetCopyDisable(comp);
+        dmGameSystem::SetStateLimit(comp, state, min, max);
 
         return 0;
     }
@@ -1657,10 +1622,9 @@ namespace dmGameSystem
         { "get_gravity", Physics_GetGravity },
 
         // Copying B2Body States
-        { "set_master_body", Physics_SetMasterBody },
-        { "copy_state", Physics_CopyState },
-        { "set_copy_ratio", Physics_SetCopyRatio },
-        { "set_copy_disable", Physics_SetCopyDisable },
+        { "set_master", Physics_SetMasterBody },
+        { "copy", Physics_CopyState },
+        { "set_limit", Physics_SetStateLimit },
 
         // Set delta value during physics step
         { "set_controllable", Physics_SetControllable },

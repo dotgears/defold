@@ -1476,32 +1476,17 @@ namespace dmGameSystem
       CollisionComponent* master = (CollisionComponent*)master_body;
       dmPhysics::SetMasterBody(component->m_Object2D, master->m_Object2D);
     }
-    
-    // Added by dotGears/TheTrung
-    void SetVelocityLimit(void* comp, float minX, float minY, float maxX, float maxY)
+
+    void CopyState(void* comp, uint16_t state, float ratio, float offset)
     {
         CollisionComponent* component = (CollisionComponent*)comp;
-        dmPhysics::SetVelocityLimit(component->m_Object2D, minX, minY, maxX, maxY);
+        dmPhysics::CopyState(component->m_Object2D, state, ratio, offset);
     }
-    void DisableVelocityLimit(void* comp)
+
+    void SetStateLimit(void* comp, uint16_t state, float min, float max)
     {
         CollisionComponent* component = (CollisionComponent*)comp;
-        dmPhysics::DisableVelocityLimit(component->m_Object2D);
-    }
-    void CopyState(void* comp, uint16_t state)
-    {
-        CollisionComponent* component = (CollisionComponent*)comp;
-        dmPhysics::CopyState(component->m_Object2D, state);
-    }
-    void SetCopyRatio(void* comp, float ratio)
-    {
-        CollisionComponent* component = (CollisionComponent*)comp;
-        dmPhysics::SetCopyRatio(component->m_Object2D, ratio);
-    }
-    void SetCopyDisable(void* comp)
-    {
-        CollisionComponent* component = (CollisionComponent*)comp;
-        dmPhysics::SetCopyDisable(component->m_Object2D);
+        dmPhysics::SetStateLimit(component->m_Object2D, state, min, max);
     }
 
     void SetControllable(void* comp, bool flag)
@@ -1516,6 +1501,7 @@ namespace dmGameSystem
         dmPhysics::SetSleepingAllowed(component->m_Object2D, flag);
     }
 
+    //Added by dotGears / TrungB
     void SetBullet(void* comp, bool flag)
     {
         CollisionComponent* component = (CollisionComponent*)comp;
@@ -1556,7 +1542,7 @@ namespace dmGameSystem
     {
         CollisionComponent* component = (CollisionComponent*)comp;
         dmPhysics::SetAllowSleep(component->m_Object2D, allow_sleep);
-    } 
+    }
     void SetWorld2DStepIteration(void* _world, int stepIteration, int velocityIteration, int positionIteration)
     {
         CollisionWorld* world = (CollisionWorld*)_world;

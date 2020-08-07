@@ -107,6 +107,35 @@ b2Body::b2Body(const b2BodyDef* bd, b2World* world)
 
 	m_fixtureList = nullptr;
 	m_fixtureCount = 0;
+
+	//Added by dotGears - Trung Vu
+	m_copy_flags = 0;
+	m_limit_flags = 0;
+
+	m_ratio_pos_x = 1.0f;
+	m_ratio_pos_y = 1.0f;
+	m_ratio_rotation = 1.0f;
+	m_ratio_linear_velo = 1.0f;
+	m_ratio_angular_velo = 1.0f;
+
+	m_offset_pos_x = 0.0f;
+	m_offset_pos_y = 0.0f;
+	m_offset_rotation = 0.0f;
+	m_offset_linear_velo = 0.0f;
+	m_offset_angular_velo = 0.0f;
+
+	m_min_pos_x = 0.0f;
+	m_min_pos_y = 0.0f;
+	m_min_rotation = 0.0f;
+	m_min_linear_velo = 0.0f;
+	m_min_angular_velo = 0.0f;
+
+	m_max_pos_x = 0.0f;
+	m_max_pos_y = 0.0f;
+	m_max_rotation = 0.0f;
+	m_max_linear_velo = 0.0f;
+	m_max_angular_velo = 0.0f;
+
 }
 
 b2Body::~b2Body()
@@ -695,6 +724,79 @@ void b2Body::Dump()
 		b2Log("  }\n");
 	}
 	b2Log("}\n");
+}
+
+void b2Body::UpdateStateFromMasterBody()
+{
+	if (m_masterBody == NULL || m_copy_flags == 0)
+	{
+		return;
+	}
+
+	b2Vec2 position = this->GetPosition();
+	
+	if (( m_copy_flags & e_position_x) == e_position_x)
+	{
+		position.x = m_masterBody->GetPosition().x * m_ratio_pos_x + m_offset_pos_x;
+
+		if ((m_limit_flags & e_position_x) == e_position_x)
+		{
+			position.x = position.x > m_max_pos_x ? m_max_pos_x : position.x < m_min_pos_x ? m_min_pos_x : position.x;
+		}
+	}
+
+	if (( m_copy_flags & e_position_y) == e_position_y)
+	{
+		position.y = m_masterBody->GetPosition().y * m_ratio_pos_y + m_offset_pos_y;
+
+		if ((m_limit_flags & e_position_y) == e_position_y)
+		{
+			position.y = position.y > m_max_pos_y ? m_max_pos_y : position.y < m_min_pos_y ? m_min_pos_y : position.y;
+		}
+		
+	}
+
+	float angle = this->GetAngle();
+
+	if ((m_copy_flags & e_rotation) == e_rotation)
+	{
+		angle = m_masterBody->GetAngle() * m_ratio_rotation + m_offset_rotation;
+
+		if ((m_limit_flags & e_rotation) == e_rotation)
+		{
+			angle = angle > m_max_rotation ? m_max_rotation : angle < m_min_rotation ? m_min_rotation : angle;
+		}
+		
+	}
+
+	b2Vec2 linear_velocity = this->GetLinearVelocity();
+
+	if ((m_copy_flags & e_linear_velo) == e_linear_velo) 
+	{
+		linear_velocity.x = m_masterBody->GetLinearVelocity().x * m_ratio_linear_velo + m_offset_linear_velo;
+		linear_velocity.y = m_masterBody->GetLinearVelocity().y * m_ratio_linear_velo + m_offset_linear_velo;
+
+		if ((m_limit_flags & e_linear_velo) == e_linear_velo)
+		{
+			linear_velocity.x = linear_velocity.x > m_max_linear_velo ? m_max_linear_velo : linear_velocity.x < m_min_linear_velo ? m_min_linear_velo : linear_velocity.x;
+			linear_velocity.y = linear_velocity.y > m_max_linear_velo ? m_max_linear_velo : linear_velocity.y < m_min_linear_velo ? m_min_linear_velo : linear_velocity.y;
+		}
+	}
+
+	float angular_velo = this->GetAngularVelocity();
+	if ((m_copy_flags & e_angular_velo) == e_angular_velo)
+	{
+		angular_velo = m_masterBody->GetAngularVelocity() * m_ratio_angular_velo + m_offset_angular_velo;
+
+		if ((m_limit_flags & e_angular_velo) == e_angular_velo)
+		{
+			angular_velo = angular_velo > m_max_angular_velo ? m_max_angular_velo : angular_velo < m_min_angular_velo ? m_min_angular_velo : angular_velo;
+		}
+	}
+
+	this->SetTransform(position, angle);
+	this->SetLinearVelocity(linear_velocity);
+	this->SetAngularVelocity(angular_velo);
 }
 
 b2Body * b2Body::CopyTo(b2World * world)

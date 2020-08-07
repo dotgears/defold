@@ -475,74 +475,35 @@ namespace dmPhysics
                         }
                     }
                 }
-                world->m_World.Step(deltaStep, world->m_velocityIteration, world->m_positionIteration); 
+                world->m_World.Step(deltaStep, world->m_velocityIteration, world->m_positionIteration);
                 // printf("physics_2d -- modifying to debug v5 (%s)\n", "06_08_2020");
             }
 
-            //Update Slave bodies after their Master
-            for (b2Body* body = world->m_World.GetBodyList(); body; body = body->GetNext())
-            {
-                if (body->isLimitingVelocity())
-                {
-                    b2Vec2 current_velocity = body->GetLinearVelocity();
-                    b2Vec2 min              = body->GetMinVelocity();
-                    b2Vec2 max              = body->GetMaxVelocity();
-                    float x                 = current_velocity.x > max.x ? max.x : current_velocity.x < min.x ? min.x : current_velocity.x;
-                    float y                 = current_velocity.y > max.y ? max.y : current_velocity.y < min.y ? min.y : current_velocity.y;
-                    b2Vec2 new_velocity     = b2Vec2(x, y);
-                    body->SetLinearVelocity  (new_velocity);
-                }
-
-                if (body->isHavingMasterBody())
-                {
-                    //    dmLogInfo("bodyA has master body");
-                    b2Body* masterBody = body->GetMasterBody();
-
-                    uint16 flag            = body->GetCopyState();
-                    b2Vec2 position        = body->GetPosition();
-                    b2Vec2 velocity        = body->GetLinearVelocity();
-                    float ratio            = body->GetCopyRatio();
-                    float angle            = body->GetAngle();
-                    float angular_velocity = body->GetAngularVelocity();
-
-                    if ((flag & COPY_POSITION_X) == COPY_POSITION_X)
-                    {
-                        position.x = masterBody->GetPosition().x * ratio;
-                        //    dmLogInfo("Copying PositionX: (%f)", positionX);
-                    }
-                    if ((flag & COPY_POSITION_Y) == COPY_POSITION_Y)
-                    {
-                        position.y = masterBody->GetPosition().y * ratio;
-                        //    dmLogInfo("Copying PositionY: (%f)", positionY);
-                    }
-                    if ((flag & COPY_ROTATION_Z) == COPY_ROTATION_Z)
-                    {
-                        angle = masterBody->GetAngle() * ratio;
-                        //    dmLogInfo("Copying RotationZ: (%f)", rotation.getZ());
-                    }
-                    if ((flag & COPY_LINEAR_VEC) == COPY_LINEAR_VEC)
-                    {
-                        velocity = ratio * masterBody->GetLinearVelocity();
-                        //    dmLogInfo("Copying LinearVelocity");
-                    }
-                    if ((flag & COPY_ANGULAR_VEC) == COPY_ANGULAR_VEC)
-                    {
-                        angular_velocity = masterBody->GetAngularVelocity() * ratio;
-                        //    dmLogInfo("Copying AngularVelocity");
-                    }
-                    body->SetTransform(position, angle);
-                    body->SetLinearVelocity(velocity);
-                    body->SetAngularVelocity(angular_velocity);
-                }
-            }
             // Update transforms of dynamic bodies
             if (world->m_SetWorldTransformCallback)
             {
                 for (b2Body* body = world->m_World.GetBodyList(); body; body = body->GetNext())
                 {
                     // if ((body->GetType() == b2_dynamicBody) && body->IsActive())
+
+                    // if (body->isLimitingVelocity())
+                    // {
+                    //     b2Vec2 current_velocity = body->GetLinearVelocity();
+                    //     b2Vec2 min              = body->GetMinVelocity();
+                    //     b2Vec2 max              = body->GetMaxVelocity();
+                    //     float x                 = current_velocity.x > max.x ? max.x : current_velocity.x < min.x ? min.x : current_velocity.x;
+                    //     float y                 = current_velocity.y > max.y ? max.y : current_velocity.y < min.y ? min.y : current_velocity.y;
+                    //     b2Vec2 new_velocity     = b2Vec2(x, y);
+                    //     body->SetLinearVelocity  (new_velocity);
+                    // }
                     if (body->IsActive())
                     {
+                        if (body->isHavingMasterBody())
+                        {
+                        //    dmLogInfo("bodyA has master body");
+                        body->UpdateStateFromMasterBody();
+                        }
+
                         Vectormath::Aos::Point3 position;
                         FromB2(body->GetPosition(), position, inv_scale);
                         Vectormath::Aos::Quat rotation = Vectormath::Aos::Quat::rotationZ(body->GetAngle());
@@ -1090,50 +1051,26 @@ namespace dmPhysics
             ((b2Body*)collision_object)->SetMasterBody(master);
         }
     }
-    /// Added by dotGears/TrungB
-    void SetVelocityLimit(HCollisionObject2D collision_object, float minX, float minY, float maxX, float maxY)
-    {
-        b2Body* b2_body = (b2Body*)collision_object;
-        b2Vec2 min      = b2Vec2(minX, minY);
-        b2Vec2 max      = b2Vec2(maxX, maxY);
-        ((b2Body*)collision_object)->SetVelocityLimit(min, max);
-    }
-    void DisableVelocityLimit(HCollisionObject2D collision_object)
-    {
-        ((b2Body*)collision_object)->DisableVelocityLimit();
-    }
 
-    void CopyState(HCollisionObject2D collision_object, uint16_t state)
+    void CopyState(HCollisionObject2D collision_object, uint16_t state, float ratio, float offset)
     {
         b2Body* b2_body = (b2Body*)collision_object;
         if (b2_body != NULL)
         {
-            b2_body->CopyState(state);
+            b2_body->CopyState(state, ratio, offset);
             // dmLogInfo("physics_2d.cpp -- CopyState:(%i) > (%i)", state, b2_body->GetCopyState());
         }
     }
+    
+    void SetStateLimit(HCollisionObject2D collision_object, uint16_t state, float min, float max)
+    {
+        b2Body* b2_body = (b2Body*)collision_object;
+        if (b2_body != NULL)
+        {
+            b2_body->SetStateLimit(state, min, max);
+        }
+    }
 
-    //Added by dotGears / TrungVu
-    void SetCopyRatio(HCollisionObject2D collision_object, float ratio)
-    {
-        b2Body* b2_body = (b2Body*)collision_object;
-        if (b2_body != NULL)
-        {
-            b2_body->SetCopyRatio(ratio);
-        }
-    }
-    void SetCopyDisable(HCollisionObject2D collision_object)
-    {
-        b2Body* b2_body = (b2Body*)collision_object;
-        if (b2_body != NULL)
-        {
-            b2_body->SetCopyDisable();
-        }
-        else
-        {
-            dmLogInfo("physics_2d.cpp -- Warning: can't set disable because body is null");
-        }
-    }
     void SetAllowSleep(HCollisionObject2D collision_object, bool allow_sleep)
     {
         b2Body* b2_body = (b2Body*)collision_object;

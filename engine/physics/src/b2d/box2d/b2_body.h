@@ -362,19 +362,11 @@ public:
     /// Set the Alpha Value to the body, so it get updated more times
     /// than others, with increment update of alpha value on every world step.
     /// Added by dotGears
-    /// @param alphaX set for alphaX position change per update.
-    /// @param alphaY set for alphaY position change per update.
-    /// @param alphaZ set for alphaZ rotation change per update.
-    void SetDeltaValue(float alphaX, float alphaY, float alphaZ);
+    /// @param deltaX set for deltaX position change per update.
+    /// @param deltaY set for deltaY position change per update.
+    /// @param deltaZ set for deltaZ rotation change per update.
+    void SetDeltaValue(float deltaX, float deltaY, float deltaZ);
 
-    /// Set min/max to this body velocity during runtime.
-    /// Added by dotGears
-    /// @param min velocity
-    /// @param max velocity
-    void SetVelocityLimit(b2Vec2 min, b2Vec2 max);
-
-	/// Disable the Velocity Limit if set.
-    void DisableVelocityLimit();
 
     /// Get the sleeping state of this body.
     /// @return true if the body is awake.
@@ -451,18 +443,11 @@ public:
     bool IsControllable() const;
     void SetMasterBody(b2Body* masterBody);
 	bool isHavingMasterBody() const;
-    bool isLimitingVelocity() const;
+
     b2Body* GetMasterBody();
 
-    const b2Vec2& GetMinVelocity() const;
-    const b2Vec2& GetMaxVelocity() const;
-
-    void CopyState(uint16 state);
-	uint16 GetCopyState() const;
-
-	float GetCopyRatio() const;
-	void SetCopyRatio(float ratio);
-    void SetCopyDisable();
+    void CopyState(uint16 state, float ratio, float offset);
+	void SetStateLimit(uint16 state, float min, float max);
     /* End */
 
     void Scale(float scale_factor);
@@ -487,10 +472,13 @@ public:
     const char *    GetCustomPropertiesString(const char * propertyName);
     bool            GetCustomPropertiesBool(const char * propertyName);
     
+	// Added by dotGEARS / Trung Vu
     void SetName(const char* name);
     void SetBodyId(int bodyID);
     int GetID();
     int GetFixtureCount();
+
+	void UpdateStateFromMasterBody();
 
     // Defold mod
     void SynchronizeSingle(b2Shape* shape, int32 index);
@@ -525,10 +513,19 @@ public:
         e_fixedRotationFlag = 0x0010,
         e_activeFlag        = 0x0020,
         e_toiFlag           = 0x0040,
-        e_updateAlphaFlag   = 0x0080,
-        e_haveMasterBody    = 0x0100,
-		e_isVelocityLimited = 0x0400
+        e_updateDeltaFlag   = 0x0080,
+        e_haveMasterBody    = 0x0100
     };
+
+	// copy_flags 
+	enum 
+	{
+		e_position_x = 1 << 0, 
+		e_position_y = 1 << 1,
+		e_rotation = 1 << 2,
+		e_linear_velo = 1 << 3,
+		e_angular_velo = 1 << 4
+	};
 
     b2Body(const b2BodyDef* bd, b2World* world);
 	~b2Body();
@@ -584,7 +581,31 @@ public:
     float m_deltaZ;
 
     uint16 m_copy_flags;
-    float m_copy_ratio;
+	uint16 m_limit_flags;
+
+    float m_ratio_pos_x;
+	float m_ratio_pos_y;
+	float m_ratio_rotation;
+	float m_ratio_linear_velo;
+	float m_ratio_angular_velo;
+
+	float m_offset_pos_x;
+	float m_offset_pos_y;
+	float m_offset_rotation;
+	float m_offset_linear_velo;
+	float m_offset_angular_velo;
+
+	float m_min_pos_x;
+	float m_min_pos_y;
+	float m_min_rotation;
+	float m_min_linear_velo;
+	float m_min_angular_velo;
+
+	float m_max_pos_x;
+	float m_max_pos_y;
+	float m_max_rotation;
+	float m_max_linear_velo;
+	float m_max_angular_velo;
 
     b2Vec2 m_minVelocity;
     b2Vec2 m_maxVelocity;
@@ -626,6 +647,19 @@ inline int b2Body::GetID()
     return m_id;
 }
 
+inline float b2Body::GetDeltaX() const
+{
+    return m_deltaX;
+}
+inline float b2Body::GetDeltaY() const
+{
+    return m_deltaY;
+}
+inline float b2Body::GetDeltaZ() const
+{
+    return m_deltaZ;
+}
+
 inline b2BodyType b2Body::GetType() const
 {
 	return m_type;
@@ -644,19 +678,6 @@ inline const b2Vec2& b2Body::GetPosition() const
 inline float b2Body::GetAngle() const
 {
 	return m_sweep.a;
-}
-
-inline float b2Body::GetDeltaX() const
-{
-    return m_deltaX;
-}
-inline float b2Body::GetDeltaY() const
-{
-    return m_deltaY;
-}
-inline float b2Body::GetDeltaZ() const
-{
-    return m_deltaZ;
 }
 
 inline const b2Vec2& b2Body::GetWorldCenter() const
@@ -1058,44 +1079,24 @@ inline void b2Body::SetControllable(bool flag)
 {
     if (flag)
     {
-        // enable updateAlphaFlag if haven't :
-        if ((m_flags & e_updateAlphaFlag) == 0)
+        // enable updateDeltaFlag if haven't :
+        if ((m_flags & e_updateDeltaFlag) == 0)
         {
-            m_flags |= e_updateAlphaFlag;
+            m_flags |= e_updateDeltaFlag;
         }
     }
     else
     {
-        m_flags &= ~e_updateAlphaFlag;
+        m_flags &= ~e_updateDeltaFlag;
     }
 }
 
-inline void b2Body::SetDeltaValue(float alphaX, float alphaY, float alphaZ)
+inline void b2Body::SetDeltaValue(float deltaX, float deltaY, float deltaZ)
 {
     // update value
-    m_deltaX = alphaX;
-    m_deltaY = alphaY;
-    m_deltaZ = alphaZ;
-}
-
-inline void b2Body::SetVelocityLimit(b2Vec2 min, b2Vec2 max)
-{
-   if(!isLimitingVelocity())
-   {
-	   m_flags |= e_isVelocityLimited;   
-   }
-   m_minVelocity = min;
-   m_maxVelocity = max;
-   printf("b2_body -- enabled velocity limitation\n");
-}
-
-inline void b2Body::DisableVelocityLimit()
-{
-    if (isLimitingVelocity())
-    {
-        m_flags &= ~e_isVelocityLimited;
-		printf("b2_body -- disabled velocity limitation\n");
-    }
+    m_deltaX = deltaX;
+    m_deltaY = deltaY;
+    m_deltaZ = deltaZ;
 }
 
 inline void b2Body::SetMasterBody(b2Body* masterBody)
@@ -1107,12 +1108,37 @@ inline void b2Body::SetMasterBody(b2Body* masterBody)
         m_flags |= e_haveMasterBody;
     }
 }
-inline void b2Body::CopyState(uint16 state)
+inline void b2Body::CopyState(uint16 state, float ratio, float offset)
 {
-    // printf("CopyState invoked");
     if ((m_copy_flags & state) == 0)
     {
         m_copy_flags |= state;
+
+		switch (state)
+		{
+		case e_position_x:
+			m_ratio_pos_x = ratio;
+			m_offset_pos_x = offset;
+			break;
+		case e_position_y:
+			m_ratio_pos_y = ratio;
+			m_offset_pos_y = offset;
+			break;
+		case e_rotation:
+			m_ratio_rotation = ratio;
+			m_offset_rotation = offset;
+			break;
+		case e_linear_velo:
+			m_ratio_linear_velo = ratio;
+			m_offset_linear_velo = offset;
+			break;
+		case e_angular_velo:
+			m_ratio_angular_velo = ratio;
+			m_offset_angular_velo = offset;
+			break;
+		default:
+			break;
+		}
         // printf("b2Body -- added state: (%i) => flags: (%i)\n", state, m_copy_flags);
     }
     else
@@ -1122,9 +1148,48 @@ inline void b2Body::CopyState(uint16 state)
     }
 }
 
+inline void b2Body::SetStateLimit(uint16 state, float min, float max)
+{
+	if ((m_limit_flags & state) == 0)
+    {
+        m_limit_flags |= state;
+
+		switch (state)
+		{
+			case e_position_x:
+				m_min_pos_x = min;
+				m_max_pos_x = max;
+				break;
+			case e_position_y:
+				m_min_pos_y = min;
+				m_max_pos_y = max;
+				break;
+			case e_rotation:
+				m_min_rotation = min;
+				m_max_rotation = max;
+				break;
+			case e_linear_velo:
+				m_min_linear_velo = min;
+				m_max_linear_velo = max;
+				break;
+			case e_angular_velo:
+				m_min_angular_velo = min;
+				m_max_angular_velo = max;
+				break;
+			default:
+				break;
+		}
+	}
+	else 
+	{
+		 m_limit_flags &= ~state;
+	}
+
+}
+
 inline bool b2Body::IsControllable() const
 {
-    return (m_flags & e_updateAlphaFlag) == e_updateAlphaFlag;
+    return (m_flags & e_updateDeltaFlag) == e_updateDeltaFlag;
 }
 
 inline bool b2Body::isHavingMasterBody() const
@@ -1132,47 +1197,9 @@ inline bool b2Body::isHavingMasterBody() const
     return (m_flags & e_haveMasterBody) == e_haveMasterBody;
 }
 
-inline bool b2Body::isLimitingVelocity() const
-{
-    return (m_flags & e_isVelocityLimited) == e_isVelocityLimited;
-}
-
-inline const b2Vec2& b2Body::GetMinVelocity() const
-{
-	return m_minVelocity;
-}
-inline const b2Vec2& b2Body::GetMaxVelocity() const
-{
-    return m_maxVelocity;
-}
-
 inline b2Body* b2Body::GetMasterBody()
 {
     return m_masterBody;
-}
-
-inline uint16 b2Body::GetCopyState() const
-{
-    return m_copy_flags;
-}
-
-inline float b2Body::GetCopyRatio() const
-{
-    return m_copy_ratio;
-}
-
-inline void b2Body::SetCopyRatio(float ratio)
-{
-    m_copy_ratio = ratio;
-}
-
-inline void b2Body::SetCopyDisable()
-{
-    if (isHavingMasterBody())
-    {
-        m_masterBody = NULL;
-        m_flags &= ~e_haveMasterBody;
-    }
 }
 
 #endif

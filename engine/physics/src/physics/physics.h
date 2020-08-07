@@ -791,56 +791,36 @@ namespace dmPhysics
      */
     void SetMasterBody(HCollisionObject2D collision_object, HCollisionObject2D master_body);
 
-    /**
-     * Set Min/Max Velocity to a body.
-     *
-     * @param collision_object Collision object 
-     * @param minX min Velocity X
-     * @param minY min Velocity Y
-     * @param maxX max Velocity X
-     * @param maxY max Velocity Y
-     */
-    void SetVelocityLimit(HCollisionObject2D collision_object, float minX, float minY, float maxX, float maxY);
-
-    /**
-     * Disable Velocity limit to a body.
-     *
-     * @param collision_object Collision object 
-     */
-    void DisableVelocityLimit(HCollisionObject2D collision_object);
 
     /**
      * Add Copy State to an object body, which enable certains copy-state at runtime.
      * Added by dotGears / TheTrung
-     *
+     * Modified by Trung Vu
+     * 
      * @param collision_object Collision object that will hold b2Body babe
-     * @param state enable delta Value update or not
+     * @param state can be position, rotation or velocity
+     * @param ratio set ratio for state
+     * @param offset offset between master body and slave
      */
-    void CopyState(HCollisionObject2D collision_object, uint16_t state);
+    void CopyState(HCollisionObject2D collision_object, uint16_t state, float ratio, float offset);
 
     /**
-     * Set Copy Ratio to an object body, which enable copying state at a percent.
-     * Added by dotGears / TheTrung
-     *
+     * Set Limit for Slave Body
+     * Added by dotGears / Trung Vu
+     * 
      * @param collision_object Collision object that will hold b2Body babe
-     * @param ratio in range [0.0 ~ 1.0]
+     * @param state can be position, rotation or velocity
+     * @param min minimum value
+     * @param max maximum value
      */
-    void SetCopyRatio(HCollisionObject2D collision_object, float ratio);
-
-    /**
-     * Set Copy Disable to an object body.
-     * Added by dotGears / TheTrung
-     *
-     * @param collision_object Collision object that will hold b2Body babe
-     */
-    void SetCopyDisable(HCollisionObject2D collision_object);
+    void SetStateLimit(HCollisionObject2D collision_object, uint16_t state, float min, float max);
 
     /**
      * Set Allow Sleep to an object body.
      * Added by dotGears / TheTrung
      *
      * @param collision_object Collision object that will hold b2Body babe
-     * @param allow_sleep allow the body to sleep or not 
+     * @param allow_sleep allow the body to sleep or not
      */
     void SetAllowSleep(HCollisionObject2D collision_object, bool allow_sleep);
 
