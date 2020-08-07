@@ -76,16 +76,11 @@ namespace dmGameSystem
     SetGravityScale(void* comp, float gravityScale);
     void SetAllowSleep(void* comp, bool allow_sleep);
 
-    void CopyState(void* comp, uint16_t state);
-    void SetCopyRatio(void* comp, float ratio);
-    void SetCopyDisable(void* comp);
-
-    void DisableVelocityLimit(void* comp);
-    void SetVelocityLimit(void* comp, float minX, float minY, float maxX, float maxY);
-    
+    void CopyState(void* comp, uint16_t state, float ratio, float offset);
+    void SetStateLimit(void* comp, u_int16_t state, float min, float max);
     //Added by dotGears / TrungA
     void SetMasterBody(void* comp, void* master_body);
-    
+
     /// End of Passion
 
     bool IsCollision2D(void* _world);
