@@ -76,6 +76,7 @@ struct b2BodyDef
 		type = b2_staticBody;
 		active = true;
 		gravityScale = 1.0f;
+		copyRatio = 1.0f;
 	}
 
 	/// The body type: static, kinematic, or dynamic.
@@ -131,6 +132,9 @@ struct b2BodyDef
 
 	/// Scale the gravity applied to this body.
 	float gravityScale;
+
+	/// Set ratio for copying stuff.
+	float copyRatio;
 };
 
 /// A rigid body. These are created via b2World::CreateBody.

@@ -82,6 +82,8 @@ b2Body::b2Body(const b2BodyDef* bd, b2World* world)
 	m_angularDamping = bd->angularDamping;
 	m_gravityScale = bd->gravityScale;
 
+	m_copy_ratio = bd->copyRatio; // default = 1.0, added by dotGears / TrungB 
+
 	m_force.SetZero();
 	m_torque = 0.0f;
 
