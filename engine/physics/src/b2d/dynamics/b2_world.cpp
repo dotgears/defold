@@ -1044,8 +1044,14 @@ void b2World::DrawShape(b2Fixture* fixture, const b2Transform& xf, const b2Color
 
 			b2Vec2 center = b2Mul(xf, circle->m_p);
 			float radius = circle->m_radius;
-			// b2Vec2 axis = b2Mul(xf.q, b2Vec2(1.0f, 0.0f));
-
+			//
+			// Added by dotGears / TrungB
+			// This will draw the angle radius line,
+			// for all circle body. 
+			//
+			float angle  = fixture->m_body->GetAngle();
+			b2Vec2 end   = b2Vec2(center.x + radius * cos(angle), center.y + radius * sin(angle));
+            m_debugDraw->DrawLine(center, end, color);
 			m_debugDraw->DrawCircle(center, radius, color);
 		}
 		break;
@@ -1192,6 +1198,7 @@ void b2World::DrawDebugData()
 				}
 				else if (b->GetType() == b2_kinematicBody)
 				{
+					//TODO: Add set drawing on/off for each body.
 					// DrawShape(f, xf, debugColor);
 				}
 				else if (b->IsAwake() == false)
@@ -1201,22 +1208,6 @@ void b2World::DrawDebugData()
 				else // Dynamic body
 				{
 					DrawShape(f, xf, debugColor);
-                    //
-                    // if body is a dynamic circle body,
-					// then draw its radius line.
-                    //
-					if(f->GetType() == b2Shape::e_circle)
-					{
-                        b2CircleShape* circle = (b2CircleShape*)f->GetShape();
-                        b2Vec2 center = b2Mul(xf, circle->m_p);
-                        float radius  = circle->m_radius;
-
-                        float angle  = b->GetAngle();
-                        b2Vec2 start = b->GetPosition();
-                        b2Vec2 end   = b2Vec2(start.x + radius * cos(angle), start.y + radius * sin(angle));
-
-                        m_debugDraw->DrawLine(start, end, debugColor);
-                    }
                 }
 			}
 		}
