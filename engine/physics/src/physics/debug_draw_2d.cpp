@@ -78,7 +78,7 @@ namespace dmPhysics
             Vectormath::Aos::Point3 c;
             FromB2(center, c, inv_scale);
             radius *= inv_scale;
-            const uint32_t MAX_SEGMENT_COUNT = 16;
+            const uint32_t MAX_SEGMENT_COUNT = 32;
             Vectormath::Aos::Point3 points[MAX_SEGMENT_COUNT * 2];
             float angle = 0.0f;
             float delta_angle = (float) (2.0 * M_PI / MAX_SEGMENT_COUNT);
@@ -172,5 +172,17 @@ namespace dmPhysics
     {
         // Unimplemented 
         DrawPoint(p, size, color);
+    }
+
+    void DebugDraw2D::DrawLine(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
+    {
+        if(m_Callbacks->m_DrawLines)
+        {
+            float inv_scale = m_Callbacks->m_InvScale;
+            Vectormath::Aos::Point3 points[2];
+            FromB2(p1, points[0], inv_scale);
+            FromB2(p2, points[1], inv_scale);
+            (*m_Callbacks->m_DrawLines)(points, 2, Vectormath::Aos::Vector4(color.r, color.g, color.b, m_Callbacks->m_Alpha), m_Callbacks->m_UserData);
+        }
     }
 }

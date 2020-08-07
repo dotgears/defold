@@ -37,7 +37,6 @@ namespace dmRender
     {
         DebugRenderer& debug_renderer = render_context->m_DebugRenderer;
         debug_renderer.m_MaxVertexCount = max_vertex_count;
-
         debug_renderer.m_RenderContext = render_context;
         const uint32_t buffer_size = max_vertex_count * sizeof(DebugVertex);
         const uint32_t total_buffer_size = MAX_DEBUG_RENDER_TYPE_COUNT * buffer_size;

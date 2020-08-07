@@ -51,6 +51,9 @@ namespace dmPhysics
         /// Draw a point.
         virtual void DrawPoint(const b2Vec2& p, float size, const b2Color& color);
 
+        /// Draw a line.
+        virtual void DrawLine(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color);
+
         private:
         DebugCallbacks* m_Callbacks;
     };

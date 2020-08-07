@@ -1044,9 +1044,9 @@ void b2World::DrawShape(b2Fixture* fixture, const b2Transform& xf, const b2Color
 
 			b2Vec2 center = b2Mul(xf, circle->m_p);
 			float radius = circle->m_radius;
-			b2Vec2 axis = b2Mul(xf.q, b2Vec2(1.0f, 0.0f));
+			// b2Vec2 axis = b2Mul(xf.q, b2Vec2(1.0f, 0.0f));
 
-			m_debugDraw->DrawSolidCircle(center, radius, axis, color);
+			m_debugDraw->DrawCircle(center, radius, color);
 		}
 		break;
 
@@ -1106,7 +1106,7 @@ void b2World::DrawShape(b2Fixture* fixture, const b2Transform& xf, const b2Color
 				vertices[i] = b2Mul(xf, poly->m_vertices[i]);
 			}
 
-			m_debugDraw->DrawSolidPolygon(vertices, vertexCount, color);
+			m_debugDraw->DrawPolygon(vertices, vertexCount, color);
 		}
 		break;
             
@@ -1175,37 +1175,54 @@ void b2World::DrawDebugData()
 	uint32 flags = m_debugDraw->GetFlags();
 
 	if (flags & b2Draw::e_shapeBit)
-	{
-		for (b2Body* b = m_bodyList; b; b = b->GetNext())
-		{
+    {
+        b2Color debugColor = b2Color(.0f, .0f, 1.0f); // blue
+        for (b2Body* b = m_bodyList; b; b = b->GetNext())
+        {
 			const b2Transform& xf = b->GetTransform();
 			for (b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
 			{
 				if (b->IsActive() == false)
 				{
-					DrawShape(f, xf, b2Color(0.5f, 0.5f, 0.3f));
+					DrawShape(f, xf, debugColor);
 				}
 				else if (b->GetType() == b2_staticBody)
 				{
-					DrawShape(f, xf, b2Color(0.5f, 0.9f, 0.5f));
+					DrawShape(f, xf, debugColor);
 				}
 				else if (b->GetType() == b2_kinematicBody)
 				{
-					DrawShape(f, xf, b2Color(0.5f, 0.5f, 0.9f));
+					// DrawShape(f, xf, debugColor);
 				}
 				else if (b->IsAwake() == false)
 				{
-					DrawShape(f, xf, b2Color(0.6f, 0.6f, 0.6f));
+					DrawShape(f, xf, debugColor);
 				}
-				else
+				else // Dynamic body
 				{
-					DrawShape(f, xf, b2Color(0.9f, 0.7f, 0.7f));
-				}
+					DrawShape(f, xf, debugColor);
+                    //
+                    // if body is a dynamic circle body,
+					// then draw its radius line.
+                    //
+					if(f->GetType() == b2Shape::e_circle)
+					{
+                        b2CircleShape* circle = (b2CircleShape*)f->GetShape();
+                        b2Vec2 center = b2Mul(xf, circle->m_p);
+                        float radius  = circle->m_radius;
+
+                        float angle  = b->GetAngle();
+                        b2Vec2 start = b->GetPosition();
+                        b2Vec2 end   = b2Vec2(start.x + radius * cos(angle), start.y + radius * sin(angle));
+
+                        m_debugDraw->DrawLine(start, end, debugColor);
+                    }
+                }
 			}
 		}
-	}
+    }
 
-	if (flags & b2Draw::e_jointBit)
+    if (flags & b2Draw::e_jointBit)
 	{
 		for (b2Joint* j = m_jointList; j; j = j->GetNext())
 		{
