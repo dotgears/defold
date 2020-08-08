@@ -9,6 +9,7 @@
 /go/bin
 /build
 /build/Testing/Temporary/LastTest.log
+/.android
 
 
 .cache
