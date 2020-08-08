@@ -8,10 +8,14 @@ SHELL_INTRO="echo \"#Shorthand for Defold Build Shell Command\" >> ~/.bash_profi
 SHELL_MOJAVE_x86_64="echo \"alias shell_defold_x86_64='./scripts/build.py shell --platform=x86_64-darwin --package-path=./local_sdks/'\" >> ~/.bash_profile"
 SHELL_MOJAVE__armv7="echo \"alias shell_defold_armv7='./scripts/build.py shell --platform=armv7-darwin --package-path=./local_sdks/'\" >> ~/.bash_profile"
 SHELL_MOJAVE__arm64="echo \"alias shell_defold_arm64='./scripts/build.py shell --platform=arm64-darwin --package-path=./local_sdks/'\" >> ~/.bash_profile"
+SHELL_MOJAVE__armv7a="echo \"alias shell_defold_armv7a='./scripts/build.py shell --platform=armv7-android --package-path=./local_sdks/'\" >> ~/.bash_profile"
+SHELL_MOJAVE__arm64a="echo \"alias shell_defold_arm64a='./scripts/build.py shell --platform=arm64-android --package-path=./local_sdks/'\" >> ~/.bash_profile"
 
 SHELL_CATALINA_x86_64="echo \"alias shell_defold_x86_64='./scripts/build.py shell --platform=x86_64-darwin --package-path=./local_sdks/'\" >> ~/.zshrc"
 SHELL_CATALINA__armv7="echo \"alias shell_defold_armv7='./scripts/build.py shell --platform=armv7-darwin --package-path=./local_sdks/'\" >> ~/.zshrc"
 SHELL_CATALINA__arm64="echo \"alias shell_defold_arm64='./scripts/build.py shell --platform=arm64-darwin --package-path=./local_sdks/'\" >> ~/.zshrc"
+SHELL_CATALINA__armv7a="echo \"alias shell_defold_armv7='./scripts/build.py shell --platform=armv7-android --package-path=./local_sdks/'\" >> ~/.zshrc"
+SHELL_CATALINA__arm64a="echo \"alias shell_defold_arm64='./scripts/build.py shell --platform=arm64-android --package-path=./local_sdks/'\" >> ~/.zshrc"
 
 SETUP="sh setup_env.sh"
 BUNDLE="sh bundle_editor.sh $2"
@@ -19,13 +23,10 @@ BUNDLE="sh bundle_editor.sh $2"
 SUB_MODULE="sh ./scripts/submodule.sh config_in_waf $2 $3 $4 $5 $6"
 WAF_CONF="(cd $3;PREFIX=\$DYNAMO_HOME waf configure --platform=$2)"
 
+COPY_ENGINE="sh cmd.sh --copy $2"
 COPY_ENGINE_X8664="sh cmd.sh --copy x86_64-darwin"
-COPY_ENGINE_ARM64="sh cmd.sh --copy arm64-darwin"
-COPY_ENGINE_ARMV7="sh cmd.sh --copy armv7-darwin"
 
-BUILD_ENGINE="sudo ./scripts/build.py build_engine --platform=x86_64-darwin --skip-docs --skip-tests -- --skip-build-tests"
-BUILD_ENGINE_IOS_v7="sudo ./scripts/build.py build_engine --platform=armv7-darwin --skip-bob-light --skip-docs --skip-tests -- --skip-build-tests"
-BUILD_ENGINE_IOS_64="sudo ./scripts/build.py build_engine --platform=arm64-darwin --skip-bob-light --skip-docs --skip-tests -- --skip-build-tests"
+BUILD_ENGINE="sudo ./scripts/build.py build_engine --platform=$2 --skip-docs --skip-tests -- --skip-build-tests"
 BUILD_BUILTIN="sudo ./scripts/build.py build_builtins"
 BUILD_BOB="sudo ./scripts/build.py build_bob --skip-tests"
 BUILD_DOC="sudo ./scripts/build.py build_docs --platform=x86_64-darwin"
@@ -87,11 +88,15 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
         eval $SHELL_MOJAVE_x86_64
         eval $SHELL_MOJAVE__armv7
         eval $SHELL_MOJAVE__arm64
+        eval $SHELL_MOJAVE__armv7a
+        eval $SHELL_MOJAVE__arm64a
         ;;
       catalina)
         eval $SHELL_CATALINA_x86_64
         eval $SHELL_CATALINA__armv7
         eval $SHELL_CATALINA__arm64
+        eval $SHELL_CATALINA__armv7a
+        eval $SHELL_CATALINA__arm64a
         ;;
     esac
     exit
@@ -110,17 +115,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     ;;
   -e | --engine )
     eval $BUILD_ENGINE
-    eval $COPY_ENGINE_X8664
-    exit
-    ;;
-  -ev7 | --engine_armv7 )
-    eval $BUILD_ENGINE_IOS_v7
-    eval $COPY_ENGINE_ARMV7
-    exit
-    ;;
-  -e64 | --engine_arm64 )
-    eval $BUILD_ENGINE_IOS_64
-    eval $COPY_ENGINE_ARM64
+    eval $COPY_ENGINE
     exit
     ;;
   -m | --misc )
@@ -153,15 +148,13 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     echo "sh cmd.sh --setup | -s : for environment setup"
     echo "sh cmd.sh --shell | -sh: for shell x86_64-darwin | armv7-darwin | arm64..."
     echo "sh cmd.sh --copy  | -cp: to copy <platform> dmengine -> editor"
-    echo "sh cmd.sh --engine| -e : for building engine alone"
-    echo "sh cmd.sh --engine_ios_v7 | -ev7 : for building iOS armv7 engine"
-    echo "sh cmd.sh --engine_ios_64 | -e64 : for building iOS arm64 engine"
+    echo "sh cmd.sh --engine| -e : --engine x86_64-darwin => to build macOS dmengine"
     echo "sh cmd.sh --editor| -e : for building editor"
     echo "sh cmd.sh --misc  | -m : for building bob + builtin"
     echo "sh cmd.sh --doc   | -d : for building editor document"
     echo "sh cmd.sh --full  | -F : to build engine/editor + launch"
-    echo "sh cmd.sh --fast  | -f : to fast build part of dmengine at maximum of 4"
-    echo "sh cmd.sh --waf   | -w : to waf configure with (armv7 | arm64 | x86_64)-darwin"
+    echo "sh cmd.sh --fast  | -f : -f <submodule-target-name>"
+    echo "sh cmd.sh --waf   | -w : --waf <platform> <path-to-module>"
     echo "sh cmd.sh --force | -fo: enable submodule when 'Operation is not permitted'"
     echo "sh cmd.sh --run   | -r : for running editor"
     echo "sh cmd.sh --bundle| -B : for bundling editor into ./editor/release with given version"
