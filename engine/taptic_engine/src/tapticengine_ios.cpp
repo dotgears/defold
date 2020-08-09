@@ -40,7 +40,7 @@ namespace dmTapticEngine
     }
 
     static const luaL_reg Module_methods[] = {
-        { "isSupported", isSupported },
+        { "is_supported", isSupported },
         { "impact", impact },
         { "notification", notification },
         { "selection", selection },
