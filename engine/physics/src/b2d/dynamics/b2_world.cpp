@@ -1049,8 +1049,7 @@ void b2World::DrawShape(b2Fixture* fixture, const b2Transform& xf, const b2Color
 			// This will draw the angle radius line,
 			// for all circle body. 
 			//
-			float angle  = fixture->m_body->GetAngle();
-			b2Vec2 end   = b2Vec2(center.x + radius * cos(angle), center.y + radius * sin(angle));
+			b2Vec2 end   = b2Vec2(center.x + radius * xf.q.c, center.y + radius * xf.q.s);
             m_debugDraw->DrawLine(center, end, color);
 			m_debugDraw->DrawCircle(center, radius, color);
 		}
