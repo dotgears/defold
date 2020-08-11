@@ -2,6 +2,7 @@ CD_DEFOLD_MOJAVE="echo \"#Shorthand for entering defold folder\nalias cd_defold=
 CD_DEFOLD_CATALINA="echo \"#Shorthand for entering defold folder\nalias cd_defold='cd $PWD'\" >> ~/.zshrc"
 
 SHELL="./scripts/build.py shell --platform=$2 --package-path=./local_sdks/"
+EXPORT_DYNAMO_HOME="export DYNAMO_HOME=${PWD}/tmp/dynamo_home"
 
 SHELL_INTRO="echo \"#Shorthand for Defold Build Shell Command\" >> ~/.bash_profile"
 
@@ -40,6 +41,9 @@ BUILD_MODULE="./scripts/submodule.sh x86_64-darwin $2 $3"
 
 ENGINE_PATH="./tmp/dynamo_home/bin/$2/"
 EDITOR_PATH="./editor/tmp/unpack/$2/bin/"
+
+RUN_DOCKER="/Applications/Docker.app/Contents/MacOS/Docker Desktop.app &"
+RUN_EXTENDER="(cd ../extender/server/scripts/;./run-local.sh &)"
 
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
@@ -126,6 +130,13 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
   -d | --doc )
     eval $BUILD_DOC
     ;;
+  -D | --docker )
+    echo "Starting Docker App..."
+    eval $RUN_DOCKER
+    eval "read -t 20 -n 1"
+    eval $EXPORT_DYNAMO_HOME
+    eval $RUN_EXTENDER
+    ;;
   -B | --bundle )
     start=$SECONDS
     eval $BUNDLE
@@ -152,6 +163,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     echo "sh cmd.sh --editor| -e : for building editor"
     echo "sh cmd.sh --misc  | -m : for building bob + builtin"
     echo "sh cmd.sh --doc   | -d : for building editor document"
+    echo "sh cmd.sh --docker| -D : to run Docker local server from /extender"
     echo "sh cmd.sh --full  | -F : to build engine/editor + launch"
     echo "sh cmd.sh --fast  | -f : -f <submodule-target-name>"
     echo "sh cmd.sh --waf   | -w : --waf <platform> <path-to-module>"
