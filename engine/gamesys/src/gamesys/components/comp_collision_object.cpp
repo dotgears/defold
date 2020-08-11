@@ -1495,12 +1495,6 @@ namespace dmGameSystem
         dmPhysics::SetControllable(component->m_Object2D, flag);
     }
 
-    void SetSleepingAllowed(void* comp, bool flag)
-    {
-        CollisionComponent* component = (CollisionComponent*)comp;
-        dmPhysics::SetSleepingAllowed(component->m_Object2D, flag);
-    }
-
     //Added by dotGears / TrungB
     void SetBullet(void* comp, bool flag)
     {
@@ -1542,6 +1536,11 @@ namespace dmGameSystem
     {
         CollisionComponent* component = (CollisionComponent*)comp;
         dmPhysics::SetAllowSleep(component->m_Object2D, allow_sleep);
+    }
+    void SetDebugDraw(void* comp, bool active)
+    {
+        CollisionComponent* component = (CollisionComponent*)comp;
+        dmPhysics::SetDebugDraw(component->m_Object2D, active);
     }
     void SetWorld2DStepIteration(void* _world, int stepIteration, int velocityIteration, int positionIteration)
     {

@@ -448,11 +448,15 @@ public:
 
     void CopyState(uint16 state, float ratio, float offset);
 	void SetStateLimit(uint16 state, float min, float max);
+
+    void SetDrawDebug(bool active);
+    bool IsDrawingDebug();
     /* End */
 
-    void Scale(float scale_factor);
-    
-public:
+    void
+    Scale(float scale_factor);
+
+    public:
     std::map<std::string, int>          m_customProperties_Int;
     std::map<std::string, float>        m_customProperties_Float;
     std::map<std::string, std::string>  m_customProperties_String;
@@ -618,6 +622,10 @@ public:
     //ADDED BY TRUNG VU
     const char * m_name;
     int m_id;
+
+	// Added by dotGears/TrungB
+	bool m_draw_debug = true;
+
 };
 
 //Added by Trung Vu
@@ -1200,6 +1208,16 @@ inline bool b2Body::isHavingMasterBody() const
 inline b2Body* b2Body::GetMasterBody()
 {
     return m_masterBody;
+}
+
+inline void b2Body::SetDrawDebug(bool active)
+{
+	m_draw_debug = active;
+}
+
+inline bool b2Body::IsDrawingDebug()
+{
+	return m_draw_debug;
 }
 
 #endif

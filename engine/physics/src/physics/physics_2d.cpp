@@ -1084,6 +1084,19 @@ namespace dmPhysics
         }
     }
 
+    void SetDebugDraw(HCollisionObject2D collision_object, bool active)
+    {
+        b2Body* b2_body = (b2Body*)collision_object;
+        if (b2_body != NULL)
+        {
+            b2_body->SetDrawDebug(active);
+        }
+        else
+        {
+            dmLogInfo("physics_2d.cpp -- Warning: can't set_debug_draw because body is null");
+        }
+    }
+
     void SetControllable(HCollisionObject2D collision_object, bool flag)
     {
         ((b2Body*)collision_object)->SetControllable(flag);

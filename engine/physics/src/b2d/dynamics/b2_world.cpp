@@ -1184,6 +1184,9 @@ void b2World::DrawDebugData()
         b2Color debugColor = b2Color(.0f, .0f, 1.0f); // blue
         for (b2Body* b = m_bodyList; b; b = b->GetNext())
         {
+			// dotGears/TrungB : body don't want do be drawn.
+			if(!b->IsDrawingDebug()) continue;
+
 			const b2Transform& xf = b->GetTransform();
 			for (b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
 			{
@@ -1197,8 +1200,7 @@ void b2World::DrawDebugData()
 				}
 				else if (b->GetType() == b2_kinematicBody)
 				{
-					//TODO: Add set drawing on/off for each body.
-					// DrawShape(f, xf, debugColor);
+					DrawShape(f, xf, debugColor);
 				}
 				else if (b->IsAwake() == false)
 				{

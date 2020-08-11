@@ -1101,6 +1101,45 @@ namespace dmGameSystem
 
         return 0;
     }
+    /*# Set debug-draw enable/disable for collision object.
+     * Added by dotGears/TrungB
+     *
+     * @name physics.set_debug_draw
+     * @param  collisionobject [type:string|hash|url] target body.
+     * @param  is_active [type:boolean] mark a body to draw in debug or not.
+     *
+     * @examples
+     *
+     * ```lua
+     * function init(self)
+     *     physics.set_debug_draw("#body", true)
+     * end
+     * ```
+     */
+    static int Physics_SetDebugDraw(lua_State* L)
+    {
+        DM_LUA_STACK_CHECK(L, 0);
+
+        dmGameObject::HCollection collection = dmGameObject::GetCollection(CheckGoInstance(L));
+        void* comp                           = 0x0;
+        void* comp_world                     = 0x0;
+        GetCollisionObject(L, 1, collection, &comp, &comp_world);
+
+        if (!IsCollision2D(comp_world))
+        {
+            return DM_LUA_ERROR("function only available in 2D physics");
+        }
+        if (!comp)
+        {
+            return DM_LUA_ERROR("couldn't find collision object"); // todo: add url
+        }
+
+        bool active = lua_tonumber(L, 2);
+
+        dmGameSystem::SetDebugDraw(comp, active);
+
+        return 0;
+    }
 
     /*# set physics step per frame.
      * Set the amount of steps for physics 2D to update inside Step() function.
@@ -1348,60 +1387,7 @@ namespace dmGameSystem
 
         return 0;
     }
-    /*# Set Min/Max Velocity for an collision object
-     * Added by dotGears/TrungB
-     *
-     * @name physics.set_velocity_limit
-     * @param  collision_object [type:string|hash|url] current body
-     * @param  enable [type:boolean] enable or not
-     * @param  minX   [type:number]  min velocity X
-     * @param  minY   [type:number]  min velocity Y
-     * @param  maxX   [type:number]  max velocity X
-     * @param  maxY   [type:number]  max velocity Y
-     *
-     * @examples
-     *
-     * ```lua
-     * function init(self)
-     *     physics.set_velocity_limit("#body", true, -8.0, -8.0, 8.0, 8.0)
-     *     physics.set_velocity_limit("#body", false)
-     * end
-     * ```
-     */
-    static int Physics_SetVelocityLimit(lua_State* L)
-    {
-        DM_LUA_STACK_CHECK(L, 0);
-
-        dmGameObject::HCollection collection = dmGameObject::GetCollection(CheckGoInstance(L));
-        void* comp                           = 0x0;
-        void* comp_world                     = 0x0;
-        GetCollisionObject(L, 1, collection, &comp, &comp_world);
-
-        if (!IsCollision2D(comp_world))
-        {
-            return DM_LUA_ERROR("function only available in 2D physics");
-        }
-
-        if (!comp)
-        {
-            return DM_LUA_ERROR("couldn't find collision object"); // todo: add url
-        }
-
-        bool flag = lua_toboolean(L, 2);
-
-        if(flag)
-        {
-            float minX = lua_tonumber(L, 3);
-            float minY = lua_tonumber(L, 4);
-            float maxX = lua_tonumber(L, 5);
-            float maxY = lua_tonumber(L, 6);
-            // dmGameSystem::SetVelocityLimit(comp, minX, minY, maxX, maxY);
-        }
-        // else dmGameSystem::DisableVelocityLimit(comp);
-
-        return 0;
-    }
-
+   
     /*# Add copy State to body
      * Added by dotGears/TrungVu
      *
@@ -1638,8 +1624,8 @@ namespace dmGameSystem
         { "set_gravity_scale", Physics_SetGravityScale },
         { "set_step_per_frame", Physics_SetStepPerFrame },
 
-        // Config Velocity Limitation
-        { "set_velocity_limit", Physics_SetVelocityLimit },
+        // Set Debug Draw
+        { "set_debug_draw", Physics_SetDebugDraw },
 
         { "set_hflip", Physics_SetFlipH },
         { "set_vflip", Physics_SetFlipV },

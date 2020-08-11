@@ -825,14 +825,22 @@ namespace dmPhysics
     void SetAllowSleep(HCollisionObject2D collision_object, bool allow_sleep);
 
     /**
+     * Set debug drawing to an object body.
+     * Added by dotGears / TheTrung
+     *
+     * @param collision_object Collision object 
+     * @param active active debug drawing or not
+     */
+    void SetDebugDraw(HCollisionObject2D collision_object, bool active);
+
+    /**
      * Set Controllable Tag to an object body, which make it to be updated more than others.
      *
      * @param context Physics context
      * @param collision_object Collision object receiving the force, must be of type COLLISION_OBJECT_TYPE_DYNAMIC
      * @param flag enable delta Value update or not
      */
-    void
-    SetControllable(HCollisionObject2D collision_object, bool flag);
+    void SetControllable(HCollisionObject2D collision_object, bool flag);
 
     /**
      * Set Allow Sleeping to an object body.
