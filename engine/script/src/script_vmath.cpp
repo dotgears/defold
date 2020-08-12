@@ -2032,6 +2032,53 @@ namespace dmScript
         return luaL_error(L, "%s.%s takes one number and a pair of either %s.%ss, %s.%ss, %s.%ss or numbers as arguments.", SCRIPT_LIB_NAME, "lerp", SCRIPT_LIB_NAME, SCRIPT_TYPE_NAME_VECTOR3, SCRIPT_LIB_NAME, SCRIPT_TYPE_NAME_VECTOR4, SCRIPT_LIB_NAME, SCRIPT_TYPE_NAME_QUAT);
     }
 
+    /*# Convert  yaw(z), pitch(y), roll(x) to Quaternion
+     *
+     * [icon:attention] The function return a Quat.
+     *
+     * @name vmath.to_quaternion
+     * @param z [type:number] yaw  (z)
+     * @param y [type:number] pitch(y)
+     * @param x [type:number] roll (x)
+     * @return quat [type:quaternion] the quaternion rotation
+     * @examples
+     *
+     * ```lua
+     * 
+     * function update(self, dt)
+     *    vmath.to_quaternion(z,y,x)
+     * end
+     * ```
+     */
+    static int ToQuaternion(lua_State* L)
+    {
+        float z = (float)luaL_checknumber(L, 1);
+        float y = (float)luaL_checknumber(L, 2);
+        float x = (float)luaL_checknumber(L, 3);
+
+        float yaw   = z * M_PI / 180.0;
+        float pitch = y * M_PI / 180.0; 
+        float roll  = x * M_PI / 180.0;
+
+        float cy    = cos(yaw * 0.5);
+        float sy    = sin(yaw * 0.5);
+        float cp    = cos(pitch * 0.5);
+        float sp    = sin(pitch * 0.5);
+        float cr    = cos(roll * 0.5);
+        float sr    = sin(roll * 0.5);
+
+        Vectormath::Aos::Quat q = Vectormath::Aos::Quat(
+            sr * cp * cy - cr * sp * sy,
+            cr * sp * cy + sr * cp * sy,
+            cr * cp * sy - sr * sp * cy,
+            cr * cp * cy + sr * sp * sy
+        );
+
+        PushQuat(L, q);
+
+        return 1;
+    }
+
     /*# slerps between two vectors
      *
      * Spherically interpolates between two vectors. The difference to
@@ -2104,7 +2151,8 @@ namespace dmScript
      * end
      * ```
      */
-    static int Slerp(lua_State* L)
+    static int
+    Slerp(lua_State* L)
     {
         const ScriptUserType type1 = GetType(L, 2);
         const ScriptUserType type2 = GetType(L, 3);
@@ -2301,6 +2349,7 @@ namespace dmScript
         {"inv", Inverse},
         {"ortho_inv", OrthoInverse},
         {"mul_per_elem", MulPerElem},
+        {"to_quaternion", ToQuaternion },
         {0, 0}
     };
 
