@@ -1166,7 +1166,7 @@ namespace dmPhysics
     {
         const b2Vec2& b2_force = ((b2Body*)collision_object)->GetForce();
         Vectormath::Aos::Vector3 force;
-        FromB2(b2_force, force, context->m_InvScale);
+        FromB2(b2_force, force, 1.0);
         return force;
     }
 
@@ -1188,7 +1188,7 @@ namespace dmPhysics
     {
         b2Vec2 b2_lin_vel = ((b2Body*)collision_object)->GetLinearVelocity();
         Vectormath::Aos::Vector3 lin_vel;
-        FromB2(b2_lin_vel, lin_vel, context->m_InvScale);
+        FromB2(b2_lin_vel, lin_vel, 1.0);
         return lin_vel;
     }
 
@@ -1201,7 +1201,7 @@ namespace dmPhysics
     void SetLinearVelocity2D(HContext2D context, HCollisionObject2D collision_object, const Vectormath::Aos::Vector3& velocity)
     {
         b2Vec2 b2_velocity;
-        ToB2(velocity, b2_velocity, context->m_Scale);
+        ToB2(velocity, b2_velocity, 1.0);
         ((b2Body*)collision_object)->SetLinearVelocity(b2_velocity);
     }
 
@@ -1389,7 +1389,7 @@ namespace dmPhysics
     void SetGravity2D(HWorld2D world, const Vectormath::Aos::Vector3& gravity)
     {
         b2Vec2 gravity_b;
-        ToB2(gravity, gravity_b, world->m_Context->m_Scale);
+        ToB2(gravity, gravity_b, 1.0);
         world->m_World.SetGravity(gravity_b);
     }
 
@@ -1397,7 +1397,7 @@ namespace dmPhysics
     {
         b2Vec2 gravity_b = world->m_World.GetGravity();
         Vectormath::Aos::Vector3 gravity;
-        FromB2(gravity_b, gravity, world->m_Context->m_InvScale);
+        FromB2(gravity_b, gravity, 1.0);
         return gravity;
     }
 
