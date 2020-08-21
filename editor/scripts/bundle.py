@@ -265,12 +265,13 @@ def build(options):
 def get_exe_suffix(platform):
     return ".exe" if 'win32' in platform else ""
 
+BUNDLE_FOLDER = 'release'#'target/editor'
 
 def create_bundle(options):
     jar_file = 'target/defold-editor-2.0.0-SNAPSHOT-standalone.jar'
     build_jdk = download_build_jdk()
 
-    mkdirs('target/editor')
+    mkdirs(BUNDLE_FOLDER)
     for platform in options.target_platform:
         print("Creating bundle for platform %s" % platform)
         rmtree('tmp')
@@ -345,7 +346,7 @@ def create_bundle(options):
                       '--output=%s/jdk%s' % (packages_dir, java_version)])
 
         # create final zip file
-        zipfile = 'target/editor/Defold-%s.zip' % platform
+        zipfile = BUNDLE_FOLDER + '/Defold-%s.zip' % platform
         if os.path.exists(zipfile):
             os.remove(zipfile)
 
@@ -512,7 +513,7 @@ Commands:
                       help = 'Windows certificate password')
 
     parser.add_option('--bundle-dir', dest='bundle_dir',
-                      default = "target/editor",
+                      default = "/release",
                       help = 'Path to directory containing editor bundles')
 
     options, commands = parser.parse_args()

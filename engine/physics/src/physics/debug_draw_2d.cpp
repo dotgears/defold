@@ -70,7 +70,7 @@ namespace dmPhysics
         }
     }
 
-    void DebugDraw2D::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color)
+    void DebugDraw2D::DrawCircle(const b2Vec2& center, float radius, const b2Color& color)
     {
         if (m_Callbacks->m_DrawLines)
         {
@@ -78,7 +78,7 @@ namespace dmPhysics
             Vectormath::Aos::Point3 c;
             FromB2(center, c, inv_scale);
             radius *= inv_scale;
-            const uint32_t MAX_SEGMENT_COUNT = 16;
+            const uint32_t MAX_SEGMENT_COUNT = 32;
             Vectormath::Aos::Point3 points[MAX_SEGMENT_COUNT * 2];
             float angle = 0.0f;
             float delta_angle = (float) (2.0 * M_PI / MAX_SEGMENT_COUNT);
@@ -96,7 +96,7 @@ namespace dmPhysics
         }
     }
 
-    void DebugDraw2D::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
+    void DebugDraw2D::DrawSolidCircle(const b2Vec2& center, float radius, const b2Vec2& axis, const b2Color& color)
     {
         if (m_Callbacks->m_DrawTriangles)
         {
@@ -164,6 +164,25 @@ namespace dmPhysics
             v[1] = top - head - n;
             v[2] = top - head + n;
             DrawSolidPolygon(v, 3, color);
+        }
+    }
+
+    /// Added by dotGears / TrungB
+    void DebugDraw2D::DrawPoint(const b2Vec2& p, float size, const b2Color& color) 
+    {
+        // Unimplemented 
+        DrawPoint(p, size, color);
+    }
+
+    void DebugDraw2D::DrawLine(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
+    {
+        if(m_Callbacks->m_DrawLines)
+        {
+            float inv_scale = m_Callbacks->m_InvScale;
+            Vectormath::Aos::Point3 points[2];
+            FromB2(p1, points[0], inv_scale);
+            FromB2(p2, points[1], inv_scale);
+            (*m_Callbacks->m_DrawLines)(points, 2, Vectormath::Aos::Vector4(color.r, color.g, color.b, m_Callbacks->m_Alpha), m_Callbacks->m_UserData);
         }
     }
 }

@@ -13,22 +13,18 @@
 # specific language governing permissions and limitations under the License.
 
 # config
-
-set -e
-
-SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
-IOS_SDK_VERSION=13.1
-IOS_SIMULATOR_SDK_VERSION=13.1
-IOS_MIN_SDK_VERSION=8.0
-
-OSX_MIN_SDK_VERSION=10.7
+echo "Please config your OSX/IOS SDK version in /common.sh if you get error."
 OSX_SDK_VERSION=10.15
+IOS_SDK_VERSION=13.2
+IOS_SIMULATOR_SDK_VERSION=13.2
+PACKAGE_XCODE_TOOLCHAIN=XcodeDefault11.3.1.xctoolchain
+IOS_MIN_SDK_VERSION=8.0
+OSX_MIN_SDK_VERSION=10.7
 
 OSX_SDK_ROOT=${DYNAMO_HOME}/ext/SDKs/MacOSX${OSX_SDK_VERSION}.sdk
 IOS_SDK_ROOT=${DYNAMO_HOME}/ext/SDKs/iPhoneOS${IOS_SDK_VERSION}.sdk
 IOS_SIMULATOR_SDK_ROOT=${DYNAMO_HOME}/ext/SDKs/iPhoneSimulator${IOS_SDK_VERSION}.sdk
-DARWIN_TOOLCHAIN_ROOT=${DYNAMO_HOME}/ext/SDKs/XcodeDefault11.1.xctoolchain
+DARWIN_TOOLCHAIN_ROOT=${DYNAMO_HOME}/ext/SDKs/${PACKAGE_XCODE_TOOLCHAIN}
 
 ANDROID_NDK_VERSION=20
 ANDROID_NDK_ROOT=${DYNAMO_HOME}/ext/SDKs/android-ndk-r${ANDROID_NDK_VERSION}

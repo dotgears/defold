@@ -69,8 +69,13 @@ ANDROID_GCC_VERSION='4.9'
 ANDROID_64_NDK_API_VERSION='21' # Android 5.0
 EMSCRIPTEN_ROOT=os.environ.get('EMSCRIPTEN', '')
 
-IOS_SDK_VERSION="13.5"
-IOS_SIMULATOR_SDK_VERSION="13.5"
+# NOTE: Added by dotGears/TrungB, to auto-detect version fast.
+# 
+env = dict(os.environ)
+IOS_SDK_VERSION           = env['IOS_SDK_VERSION'] if env.__contains__('IOS_SDK_VERSION') else ''
+IOS_SIMULATOR_SDK_VERSION = env['IOS_SIMULATOR_SDK_VERSION'] if env.__contains__('IOS_SIMULATOR_SDK_VERSION') else ''
+PACKAGES_XCODE_TOOLCHAIN   = env['PACKAGES_XCODE_TOOLCHAIN'] if env.__contains__('PACKAGES_XCODE_TOOLCHAIN') else ''
+
 # NOTE: Minimum iOS-version is also specified in Info.plist-files
 # (MinimumOSVersion and perhaps DTPlatformVersion)
 MIN_IOS_SDK_VERSION="8.0"
@@ -78,10 +83,8 @@ MIN_IOS_SDK_VERSION="8.0"
 OSX_SDK_VERSION="10.15"
 MIN_OSX_SDK_VERSION="10.7"
 
-XCODE_VERSION="11.5"
+DARWIN_TOOLCHAIN_ROOT=os.path.join(os.environ['DYNAMO_HOME'], 'ext', 'SDKs', PACKAGES_XCODE_TOOLCHAIN)#'XcodeDefault%s.xctoolchain' % XCODE_VERSION)
 
-SDK_ROOT=os.path.join(os.environ['DYNAMO_HOME'], 'ext', 'SDKs')
-DARWIN_TOOLCHAIN_ROOT=os.path.join(SDK_ROOT,'XcodeDefault%s.xctoolchain' % XCODE_VERSION)
 LINUX_TOOLCHAIN_ROOT=os.path.join(SDK_ROOT, 'linux')
 
 # Workaround for a strange bug with the combination of ccache and clang
@@ -1524,8 +1527,8 @@ def detect(conf):
     if 'osx' == build_util.get_target_os():
         # Force gcc without llvm on darwin.
         # We got strange bugs with http cache with gcc-llvm...
-        os.environ['CC'] = 'clang'
-        os.environ['CXX'] = 'clang++'
+        os.environ['CC'] = 'clang -j'    # Added by .GEARS / TRUNGB
+        os.environ['CXX'] = 'clang++ -j'  # Added by .GEARS / TRUNGB
 
         llvm_prefix = ''
         bin_dir = '%s/usr/bin' % (DARWIN_TOOLCHAIN_ROOT)

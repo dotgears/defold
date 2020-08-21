@@ -7,6 +7,10 @@
 /share/extender/build
 /go/pkg
 /go/bin
+/build
+/build/Testing/Temporary/LastTest.log
+/.android
+
 
 .cache
 .dcache
@@ -14,6 +18,7 @@
 .oracle*
 .bash*
 *.pyc
+*.log
 
 /.ccache
 /.idea
@@ -31,6 +36,7 @@ scripts/android-v4/.settings/
 scripts/android-v4/build/
 
 # eastwood
+editor/release/*
 editor/.eastwood
 editor/eastwood-warnings.txt
 
@@ -38,6 +44,7 @@ editor/eastwood-warnings.txt
 editor/resources/sorted_clojure_ns_list.edn
 ci/env.sh
 
+com.dynamo.cr/com.dynamo.cr.bob/.settings/
 com.dynamo.cr/com.dynamo.cr.bob.test/test/build
 com.dynamo.cr/com.dynamo.cr.bob.test/src/com/dynamo/bob/archive/EngineVersion.java
 
