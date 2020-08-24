@@ -1,111 +1,111 @@
 {:settings
- [{:type :string,
-   :help "the title of the application",
-   :default "unnamed",
+ [{:type :string
+   :help "the title of the application"
+   :default "unnamed"
    :path ["project" "title"]}
-  {:type :string,
-   :help "application version",
-   :default "1.0",
+  {:type :string
+   :help "application version"
+   :default "1.0"
    :path ["project" "version"]}
-  {:type :boolean,
-   :help "Write log file to disk",
-   :default false,
+  {:type :boolean
+   :help "Write log file to disk"
+   :default false
    :path ["project" "write_log"]}
-  {:type :boolean,
-   :help "compress archive (not for Android)",
-   :default true,
+  {:type :boolean
+   :help "compress archive (not for Android)"
+   :default true
    :path ["project" "compress_archive"]}
-  {:type :library-list,
+  {:type :library-list
    :help
-   "a comma separated list of URL:s to projects required by this project",
+   "a comma separated list of URL:s to projects required by this project"
    :path ["project" "dependencies"]}
-  {:type :string,
+  {:type :string
    :help
-   "a comma separated list of resources that will be included in the project. If directories are specified, all files and directories in that directory are recursively included",
-   :default "",
+   "a comma separated list of resources that will be included in the project. If directories are specified, all files and directories in that directory are recursively included"
+   :default ""
    :path ["project" "custom_resources"]}
-  {:type :string,
+  {:type :string
    :help
-   "A directory containing resource files and folders that should be copied as-is into the resulting package when bundling.\nSee documentation for details",
-   :default "",
+   "A directory containing resource files and folders that should be copied as-is into the resulting package when bundling.\nSee documentation for details"
+   :default ""
    :path ["project" "bundle_resources"]}
-  {:type :string,
+  {:type :string
    :help
-   "A comma separated list of resources that should not be included in the bundle",
-   :default "",
+   "A comma separated list of resources that should not be included in the bundle"
+   :default ""
    :path ["project" "bundle_exclude_resources"]}
-  {:type :resource,
-   :filter "collection",
+  {:type :resource
+   :filter "collection"
    :help
-   "file reference of the collection to use for starting the application, /logic/main.collection by default",
-   :default "/logic/main.collection",
+   "file reference of the collection to use for starting the application, /logic/main.collection by default"
+   :default "/logic/main.collection"
    :path ["bootstrap" "main_collection"]}
-  {:type :resource,
-   :filter "render",
+  {:type :resource
+   :filter "render"
    :help
-   "which render file to use, which defines the render pipeline, /builtins/render/default.render by default",
-   :default "/builtins/render/default.render",
+   "which render file to use, which defines the render pipeline, /builtins/render/default.render by default"
+   :default "/builtins/render/default.render"
    :path ["bootstrap" "render"]}
-  {:type :resource,
-   :filter "lua",
+  {:type :resource
+   :filter "lua"
    :help ""
-   :default "",
+   :default ""
    :path ["bootstrap" "debug_init_script"]
    :hidden? true}
-  {:type :string,
-   :help "dirs to include in this project when used as a library",
-   :default "",
+  {:type :string
+   :help "dirs to include in this project when used as a library"
+   :default ""
    :path ["library" "include_dirs"]}
-  {:type :boolean,
-   :help "use single Lua state shared between all script types",
-   :default false,
+  {:type :boolean
+   :help "use single Lua state shared between all script types"
+   :default false
    :path ["script" "shared_state"]}
-  {:type :boolean,
-   :help "allow the engine to continue running while iconfied (desktop platforms only)",
-   :default false,
+  {:type :boolean
+   :help "allow the engine to continue running while iconfied (desktop platforms only)"
+   :default false
    :path ["engine" "run_while_iconified"]}
-  {:type :integer,
+  {:type :integer
    :help
-   "the width in pixels of the application window, 960 by default",
-   :default 960,
+   "the width in pixels of the application window, 960 by default"
+   :default 960
    :path ["display" "width"]}
-  {:type :integer,
+  {:type :integer
    :help
-   "the height in pixels of the application window, 640 by default",
-   :default 640,
+   "the height in pixels of the application window, 640 by default"
+   :default 640
    :path ["display" "height"]}
-  {:type :boolean,
-   :help "enable high DPI backbuffer where available",
-   :default false,
+  {:type :boolean
+   :help "enable high DPI backbuffer where available"
+   :default false
    :path ["display" "high_dpi"]}
-  {:type :integer,
+  {:type :integer
    :help
-   "how many samples to use for super sampling anti-aliasing, 0 by default, which means it is turned off",
-   :default 0,
+   "how many samples to use for super sampling anti-aliasing, 0 by default, which means it is turned off"
+   :default 0
    :path ["display" "samples"]}
-  {:type :boolean,
+  {:type :boolean
    :help
-   "start the application full screen instead of windowed",
-   :default false,
+   "start the application full screen instead of windowed"
+   :default false
    :path ["display" "fullscreen"]}
-  {:type :resource,
-   :filter "display_profiles",
+  {:type :resource
+   :filter "display_profiles"
    :help
-   "file reference of the display profiles to use for the application",
-   :default "/builtins/render/default.display_profiles",
+   "file reference of the display profiles to use for the application"
+   :default "/builtins/render/default.display_profiles"
    :path ["display" "display_profiles"]}
-  {:type :boolean,
-   :help "dynamic screen orientation support",
-   :default false,
+  {:type :boolean
+   :help "dynamic screen orientation support"
+   :default false
    :path ["display" "dynamic_orientation"]}
-  {:type :integer,
-   :help "if Vsync checked, snaps to the closest matching swap interval for the set frame cap. Otherwise uses timers to respect the set value, 0 means no cap. For deprecated 'variable_dt' behavior, set to 0 and uncheck 'Vsync'",
+  {:type :integer
+   :help "if Vsync checked, snaps to the closest matching swap interval for the set frame cap. Otherwise uses timers to respect the set value, 0 means no cap. For deprecated 'variable_dt' behavior, set to 0 and uncheck 'Vsync'"
    :label "Frame cap"
-   :default 0,
+   :default 0
    :path ["display" "update_frequency"]}
-  {:type :boolean,
-   :help "Vertical sync, rely on hardware vsync for frame timing. Can be overridden depending on graphics driver and platform specifics. For deprecated 'variable_dt' behavior, uncheck this setting and set frame cap 0",
-   :default true,
+  {:type :boolean
+   :help "Vertical sync, rely on hardware vsync for frame timing. Can be overridden depending on graphics driver and platform specifics. For deprecated 'variable_dt' behavior, uncheck this setting and set frame cap 0"
+   :default true
    :path ["display" "vsync"]}
   {:type :boolean
    :default false
@@ -114,643 +114,655 @@
    :severity-default :warning
    :help "This setting is deprecated. When checked, will disable \"Vsync\" and set \"Frame cap\" to 0 for equivalent behaviour."
    :path ["display" "variable_dt"]}
-  {:type :number,
-   :help "Render clear color - red channel",
+  {:type :number
+   :help "Render clear color - red channel"
    :label "Clear Color Red"
-   :default 0,
+   :default 0
    :path ["render" "clear_color_red"]}
-  {:type :number,
-   :help "Render clear color - green channel",
+  {:type :number
+   :help "Render clear color - green channel"
    :label "Clear Color Green"
-   :default 0,
+   :default 0
    :path ["render" "clear_color_green"]}
-  {:type :number,
-   :help "Render clear color - blue channel",
+  {:type :number
+   :help "Render clear color - blue channel"
    :label "Clear Color Blue"
-   :default 0,
+   :default 0
    :path ["render" "clear_color_blue"]}
-  {:type :number,
-   :help "Render clear color - alpha channel",
+  {:type :number
+   :help "Render clear color - alpha channel"
    :label "Clear Color Alpha"
-   :default 0,
+   :default 0
    :path ["render" "clear_color_alpha"]}
-  {:type :string,
-   :help "which type of physics to use, 2D (default) or 3D",
-   :default "2D",
+  {:type :string
+   :help "which type of physics to use, 2D (default) or 3D"
+   :default "2D"
    :path ["physics" "type"]
    :options [["2D" "2D"] ["3D" "3D"]]}
-  {:type :boolean,
+  {:type :boolean
    :help
-   "visualize physics for debugging",
-   :default false,
+   "visualize physics for debugging"
+   :default false
    :path ["physics" "debug"]}
-  {:type :number,
+  {:type :number
    :help
-   "alpha component for visualized physics, 0 - 1 (0.9 by default)",
-   :default 0.9,
+   "alpha component for visualized physics, 0 - 1 (0.9 by default)"
+   :default 0.9
    :path ["physics" "debug_alpha"]}
-  {:type :number,
+  {:type :number
    :help
-   "how big to draw unit objects in physics, like triads and normals, 30 by default",
-   :default 30.0,
+   "how big to draw unit objects in physics, like triads and normals, 30 by default"
+   :default 30.0
    :path ["physics" "debug_scale"]}
-  {:type :integer,
+  {:type :integer
    :help
-   "max number of concurrent physics worlds, 4 by default (careful, they waste memory)",
-   :default 4,
+   "max number of concurrent physics worlds, 4 by default (careful, they waste memory)"
+   :default 4
    :path ["physics" "world_count"]}
-  {:type :number,
-   :help "world gravity along x-axis, 0 by default",
-   :default 0.0,
+  {:type :number
+   :help "world gravity along x-axis, 0 by default"
+   :default 0.0
    :path ["physics" "gravity_x"]}
-  {:type :number,
+  {:type :number
    :help
-   "world gravity along y-axis, -10 by default (natural gravity)",
-   :default -10.0,
+   "world gravity along y-axis, -10 by default (natural gravity)"
+   :default -10.0
    :path ["physics" "gravity_y"]}
-  {:type :number,
-   :help "world gravity along z-axis, 0 by default",
-   :default 0.0,
+  {:type :number
+   :help "world gravity along z-axis, 0 by default"
+   :default 0.0
    :path ["physics" "gravity_z"]}
-  {:type :number,
+  {:type :integer
+   :help "set amount of physics step running per frame."
+   :default 8
+   :path ["physics" "step_per_frame"]}
+  {:type :integer
+   :help "set iteration of position per step."
+   :default 16
+   :path ["physics" "position_iteration"]}
+  {:type :integer
+   :help "set iteration of velocity per step."
+   :default 8
+   :path ["physics" "velocity_iteration"]}
+  {:type :number
    :help
-   "how to scale the physics worlds in relation to the game world for numerical precision, 0.01 - 1 (default)",
-   :default 1.0,
+   "how to scale the physics worlds in relation to the game world for numerical precision, 0.01 - 1 (default)"
+   :default 1.0
    :path ["physics" "scale"]}
-  {:type :boolean,
+  {:type :boolean
    :help
-   "If set, allows for setting scale, position and rotation of dynamic bodies (default is false)",
-   :default false,
+   "If set, allows for setting scale, position and rotation of dynamic bodies (default is false)"
+   :default false
    :path ["physics" "allow_dynamic_transforms"]}
-  {:type :integer,
+  {:type :integer
    :help
-   "how many collisions that will be reported back to the scripts, 64 by default",
-   :default 64,
+   "how many collisions that will be reported back to the scripts, 64 by default"
+   :default 64
    :path ["physics" "max_collisions"]}
-  {:type :integer,
+  {:type :integer
    :help
-   "how many contact points that will be reported back to the scripts, 128 by default",
-   :default 128,
+   "how many contact points that will be reported back to the scripts, 128 by default"
+   :default 128
    :path ["physics" "max_contacts"]}
-  {:type :number,
+  {:type :number
    :help
-   "contacts with an impulse below this limit will not be reported to scripts, 0 (disabled) by default",
-   :default 0.0,
+   "contacts with an impulse below this limit will not be reported to scripts, 0 (disabled) by default"
+   :default 0.0
    :path ["physics" "contact_impulse_limit"]}
-  {:type :integer,
+  {:type :integer
    :help
-   "maximum number of ray casts per frame when using 2D physics",
-   :default 64,
-   :path ["physics" "ray_cast_limit_2d"]},
-  {:type :integer,
+   "maximum number of ray casts per frame when using 2D physics"
+   :default 64
+   :path ["physics" "ray_cast_limit_2d"]}
+  {:type :integer
    :help
-   "maximum number of ray casts per frame when using 3D physics",
-   :default 128,
-   :path ["physics" "ray_cast_limit_3d"]},
-  {:type :integer,
+   "maximum number of ray casts per frame when using 3D physics"
+   :default 128
+   :path ["physics" "ray_cast_limit_3d"]}
+  {:type :integer
    :help
-   "maximum number of overlapping triggers that can be detected, 16 by default",
-   :default 16,
-   :path ["physics" "trigger_overlap_capacity"]},
-  {:type :string,
+   "maximum number of overlapping triggers that can be detected, 16 by default"
+   :default 16
+   :path ["physics" "trigger_overlap_capacity"]}
+  {:type :string
    :help
-   "which filtering to use for min filtering, linear (default) or nearest",
-   :default "linear",
+   "which filtering to use for min filtering, linear (default) or nearest"
+   :default "linear"
    :path ["graphics" "default_texture_min_filter"]
    :options [["linear" "linear"] ["nearest" "nearest"]]}
-  {:type :string,
+  {:type :string
    :help
-   "which filtering to use for mag filtering, linear (default) or nearest",
-   :default "linear",
+   "which filtering to use for mag filtering, linear (default) or nearest"
+   :default "linear"
    :path ["graphics" "default_texture_mag_filter"]
    :options [["linear" "linear"] ["nearest" "nearest"]]}
-  {:type :integer,
-   :help "maximum number of draw calls",
-   :default 1024,
+  {:type :integer
+   :help "maximum number of draw calls"
+   :default 1024
    :path ["graphics" "max_draw_calls"]}
-  {:type :integer,
+  {:type :integer
    :help
-   "maximum number of characters (text) that can be displayed each frame",
-   :default 8192,
+   "maximum number of characters (text) that can be displayed each frame"
+   :default 8192
    :path ["graphics" "max_characters"]}
-  {:type :integer,
+  {:type :integer
    :help
-   "maximum number of debug vertices, used for physics shape rendering among other things, 10000 by default",
-   :default 10000,
+   "maximum number of debug vertices, used for physics shape rendering among other things, 10000 by default"
+   :default 10000
    :path ["graphics" "max_debug_vertices"]}
-  {:type :resource,
-   :filter "texture_profiles",
-   :preserve-extension true,
+  {:type :resource
+   :filter "texture_profiles"
+   :preserve-extension true
    :help
-   "specify which texture profiles (format, mipmaps and max textures size) to use for which resource path",
-   :default "/builtins/graphics/default.texture_profiles",
+   "specify which texture profiles (format, mipmaps and max textures size) to use for which resource path"
+   :default "/builtins/graphics/default.texture_profiles"
    :path ["graphics" "texture_profiles"]}
-  {:type :boolean,
+  {:type :boolean
    :help
-   "verify the return value after each graphics call",
-   :default true,
+   "verify the return value after each graphics call"
+   :default true
    :path ["graphics" "verify_graphics_calls"]}
-  {:type :boolean,
-   :help "compile and output SPIR-V shaders for use with Metal or Vulkan",
-   :default false,
+  {:type :boolean
+   :help "compile and output SPIR-V shaders for use with Metal or Vulkan"
+   :default false
    :label "Output SPIR-V"
    :path ["shader" "output_spirv"]}
-  {:type :number,
+  {:type :number
    :help
-   "seconds to wait before treating a held down keyboard-key to start repeating itself",
-   :default 0.5,
+   "seconds to wait before treating a held down keyboard-key to start repeating itself"
+   :default 0.5
    :path ["input" "repeat_delay"]}
-  {:type :number,
+  {:type :number
    :help
-   "seconds to wait between each repetition of a held down keyboard-key",
-   :default 0.2,
+   "seconds to wait between each repetition of a held down keyboard-key"
+   :default 0.2
    :path ["input" "repeat_interval"]}
-  {:type :resource,
-   :filter "gamepads",
+  {:type :resource
+   :filter "gamepads"
    :help
-   "file reference of the gamepads config file, which maps gamepad signals to OS, /builtins/input/default.gamepads by default",
-   :default "/builtins/input/default.gamepads",
+   "file reference of the gamepads config file, which maps gamepad signals to OS, /builtins/input/default.gamepads by default"
+   :default "/builtins/input/default.gamepads"
    :path ["input" "gamepads"]}
-  {:type :resource,
-   :filter "input_binding",
+  {:type :resource
+   :filter "input_binding"
    :help
-   "file reference of the input config file, which maps HW inputs to actions, /input/game.input_binding by default",
-   :default "/input/game.input_binding",
+   "file reference of the input config file, which maps HW inputs to actions, /input/game.input_binding by default"
+   :default "/input/game.input_binding"
    :path ["input" "game_binding"]}
-  {:type :boolean,
+  {:type :boolean
    :help
-   "determines if the app receives accelerometer events",
-   :default true,
+   "determines if the app receives accelerometer events"
+   :default true
    :path ["input" "use_accelerometer"]}
-  {:type :boolean,
+  {:type :boolean
    :help
-   "use http cache for faster loads over network",
-   :default false,
+   "use http cache for faster loads over network"
+   :default false
    :path ["resource" "http_cache"]}
-  {:type :string,
-   :help "where to find game.project, in URI format",
-   :default "",
+  {:type :string
+   :help "where to find game.project, in URI format"
+   :default ""
    :path ["resource" "uri"]}
-  {:type :integer,
+  {:type :integer
    :help
-   "the max number of resources that can be loaded at the same time, 1024 by default",
-   :default 1024,
+   "the max number of resources that can be loaded at the same time, 1024 by default"
+   :default 1024
    :path ["resource" "max_resources"]}
-  {:type :number,
-   :help "http timeout in seconds. zero to disable timeout",
-   :default 0.0,
+  {:type :number
+   :help "http timeout in seconds. zero to disable timeout"
+   :default 0.0
    :path ["network" "http_timeout"]}
-  {:type :integer,
-   :help "max number of instances per collection, 1024 by default",
-   :default 1024,
+  {:type :integer
+   :help "max number of instances per collection, 1024 by default"
+   :default 1024
    :path ["collection" "max_instances"]}
-  {:type :integer,
-   :help "max number of game objects in the input stack, 16 by default",
-   :default 16,
+  {:type :integer
+   :help "max number of game objects in the input stack, 16 by default"
+   :default 16
    :path ["collection" "max_input_stack_entries"]}
-  {:type :number,
-   :help "global gain (volume), 0 - 1, 1 by default",
-   :default 1.0,
+  {:type :number
+   :help "global gain (volume), 0 - 1, 1 by default"
+   :default 1.0
    :path ["sound" "gain"]}
-  {:type :integer,
-   :help "max number of different sounds, 128 by default",
-   :default 128,
+  {:type :integer
+   :help "max number of different sounds, 128 by default"
+   :default 128
    :path ["sound" "max_sound_data"]}
-  {:type :integer,
-   :help "max number of concurrent sound buffers, 32 by default",
-   :default 32,
+  {:type :integer
+   :help "max number of concurrent sound buffers, 32 by default"
+   :default 32
    :path ["sound" "max_sound_buffers"]}
-  {:type :integer,
-   :help "max number of concurrently playing sounds, 16 by default",
-   :default 16,
+  {:type :integer
+   :help "max number of concurrently playing sounds, 16 by default"
+   :default 16
    :path ["sound" "max_sound_sources"]}
-  {:type :integer,
-   :help "max number of concurrent sound instances, 256 by default",
-   :default 256,
+  {:type :integer
+   :help "max number of concurrent sound instances, 256 by default"
+   :default 256
    :path ["sound" "max_sound_instances"]}
-  {:type :integer,
-   :help "max number of sound comonents in a collection, 32 by default",
-   :default 32,
+  {:type :integer
+   :help "max number of sound comonents in a collection, 32 by default"
+   :default 32
    :path ["sound" "max_component_count"]}
-  {:type :integer,
-   :help "max number of sprites, 128 by default",
-   :default 128,
+  {:type :integer
+   :help "max number of sprites, 128 by default"
+   :default 128
    :path ["sprite" "max_count"]}
-  {:type :boolean,
+  {:type :boolean
    :help
-   "allow sprites to appear unaligned with respect to pixels",
-   :default true,
+   "allow sprites to appear unaligned with respect to pixels"
+   :default true
    :path ["sprite" "subpixels"]}
-  {:type :integer,
-   :help "max number of spine models, 128 by default",
-   :default 128,
+  {:type :integer
+   :help "max number of spine models, 128 by default"
+   :default 128
    :path ["spine" "max_count"]}
-  {:type :integer,
-   :help "max number of models, 128 by default",
-   :default 128,
+  {:type :integer
+   :help "max number of models, 128 by default"
+   :default 128
    :path ["model" "max_count"]}
-  {:type :integer,
-   :help "max number of gui components per collection, 64 by default",
-   :default 64,
-   :path ["gui" "max_count"]},
-  {:type :integer,
+  {:type :integer
+   :help "max number of gui components per collection, 64 by default"
+   :default 64
+   :path ["gui" "max_count"]}
+  {:type :integer
    :help
-   "max number of particlefx nodes per collection",
-   :default 64,
+   "max number of particlefx nodes per collection"
+   :default 64
    :path ["gui" "max_particlefx_count"]}
-  {:type :integer,
+  {:type :integer
    :help
-   "max total number of living particles in gui per collection, 1024 by default",
-   :default 1024,
+   "max total number of living particles in gui per collection, 1024 by default"
+   :default 1024
    :path ["gui" "max_particle_count"]}
-  {:type :integer,
-   :help "max number of labels, 64 by default",
-   :default 64,
+  {:type :integer
+   :help "max number of labels, 64 by default"
+   :default 64
    :path ["label" "max_count"]}
-  {:type :boolean,
+  {:type :boolean
    :help
-   "allow labels to appear unaligned with respect to pixels, this is also dependent on the camera position being aligned",
-   :default true,
+   "allow labels to appear unaligned with respect to pixels, this is also dependent on the camera position being aligned"
+   :default true
    :path ["label" "subpixels"]}
-  {:type :integer,
-   :help "max number of particle fx components, 64 by default",
-   :default 64,
+  {:type :integer
+   :help "max number of particle fx components, 64 by default"
+   :default 64
    :path ["particle_fx" "max_count"]}
-  {:type :integer,
-   :help "max total number of living particles, 1024 by default",
-   :default 1024,
+  {:type :integer
+   :help "max total number of living particles, 1024 by default"
+   :default 1024
    :path ["particle_fx" "max_particle_count"]}
-  {:type :integer,
-   :help "max number of collection proxies, 8 by default",
-   :default 8,
+  {:type :integer
+   :help "max number of collection proxies, 8 by default"
+   :default 8
    :path ["collection_proxy" "max_count"]}
-  {:type :integer,
-   :help "max number of collection factories, 128 by default",
-   :default 128,
+  {:type :integer
+   :help "max number of collection factories, 128 by default"
+   :default 128
    :path ["collectionfactory" "max_count"]}
-  {:type :integer,
-   :help "max number of factories, 128 by default",
-   :default 128,
+  {:type :integer
+   :help "max number of factories, 128 by default"
+   :default 128
    :path ["factory" "max_count"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
    :help
-   "iPhone/iPod touch icon file (.png) [required for iOS 6.1 and earlier]",
+   "iPhone/iPod touch icon file (.png) [required for iOS 6.1 and earlier]"
    :path ["ios" "app_icon_57x57"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "iPad icon file (.png) [required for iOS 6.1 and earlier]",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "iPad icon file (.png) [required for iOS 6.1 and earlier]"
    :path ["ios" "app_icon_72x72"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "iPad icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "iPad icon file (.png)"
    :path ["ios" "app_icon_76x76"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
    :help
-   "retina iPhone/iPod touch bundle icon file (.png) [required for iOS 6.1 and earlier]",
+   "retina iPhone/iPod touch bundle icon file (.png) [required for iOS 6.1 and earlier]"
    :path ["ios" "app_icon_114x114"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "retina iPhone 5 and 6 bundle icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "retina iPhone 5 and 6 bundle icon file (.png)"
    :path ["ios" "app_icon_120x120"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
    :help
-   "retina iPad bundle icon file (.png) [required for iOS 6.1 and earlier]",
+   "retina iPad bundle icon file (.png) [required for iOS 6.1 and earlier]"
    :path ["ios" "app_icon_144x144"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "retina iPad icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "retina iPad icon file (.png)"
    :path ["ios" "app_icon_152x152"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "iPad Pro bundle icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "iPad Pro bundle icon file (.png)"
    :path ["ios" "app_icon_167x167"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "iPhone6 plus icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "iPhone6 plus icon file (.png)"
    :path ["ios" "app_icon_180x180"]}
-  {:type :string,
-   :default "/builtins/manifests/ios/LaunchScreen.storyboardc",
-   :preserve-extension true,
-   :help "the launch screen storyboard",
+  {:type :string
+   :default "/builtins/manifests/ios/LaunchScreen.storyboardc"
+   :preserve-extension true
+   :help "the launch screen storyboard"
    :path ["ios" "launch_screen"]}
-  {:type :boolean,
-   :help "set to true if the icons are prerendered",
-   :default false,
+  {:type :boolean
+   :help "set to true if the icons are prerendered"
+   :default false
    :path ["ios" "pre_renderered_icons"]}
-  {:type :string,
-   :help "bundle identifier (CFBundleIdentifier)",
-   :default "example.unnamed",
+  {:type :string
+   :help "bundle identifier (CFBundleIdentifier)"
+   :default "example.unnamed"
    :path ["ios" "bundle_identifier"]}
-  {:type :string,
-   :help "bundle short name (CFBundleName). max 15 characters",
+  {:type :string
+   :help "bundle short name (CFBundleName). max 15 characters"
    :path ["ios" "bundle_name"]}
-  {:type :resource,
-   :filter "plist",
-   :preserve-extension true,
-   :help "custom Info.plist template file",
+  {:type :resource
+   :filter "plist"
+   :preserve-extension true
+   :help "custom Info.plist template file"
    :label "Info.plist"
-   :default "/builtins/manifests/ios/Info.plist",
+   :default "/builtins/manifests/ios/Info.plist"
    :path ["ios" "infoplist"]}
-  {:type :resource,
-   :filter ["entitlements", "xcent", "plist"],
-   :preserve-extension true,
-   :help "custom entitlements to use when signing an iOS bundle. Can replace any wildcard entitlements in the supplied provisioning profile",
+  {:type :resource
+   :filter ["entitlements", "xcent", "plist"]
+   :preserve-extension true
+   :help "custom entitlements to use when signing an iOS bundle. Can replace any wildcard entitlements in the supplied provisioning profile"
    :label "Custom entitlements"
-   :default "",
+   :default ""
    :path ["ios" "entitlements"]}
-  {:type :string,
-   :help "comma-separated strings identifying languages handled manually by your app (CFBundleLocalizations)",
-   :default "en",
+  {:type :string
+   :help "comma-separated strings identifying languages handled manually by your app (CFBundleLocalizations)"
+   :default "en"
    :path ["ios" "default_language"]}
-  {:type :string,
-   :help "localizations handled manually by your app (CFBundleLocalizations)",
-   :default "en",
+  {:type :string
+   :help "localizations handled manually by your app (CFBundleLocalizations)"
+   :default "en"
    :path ["ios" "localizations"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Android ldpi icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Android ldpi icon file (.png)"
    :path ["android" "app_icon_36x36"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Android mdpi icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Android mdpi icon file (.png)"
    :path ["android" "app_icon_48x48"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Android hdpi icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Android hdpi icon file (.png)"
    :path ["android" "app_icon_72x72"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Android xhdpi icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Android xhdpi icon file (.png)"
    :path ["android" "app_icon_96x96"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Android xxhdpi icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Android xxhdpi icon file (.png)"
    :path ["android" "app_icon_144x144"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Android xxxhdpi icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Android xxxhdpi icon file (.png)"
    :path ["android" "app_icon_192x192"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Small push notification icon (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Small push notification icon (.png)"
    :path ["android" "push_icon_small"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Large push notification icon (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Large push notification icon (.png)"
    :path ["android" "push_icon_large"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Small ldpi push notification icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Small ldpi push notification icon file (.png)"
    :path ["android" "push_icon_small_ldpi"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Small mdpi push notification icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Small mdpi push notification icon file (.png)"
    :path ["android" "push_icon_small_mdpi"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Small hdpi push notification icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Small hdpi push notification icon file (.png)"
    :path ["android" "push_icon_small_hdpi"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Small xhdpi push notification icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Small xhdpi push notification icon file (.png)"
    :path ["android" "push_icon_small_xhdpi"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Small xxhdpi push notification icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Small xxhdpi push notification icon file (.png)"
    :path ["android" "push_icon_small_xxhdpi"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Small xxxhdpi push notification icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Small xxxhdpi push notification icon file (.png)"
    :path ["android" "push_icon_small_xxxhdpi"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Large ldpi push notification icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Large ldpi push notification icon file (.png)"
    :path ["android" "push_icon_large_ldpi"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Large mdpi push notification icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Large mdpi push notification icon file (.png)"
    :path ["android" "push_icon_large_mdpi"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Large hdpi push notification icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Large hdpi push notification icon file (.png)"
    :path ["android" "push_icon_large_hdpi"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Large xhdpi push notification icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Large xhdpi push notification icon file (.png)"
    :path ["android" "push_icon_large_xhdpi"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Large xxhdpi push notification icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Large xxhdpi push notification icon file (.png)"
    :path ["android" "push_icon_large_xxhdpi"]}
-  {:type :resource,
-   :filter "png",
-   :preserve-extension true,
-   :help "Large xxxhdpi push notification icon file (.png)",
+  {:type :resource
+   :filter "png"
+   :preserve-extension true
+   :help "Large xxxhdpi push notification icon file (.png)"
    :path ["android" "push_icon_large_xxxhdpi"]}
-  {:type :string,
+  {:type :string
    :help
-   "JSON field name in push payload to use as notification title",
-   :default "",
+   "JSON field name in push payload to use as notification title"
+   :default ""
    :path ["android" "push_field_title"]}
-  {:type :string,
-   :help "JSON field name in push payload to use as notification text",
-   :default "",
+  {:type :string
+   :help "JSON field name in push payload to use as notification text"
+   :default ""
    :path ["android" "push_field_text"]}
-  {:type :integer,
-   :help "android version code (android:versionCode)",
-   :default 1,
+  {:type :integer
+   :help "android version code (android:versionCode)"
+   :default 1
    :path ["android" "version_code"]}
-  {:type :integer,
-   :help "minimum API Level required for the application to run (android:minSdkVersion)",
-   :default 16,
+  {:type :integer
+   :help "minimum API Level required for the application to run (android:minSdkVersion)"
+   :default 16
    :path ["android" "minimum_sdk_version"]}
-  {:type :integer,
-   :help "the API Level that the application targets (android:targetSdkVersion)",
-   :default 28,
+  {:type :integer
+   :help "the API Level that the application targets (android:targetSdkVersion)"
+   :default 28
    :path ["android" "target_sdk_version"]}
-  {:type :string,
-   :help "package identifier",
-   :default "com.example.todo",
+  {:type :string
+   :help "package identifier"
+   :default "com.example.todo"
    :path ["android" "package"]}
-  {:type :string,
-   :help "Firebase Cloud Messaging Sender ID",
-   :default "",
+  {:type :string
+   :help "Firebase Cloud Messaging Sender ID"
+   :default ""
    :path ["android" "gcm_sender_id"]}
-  {:type :string,
-   :help "Firebase Cloud Messaging Application ID",
-   :default "",
+  {:type :string
+   :help "Firebase Cloud Messaging Application ID"
+   :default ""
    :path ["android" "fcm_application_id"]}
-  {:type :resource,
-   :filter "xml",
-   :preserve-extension true,
-   :help "custom AndroidManifest.xml template file",
-   :default "/builtins/manifests/android/AndroidManifest.xml",
+  {:type :resource
+   :filter "xml"
+   :preserve-extension true
+   :help "custom AndroidManifest.xml template file"
+   :default "/builtins/manifests/android/AndroidManifest.xml"
    :path ["android" "manifest"]}
-  {:type :string,
+  {:type :string
    :help
-   "in-app purchase provider to use, supported options are 'GooglePlay' and 'Amazon'",
-   :default "GooglePlay",
+   "in-app purchase provider to use, supported options are 'GooglePlay' and 'Amazon'"
+   :default "GooglePlay"
    :path ["android" "iap_provider"]
    :options [["GooglePlay" "GooglePlay"] ["Amazon" "Amazon"]]}
-  {:type :string,
+  {:type :string
    :help
-   "which input method to use, supported options are 'KeyEvent' and 'HiddenInputField'",
-   :default "KeyEvent",
+   "which input method to use, supported options are 'KeyEvent' and 'HiddenInputField'"
+   :default "KeyEvent"
    :path ["android" "input_method"]
    :options [["KeyEvent" "KeyEvent"] ["HiddenInputField" "HiddenInputField"]]}
-  {:type :boolean,
-   :help "hide the navigation and status bars and lets your app capture all touch events on the screen",
-   :default false,
+  {:type :boolean
+   :help "hide the navigation and status bars and lets your app capture all touch events on the screen"
+   :default false
    :path ["android" "immersive_mode"]}
-  {:type :boolean,
-   :help "helps you debug the application and also get files from the application",
-   :default false,
+  {:type :boolean
+   :help "helps you debug the application and also get files from the application"
+   :default false
    :path ["android" "debuggable"]}
-  {:type :resource,
-   :filter "pro",
-   :preserve-extension true,
-   :help "custom ProGuard file to help strip redundant Java classes from the final .apk",
-   :label "ProGuard config",
-   :default "",
+  {:type :resource
+   :filter "pro"
+   :preserve-extension true
+   :help "custom ProGuard file to help strip redundant Java classes from the final .apk"
+   :label "ProGuard config"
+   :default ""
    :path ["android" "proguard"]}
-  {:type :resource,
-   :filter "icns",
-   :preserve-extension true,
-   :help "bundle icon file (.icns)",
+  {:type :resource
+   :filter "icns"
+   :preserve-extension true
+   :help "bundle icon file (.icns)"
    :path ["osx" "app_icon"]}
-  {:type :string,
-   :help "bundle identifier (CFBundleIdentifier)",
-   :default "example.unnamed",
+  {:type :string
+   :help "bundle identifier (CFBundleIdentifier)"
+   :default "example.unnamed"
    :path ["osx" "bundle_identifier"]}
-  {:type :string,
-   :help "bundle short name (CFBundleName). max 15 characters",
+  {:type :string
+   :help "bundle short name (CFBundleName). max 15 characters"
    :path ["osx" "bundle_name"]}
-  {:type :resource,
-   :filter "plist",
-   :preserve-extension true,
-   :help "custom Info.plist template file",
-   :label "Info.plist",
-   :default "/builtins/manifests/osx/Info.plist",
+  {:type :resource
+   :filter "plist"
+   :preserve-extension true
+   :help "custom Info.plist template file"
+   :label "Info.plist"
+   :default "/builtins/manifests/osx/Info.plist"
    :path ["osx" "infoplist"]}
-   {:type :string,
-   :help "default language and region (CFBundleDevelopmentRegion)",
-   :default "en",
+  {:type :string
+   :help "default language and region (CFBundleDevelopmentRegion)"
+   :default "en"
    :path ["osx" "default_language"]}
-  {:type :string,
-   :help "comma-separated strings identifying languages handled manually by your app (CFBundleLocalizations)",
-   :default "en",
+  {:type :string
+   :help "comma-separated strings identifying languages handled manually by your app (CFBundleLocalizations)"
+   :default "en"
    :path ["osx" "localizations"]}
-  {:type :resource,
-   :filter "ico",
-   :preserve-extension true,
-   :help "executable icon file (.ico)",
+  {:type :resource
+   :filter "ico"
+   :preserve-extension true
+   :help "executable icon file (.ico)"
    :path ["windows" "app_icon"]}
-  {:type :boolean,
-   :help "This setting is deprecated. Set to true if you wish to adjust the application heap memory size",
-   :default false,
+  {:type :boolean
+   :help "This setting is deprecated. Set to true if you wish to adjust the application heap memory size"
+   :default false
    :deprecated true
    :severity-override :fatal
    :severity-default :warning
    :path ["html5" "set_custom_heap_size"]}
-  {:type :integer,
-   :help "This setting is deprecated. The size, in bytes, of the application's heap",
-   :default 0,
+  {:type :integer
+   :help "This setting is deprecated. The size, in bytes, of the application's heap"
+   :default 0
    :deprecated true
    :severity-override :fatal
    :severity-default :warning
    :path ["html5" "custom_heap_size"]}
-  {:type :integer,
-   :help "The size, in megabytes, of the application's heap",
-   :default 256,
+  {:type :integer
+   :help "The size, in megabytes, of the application's heap"
+   :default 256
    :path ["html5" "heap_size"]}
-  {:type :resource,
-   :filter "html",
-   :preserve-extension true,
-   :help "html shell for canvas",
-   :default "/builtins/manifests/web/engine_template.html",
+  {:type :resource
+   :filter "html"
+   :preserve-extension true
+   :help "html shell for canvas"
+   :default "/builtins/manifests/web/engine_template.html"
    :label ".html Shell"
    :path ["html5" "htmlfile"]}
-  {:type :resource,
-   :filter "css",
-   :preserve-extension true,
-   :help "css will be inlined into index.html template",
-   :default "/builtins/manifests/web/light_theme.css",
+  {:type :resource
+   :filter "css"
+   :preserve-extension true
+   :help "css will be inlined into index.html template"
+   :default "/builtins/manifests/web/light_theme.css"
    :label "Custom .css"
    :path ["html5" "cssfile"]}
-  {:type :resource,
+  {:type :resource
    :filter "png"
-   :preserve-extension true,
-   :help "custom html splash screen image",
+   :preserve-extension true
+   :help "custom html splash screen image"
    :path ["html5" "splash_image"]}
-  {:type :string,
+  {:type :string
    :help
-   "string to prefix bundled archive file path with (can be a full URL)",
-   :default "archive",
+   "string to prefix bundled archive file path with (can be a full URL)"
+   :default "archive"
    :path ["html5" "archive_location_prefix"]}
-  {:type :string,
-   :help "string to suffix bundled archive file path with",
-   :default "",
+  {:type :string
+   :help "string to suffix bundled archive file path with"
+   :default ""
    :path ["html5" "archive_location_suffix"]}
-  {:type :string,
-   :help "comma separated list of engine arguments",
-   :default "",
+  {:type :string
+   :help "comma separated list of engine arguments"
+   :default ""
    :path ["html5" "engine_arguments"]}
-   {:type :boolean,
-   :help "set to true if you want to have the fullscreen button",
+  {:type :boolean
+   :help "set to true if you want to have the fullscreen button"
    :default true
    :path ["html5" "show_fullscreen_button"]}
-  {:type :boolean,
-   :help "set to true if you want to have the 'Made with Defold' link",
+  {:type :boolean
+   :help "set to true if you want to have the 'Made with Defold' link"
    :default true
    :path ["html5" "show_made_with_defold"]}
-  {:type :string,
-   :help "scale mode for canvas, by default 'Downscale Fit'",
-   :default "downscale_fit",
+  {:type :string
+   :help "scale mode for canvas, by default 'Downscale Fit'"
+   :default "downscale_fit"
    :path ["html5" "scale_mode"]
-   :options [["downscale_fit" "Downscale Fit"] ["fit" "Fit"] ["stretch" "Stretch"] ["no_scale" "No Scale" ]]}
-  {:type :string,
-   :help "the application id as issued by Facebook",
-   :default "",
+   :options [["downscale_fit" "Downscale Fit"] ["fit" "Fit"] ["stretch" "Stretch"] ["no_scale" "No Scale"]]}
+  {:type :string
+   :help "the application id as issued by Facebook"
+   :default ""
    :path ["facebook" "appid"]}
-  {:type :boolean,
-   :help "auto-finish transactions",
-   :default true,
+  {:type :boolean
+   :help "auto-finish transactions"
+   :default true
    :path ["iap" "auto_finish_transactions"]}
-  {:type :resource,
-   :filter "appmanifest",
-   :preserve-extension true,
-   :help "optional configuration file with detailed control over build settings",
+  {:type :resource
+   :filter "appmanifest"
+   :preserve-extension true
+   :help "optional configuration file with detailed control over build settings"
    :path ["native_extension" "app_manifest"]}
   {:type :boolean
    :help "enable CPU usage sampling in release"
@@ -760,15 +772,15 @@
    :filter "settings"
    :default "/liveupdate.settings"
    :help "liveupdate settings"
-   :preserve-extension true,
+   :preserve-extension true
    :path ["liveupdate" "settings"]}
-  {:type :integer,
-   :help "max number of concurrent tilemaps in a collection",
-   :default 16,
+  {:type :integer
+   :help "max number of concurrent tilemaps in a collection"
+   :default 16
    :path ["tilemap" "max_count"]}
-  {:type :integer,
-   :help "max number of concurrent (visible) tiles in a collection",
-   :default 2048,
+  {:type :integer
+   :help "max number of concurrent (visible) tiles in a collection"
+   :default 2048
    :path ["tilemap" "max_tile_count"]}]
 
  :categories

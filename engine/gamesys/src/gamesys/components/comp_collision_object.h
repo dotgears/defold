@@ -64,7 +64,6 @@ namespace dmGameSystem
     void SetGravity(void* world, const Vectormath::Aos::Vector3& gravity);
     Vectormath::Aos::Vector3 GetGravity(void* _world);
     /// Added by dotGears/TrungB
-    void SetWorld2DStepIteration(void* _world, int stepIteration, int velocityIteration, int positionIteration);
     void SetDeltaValue(void* comp, float alphaX, float alphaY, float alphaZ);
     void SetControllable(void* comp, bool flag);
     void SetBullet(void* comp, bool flag);

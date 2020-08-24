@@ -261,6 +261,12 @@ namespace dmPhysics
         uint32_t m_WorldCount;
         /// How the physics worlds are scaled in relation to the game world
         float m_Scale;
+        /// set amount of physics step running per frame.
+        uint32_t m_StepPerFrame;
+        /// set iteration of position per step.
+        uint32_t m_PositionIteration;
+        /// set velocity of position per step.
+        uint32_t m_VelocityIteration;
         /// Contacts with impulses below this limit will not be reported through callbacks
         float m_ContactImpulseLimit;
         /// Contacts with penetration depths below this limit will not be considered inside a trigger
@@ -1343,15 +1349,6 @@ namespace dmPhysics
      * @param world Physics world for which to get the gravity
      */
     Vectormath::Aos::Vector3 GetGravity3D(HWorld3D world);
-
-    /**
-     * Set Step iteration per frame for 2D physics world.
-     *
-     * @param world Physics world for which to get the gravity
-     *
-     * @param stepIteration amount of iteration to run physics step per frame
-     */
-    void SetWorld2DStepIteration(HWorld2D world, int stepIteration, int velocityIteration, int positionIteration);
 
     /**
      * Callbacks used to draw the world for debugging purposes.

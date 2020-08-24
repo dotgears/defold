@@ -31,6 +31,11 @@ namespace dmPhysics
         , m_Gravity(0.0f, -10.0f)
         , m_Socket(0)
         , m_Scale(1.0f)
+        /// Added by dotGears / TrungB
+        , m_StepPerFrame(1)
+        , m_VelocityIteration(16)
+        , m_PositionIteration(8)
+        /// End
         , m_InvScale(1.0f)
         , m_ContactImpulseLimit(0.0f)
         , m_TriggerEnterLimit(0.0f)
@@ -43,9 +48,11 @@ namespace dmPhysics
     World2D::World2D(HContext2D context, const NewWorldParams& params)
         : m_TriggerOverlaps(context->m_TriggerOverlapCapacity)
         , m_Context(context)
-        , m_stepIteration(1)
-        , m_velocityIteration(16)
-        , m_positionIteration(8)
+        /// Added by dotGears / TrungB
+        , m_stepIteration(context->m_StepPerFrame)
+        , m_velocityIteration(context->m_VelocityIteration)
+        , m_positionIteration(context->m_PositionIteration)
+        /// End
         , m_World(context->m_Gravity)
         , m_RayCastRequests()
         , m_DebugDraw(&context->m_DebugCallbacks)
@@ -212,6 +219,17 @@ namespace dmPhysics
         context->m_Worlds.SetCapacity(params.m_WorldCount);
         ToB2(params.m_Gravity, context->m_Gravity, params.m_Scale);
         context->m_Scale                  = params.m_Scale;
+        /// Added by dotGears/TrungB
+        context->m_StepPerFrame           = params.m_StepPerFrame;
+        context->m_VelocityIteration      = params.m_VelocityIteration;
+        context->m_PositionIteration      = params.m_PositionIteration;
+        printf("======================================\n");
+        printf("physics_2d -- Config Box2D context:\n");
+        printf("physics_2d -- m_StepPerFrame      = %i\n", context->m_StepPerFrame);
+        printf("physics_2d -- m_PositionIteration = %i\n", context->m_PositionIteration);
+        printf("physics_2d -- m_VelocityIteration = %i\n", context->m_VelocityIteration);
+        printf("======================================\n");
+        /// End
         context->m_InvScale               = 1.0f / params.m_Scale;
         context->m_ContactImpulseLimit    = params.m_ContactImpulseLimit * params.m_Scale;
         context->m_TriggerEnterLimit      = params.m_TriggerEnterLimit * params.m_Scale;
@@ -248,12 +266,21 @@ namespace dmPhysics
 
     HWorld2D NewWorld2D(HContext2D context, const NewWorldParams& params)
     {
+        int size = context->m_Worlds.Size();
+        int current = context->m_Worlds.Size() - context->m_Worlds.dmArray::Remaining();
+
         if (context->m_Worlds.Full())
         {
-            dmLogError("%s", "Physics world buffer full, world could not be created.");
+            dmLogError("Physics world buffer full(%i), world could not be created. ", size);
             return 0x0;
         }
         World2D* world = new World2D(context, params);
+        printf("======================================\n");
+        printf("physics_2d -- NewWorld2D(context)(%i/%i)\n", current, size);
+        printf("physics_2d -- StepPerFrame      = %i\n", world->m_Context->m_StepPerFrame);
+        printf("physics_2d -- PositionIteration = %i\n", world->m_Context->m_PositionIteration);
+        printf("physics_2d -- VelocityIteration = %i\n", world->m_Context->m_VelocityIteration);
+        printf("======================================\n");
         world->m_World.SetDebugDraw(&world->m_DebugDraw);
         world->m_World.SetContactListener(&world->m_ContactListener);
         world->m_World.SetContinuousPhysics(false);
@@ -283,7 +310,7 @@ namespace dmPhysics
 
         for (int i = 0; i < count; ++i)
         {
-            shape->m_vertices[i]         = FlipPoint(shape->m_vertices[i], horizontal, vertical);
+            shape->m_vertices[i] = FlipPoint(shape->m_vertices[i], horizontal, vertical);
             shape->m_vertices[i] = FlipPoint(shape->m_vertices[i], horizontal, vertical);
         }
 
@@ -295,7 +322,7 @@ namespace dmPhysics
             shape->m_vertices[i]             = shape->m_vertices[count - i - 1];
             shape->m_vertices[count - i - 1] = tmp;
 
-            tmp                                      = shape->m_vertices[i];
+            tmp                              = shape->m_vertices[i];
             shape->m_vertices[i]             = shape->m_vertices[count - i - 1];
             shape->m_vertices[count - i - 1] = tmp;
         }
@@ -396,8 +423,8 @@ namespace dmPhysics
 
     void StepWorld2D(HWorld2D world, const StepWorldContext& step_context)
     {
-        float dt           = step_context.m_DT;
         HContext2D context = world->m_Context;
+        float dt           = step_context.m_DT;
         float scale        = context->m_Scale;
         // Epsilon defining what transforms are considered noise and not
         // Values are picked by inspection, current rot value is roughly equivalent to 1 degree
@@ -450,11 +477,11 @@ namespace dmPhysics
             DM_PROFILE(Physics, "StepSimulation");
             world->m_ContactListener.SetStepWorldContext(&step_context);
 
-            float inv_scale = world->m_Context->m_InvScale;
+            float inv_scale = context->m_InvScale;
             /// Added by .Gears/TrungB
-            float deltaStep = dt / world->m_stepIteration;
+            float deltaStep = dt / context->m_StepPerFrame;
 
-            for (int i = 0; i < world->m_stepIteration; i++)
+            for (int i = 0; i < context->m_StepPerFrame; i++)
             {
                 //Added by dotGears / Trung Vu
                 for (b2Body* body = world->m_World.GetBodyList(); body; body = body->GetNext())
@@ -465,18 +492,21 @@ namespace dmPhysics
                         {
                             b2Vec2 b2position = body->GetPosition();
 
-                            b2position.x += (body->GetDeltaX() / world->m_stepIteration);
-                            b2position.y += (body->GetDeltaY() / world->m_stepIteration);
+                            b2position.x += (body->GetDeltaX() / context->m_StepPerFrame);
+                            b2position.y += (body->GetDeltaY() / context->m_StepPerFrame);
 
                             float b2angle = body->GetAngle();
-                            b2angle += body->GetDeltaZ() / world->m_stepIteration;
+                            b2angle += body->GetDeltaZ() / context->m_StepPerFrame;
 
                             body->SetTransform(b2position, b2angle);
                         }
                     }
                 }
-                world->m_World.Step(deltaStep, world->m_velocityIteration, world->m_positionIteration);
-                // printf("physics_2d -- modifying to debug v5 (%s)\n", "06_08_2020");
+                world->m_World.Step(deltaStep, context->m_VelocityIteration, context->m_PositionIteration);
+                // dmLogInfo("physics_2d #3 -- step (%i) - velocity (%i) - position (%i)\n",
+                //           context->m_StepPerFrame,
+                //           context->m_VelocityIteration,
+                //           context->m_PositionIteration);
             }
 
             // Update transforms of dynamic bodies
@@ -484,24 +514,12 @@ namespace dmPhysics
             {
                 for (b2Body* body = world->m_World.GetBodyList(); body; body = body->GetNext())
                 {
-                    // if ((body->GetType() == b2_dynamicBody) && body->IsActive())
-
-                    // if (body->isLimitingVelocity())
-                    // {
-                    //     b2Vec2 current_velocity = body->GetLinearVelocity();
-                    //     b2Vec2 min              = body->GetMinVelocity();
-                    //     b2Vec2 max              = body->GetMaxVelocity();
-                    //     float x                 = current_velocity.x > max.x ? max.x : current_velocity.x < min.x ? min.x : current_velocity.x;
-                    //     float y                 = current_velocity.y > max.y ? max.y : current_velocity.y < min.y ? min.y : current_velocity.y;
-                    //     b2Vec2 new_velocity     = b2Vec2(x, y);
-                    //     body->SetLinearVelocity  (new_velocity);
-                    // }
                     if (body->IsActive())
                     {
                         if (body->isHavingMasterBody())
                         {
-                        //    dmLogInfo("bodyA has master body");
-                        body->UpdateStateFromMasterBody();
+                            //    dmLogInfo("bodyA has master body");
+                            body->UpdateStateFromMasterBody();
                         }
 
                         Vectormath::Aos::Point3 position;
@@ -928,7 +946,7 @@ namespace dmPhysics
                 Vectormath::Aos::Quat rotation   = Vectormath::Aos::Quat(world_transform.GetRotation());
                 ToB2(position, def.position, context->m_Scale);
                 def.angle = atan2(2.0f * (rotation.getW() * rotation.getZ() + rotation.getX() * rotation.getY()), 1.0f - 2.0f * (rotation.getY() * rotation.getY() + rotation.getZ() * rotation.getZ()));
-                scale = GetUniformScale2D(world_transform);
+                scale     = GetUniformScale2D(world_transform);
             }
             else
             {
@@ -995,7 +1013,7 @@ namespace dmPhysics
         // See comment above about shapes and transforms
 
         OverlapCacheRemove(&world->m_TriggerOverlaps, collision_object);
-        b2Body* body       = (b2Body*)collision_object;
+        b2Body* body = (b2Body*)collision_object;
         // b2Fixture* fixture = body->GetFixtureList();
         // while (fixture)
         // {
@@ -1061,7 +1079,7 @@ namespace dmPhysics
             // dmLogInfo("physics_2d.cpp -- CopyState:(%i) > (%i)", state, b2_body->GetCopyState());
         }
     }
-    
+
     void SetStateLimit(HCollisionObject2D collision_object, uint16_t state, float min, float max)
     {
         b2Body* b2_body = (b2Body*)collision_object;
@@ -1142,12 +1160,6 @@ namespace dmPhysics
     void SetGravityScale(HCollisionObject2D collision_object, float gravityScale)
     {
         ((b2Body*)collision_object)->SetGravityScale(gravityScale);
-    }
-    void SetWorld2DStepIteration(HWorld2D world, int stepIteration, int velocityIteration, int positionIteration)
-    {
-        world->m_stepIteration     = stepIteration;
-        world->m_velocityIteration = velocityIteration;
-        world->m_positionIteration = positionIteration;
     }
     /// End of Passion
 
@@ -1680,4 +1692,4 @@ namespace dmPhysics
         torque         = joint->GetReactionTorque(inv_dt) * inv_scale;
         return true;
     }
-}
+} // namespace dmPhysics

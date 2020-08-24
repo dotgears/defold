@@ -1141,51 +1141,6 @@ namespace dmGameSystem
         return 0;
     }
 
-    /*# set physics step per frame.
-     * Set the amount of steps for physics 2D to update inside Step() function.
-     * Added by dotGears/TrungB.
-     *
-     * , velocityIteration, positionIteration
-     * @name physics.set_step_per_frame
-     * @param  stepIteration [type:integer] steps per frame that Physics2D will update
-     * @param  velocityIteration [type:integer] iteration of velocity per step
-     * @param  positionIteration [type:integer] iteration of position per step
-     *
-     * @examples
-     *
-     * ```lua
-     * function init(self)
-     *     local gravity = physics.set_step_per_frame(8,16,8)
-     * end
-     * ```
-     */
-    static int
-    Physics_SetStepPerFrame(lua_State* L)
-    {
-        DM_LUA_STACK_CHECK(L, 0);
-
-        dmMessage::URL sender;
-        if (!dmScript::GetURL(L, &sender))
-        {
-            return DM_LUA_ERROR("could not find a requesting instance for physics.step");
-        }
-
-        dmScript::GetGlobal(L, PHYSICS_CONTEXT_HASH);
-        PhysicsScriptContext* context = (PhysicsScriptContext*)lua_touserdata(L, -1);
-        lua_pop(L, 1);
-
-        dmGameObject::HInstance sender_instance = CheckGoInstance(L);
-        dmGameObject::HCollection collection    = dmGameObject::GetCollection(sender_instance);
-        void* world                             = dmGameObject::GetWorld(collection, context->m_ComponentIndex);
-
-        int stepIteration     = lua_tointeger(L, 1);
-        int velocityIteration = lua_tointeger(L, 2);
-        int positionIteration = lua_tointeger(L, 3);
-
-        dmGameSystem::SetWorld2DStepIteration(world, stepIteration, velocityIteration, positionIteration);
-
-        return 0;
-    }
 
     /*# Set alpha tag to a body, which is by then will be updated more per frame
      * along with the world step.
@@ -1622,7 +1577,6 @@ namespace dmGameSystem
         // Config Body/World
         { "set_allow_sleep", Physics_SetAllowSleep },
         { "set_gravity_scale", Physics_SetGravityScale },
-        { "set_step_per_frame", Physics_SetStepPerFrame },
 
         // Set Debug Draw
         { "set_debug_draw", Physics_SetDebugDraw },

@@ -29,9 +29,12 @@ angular_boost = 2.0
 angular_retard = 0.2
 
 [physics]
-type = 3D
+type = 2D
 debug = 1
 gravity_y = 0
+step_per_frame = 8
+velocity_iteration = 8 
+position_iteration = 16 
 
 [resource]
 uri = build/default

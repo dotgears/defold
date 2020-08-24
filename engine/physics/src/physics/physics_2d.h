@@ -24,14 +24,15 @@ namespace dmPhysics
 {
     class ContactListener : public b2ContactListener
     {
-    public:
+        public:
         ContactListener(HWorld2D world);
 
         virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 
         void SetStepWorldContext(const StepWorldContext* context);
 
-        private : HWorld2D m_World;
+        private:
+        HWorld2D m_World;
         /// Temporary context to be set before each stepping of the world
         const StepWorldContext* m_TempStepWorldContext;
     };
@@ -40,39 +41,44 @@ namespace dmPhysics
     {
         World2D(HContext2D context, const NewWorldParams& params);
 
-        OverlapCache                m_TriggerOverlaps;
-        HContext2D                  m_Context;
-        b2World                     m_World;
-        dmArray<RayCastRequest>     m_RayCastRequests;
-        DebugDraw2D                 m_DebugDraw;
-        ContactListener             m_ContactListener;
-        GetWorldTransformCallback   m_GetWorldTransformCallback;
-        SetWorldTransformCallback   m_SetWorldTransformCallback;
+        OverlapCache m_TriggerOverlaps;
+        HContext2D m_Context;
+        b2World m_World;
+        dmArray<RayCastRequest> m_RayCastRequests;
+        DebugDraw2D m_DebugDraw;
+        ContactListener m_ContactListener;
+        GetWorldTransformCallback m_GetWorldTransformCallback;
+        SetWorldTransformCallback m_SetWorldTransformCallback;
         // custom iteration
-        uint8_t                     m_stepIteration;
-        uint8_t                     m_velocityIteration;
-        uint8_t                     m_positionIteration;
+        uint8_t m_stepIteration;
+        uint8_t m_velocityIteration;
+        uint8_t m_positionIteration;
 
-        uint8_t                     m_AllowDynamicTransforms:1;
-        uint8_t                     :7;
+        uint8_t m_AllowDynamicTransforms : 1;
+        uint8_t : 7;
     };
 
     struct Context2D
     {
         Context2D();
 
-        dmArray<World2D*>           m_Worlds;
-        DebugCallbacks              m_DebugCallbacks;
-        b2Vec2                      m_Gravity;
-        dmMessage::HSocket          m_Socket;
-        float                       m_Scale;
-        float                       m_InvScale;
-        float                       m_ContactImpulseLimit;
-        float                       m_TriggerEnterLimit;
-        int                         m_RayCastLimit;
-        int                         m_TriggerOverlapCapacity;
-        uint8_t                     m_AllowDynamicTransforms:1;
-        uint8_t                     : 7;
+        dmArray<World2D*> m_Worlds;
+        DebugCallbacks m_DebugCallbacks;
+        b2Vec2 m_Gravity;
+        dmMessage::HSocket m_Socket;
+        float m_Scale;
+        /// Added by dotGears/TrungB
+        int m_StepPerFrame;
+        int m_VelocityIteration;
+        int m_PositionIteration;
+        /// End
+        float m_InvScale;
+        float m_ContactImpulseLimit;
+        float m_TriggerEnterLimit;
+        int m_RayCastLimit;
+        int m_TriggerOverlapCapacity;
+        uint8_t m_AllowDynamicTransforms : 1;
+        uint8_t : 7;
     };
 
     inline void ToB2(const Vectormath::Aos::Point3& p0, b2Vec2& p1, float scale)
@@ -105,6 +111,6 @@ namespace dmPhysics
         pp *= scale;
         return b2Mul(t, pp);
     }
-}
+} // namespace dmPhysics
 
 #endif // PHYSICS_2D_H

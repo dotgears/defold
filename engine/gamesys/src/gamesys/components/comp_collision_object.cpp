@@ -1542,18 +1542,7 @@ namespace dmGameSystem
         CollisionComponent* component = (CollisionComponent*)comp;
         dmPhysics::SetDebugDraw(component->m_Object2D, active);
     }
-    void SetWorld2DStepIteration(void* _world, int stepIteration, int velocityIteration, int positionIteration)
-    {
-        CollisionWorld* world = (CollisionWorld*)_world;
-        if (world->m_3D)
-        {
-        }
-        else
-        {
-            dmPhysics::SetWorld2DStepIteration(world->m_World2D, stepIteration, velocityIteration, positionIteration);
-        }
-    }
-
+    
     // End of Passion
 
     dmPhysics::JointResult GetJointParams(void* _world, void* _component, dmhash_t id, dmPhysics::JointType& joint_type, dmPhysics::ConnectJointParams& joint_params)
