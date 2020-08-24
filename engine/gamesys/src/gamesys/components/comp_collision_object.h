@@ -76,7 +76,7 @@ namespace dmGameSystem
     void SetDebugDraw(void* comp, bool active);
 
     void CopyState(void* comp, uint16_t state, float ratio, float offset);
-    void SetStateLimit(void* comp, u_int16_t state, float min, float max);
+    void SetStateLimit(void* comp, uint16_t state, float min, float max);
     //Added by dotGears / TrungA
     void SetMasterBody(void* comp, void* master_body);
 
