@@ -32,6 +32,8 @@ BUILD_BUILTIN="sudo ./scripts/build.py build_builtins"
 BUILD_BOB="sudo ./scripts/build.py build_bob --skip-tests"
 BUILD_DOC="sudo ./scripts/build.py build_docs --platform=x86_64-darwin"
 
+PLAY_SOUND="afplay /System/Library/Sounds/Submarine.aiff"
+
 RUN_EDITOR="(cd editor/;lein run)"
 BUILD_EDITOR="(cd editor/;lein init)"
 EDITOR="(cd editor/;lein init)"
@@ -79,6 +81,10 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     ;;
   -cdc | --cd_catalina )
     eval $CD_DEFOLD_CATALINA
+    exit
+    ;;
+  -nf | --notify )
+    eval $PLAY_SOUND
     exit
     ;;
   -s | --setup )
@@ -161,6 +167,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     echo "sh cmd.sh --copy  | -cp: to copy <platform> dmengine -> editor"
     echo "sh cmd.sh --engine| -e : --engine x86_64-darwin => to build macOS dmengine"
     echo "sh cmd.sh --editor| -e : for building editor"
+    echo "sh cmd.sh --notify| -nf: play a sound from MacOS"
     echo "sh cmd.sh --misc  | -m : for building bob + builtin"
     echo "sh cmd.sh --doc   | -d : for building editor document"
     echo "sh cmd.sh --docker| -D : to run Docker local server from /extender"
@@ -183,6 +190,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     echo $BUILD_ENGINE_IOS_v7
     echo $BUILD_ENGINE_IOS_64
     echo $EDITOR
+    echo $PLAY_SOUND
     echo $BUILD_BOB
     echo $BUILD_BUILTIN
     echo $BUILD_EDITOR
