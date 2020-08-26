@@ -32,6 +32,7 @@ from threading import Thread, Event
 from Queue import Queue
 from ConfigParser import ConfigParser
 
+import multiprocessing # for counting system CPU core
 
 """
     Build utility for installing external packages, building engine, editor and cr
@@ -950,7 +951,7 @@ class Configuration(object):
 
     def _build_engine_cmd(self, skip_tests, skip_codesign, disable_ccache, prefix):
         prefix = prefix and prefix or self.dynamo_home
-        return 'python %s/ext/bin/waf --prefix=%s %s %s %s distclean configure build install' % (self.dynamo_home, prefix, skip_tests, skip_codesign, disable_ccache)
+        return 'python %s/ext/bin/waf --prefix=%s %s %s %s distclean configure build -j%d install' % (self.dynamo_home, prefix, skip_tests, skip_codesign, disable_ccache, multiprocessing.cpu_count())
 
     def _build_engine_lib(self, args, lib, platform, skip_tests = False, dir = 'engine'):
         self._log('Building %s for %s' % (lib, platform))
@@ -979,7 +980,16 @@ class Configuration(object):
 
     def build_engine(self):
         self.check_sdk()
-
+        
+        # Use thread pool attempt:
+        futures = []
+        if not self.thread_pool:    
+            #
+            # base on each system core count
+            self.thread_pool = ThreadPool(multiprocessing.cpu_count()) 
+            #
+            # Added by dotGears / TrungB
+        
         # We want random folder to thoroughly test bob-light
         # We dont' want it to unpack for _every_ single invocation during the build
         os.environ['DM_BOB_ROOTFOLDER'] = tempfile.mkdtemp(prefix='bob-light-')
@@ -995,7 +1005,16 @@ class Configuration(object):
         # Make sure we build these for the host platform for the toolchain (bob light)
         for lib in ['dlib', 'texc']:
             skip_tests = host != self.target_platform
-            self._build_engine_lib(args, lib, host, skip_tests = skip_tests)
+            f = Future(self.thread_pool, self._build_engine_lib, args, lib, host, skip_tests)
+            futures.append(f)
+        # Execute :
+        for f in futures:
+            f()
+            # self._build_engine_lib(args, lib, host, skip_tests = skip_tests)
+        
+        # cleaning up queue
+        futures = []
+
         if not self.skip_bob_light:
             # We must build bob-light, which builds content during the engine build
             self.build_bob_light()
@@ -1005,8 +1024,16 @@ class Configuration(object):
             engine_libs.insert(0, 'dlib')
             if self.is_desktop_target():
                 engine_libs.insert(1, 'texc')
+
         for lib in engine_libs:
-            self._build_engine_lib(args, lib, target_platform)
+            f = Future(self.thread_pool, self._build_engine_lib, args, lib, target_platform)
+            futures.append(f)
+        #
+        # Execute queued tasks:
+        #     
+        for f in futures:
+            f()
+            # self._build_engine_lib(args, lib, target_platform)
         self._build_engine_lib(args, 'extender', target_platform, dir = 'share')
         if not self.skip_docs:
             self.build_docs()
@@ -1192,7 +1219,7 @@ class Configuration(object):
         skip_tests = '--skip-tests' if self.skip_tests or self.target_platform != self.host else ''
         self._log('Building API docs')
         cwd = join(self.defold_root, 'engine/docs')
-        cmd = 'python %s/ext/bin/waf configure --prefix=%s %s distclean configure build install' % (self.dynamo_home, self.dynamo_home, skip_tests)
+        cmd = 'python %s/ext/bin/waf configure --prefix=%s %s distclean configure build -j%d install' % (self.dynamo_home, self.dynamo_home, skip_tests, multiprocessing.cpu_count())
         run.env_command(self._form_env(), cmd.split() + self.waf_options, cwd = cwd)
         with open(join(self.dynamo_home, 'share', 'ref-doc.zip'), 'wb') as f:
             self._ziptree(join(self.dynamo_home, 'share', 'doc'), outfile = f, directory = join(self.dynamo_home, 'share'))
