@@ -11,6 +11,11 @@
 /build/Testing/Temporary/LastTest.log
 /.android
 
+# Cmake cache
+build/*
+build/.cmake/
+build/CMakeFiles
+build/CMakeCache.txt
 
 .cache
 .dcache
