@@ -522,6 +522,7 @@ namespace dmPhysics
                             body->UpdateStateFromMasterBody();
                         }
 
+                        //Update transformation to Defold Objects
                         Vectormath::Aos::Point3 position;
                         FromB2(body->GetPosition(), position, inv_scale);
                         Vectormath::Aos::Quat rotation = Vectormath::Aos::Quat::rotationZ(body->GetAngle());
