@@ -67,7 +67,7 @@ PACKAGES_IOS_SIMULATOR_SDK = env['PACKAGES_IOS_SIMULATOR_SDK'] if env.__contains
 PACKAGES_MACOS_SDK="MacOSX10.15.sdk"
 
 ## Let's fixed the local SDK into this folder:
-PACKAGES_FOLDER = "./local_sdks"
+PACKAGES_FOLDER = "./packages"
 
 WINDOWS_SDK_10_VERSION="10.0.18362.0"
 WINDOWS_MSVC_2019_VERSION="14.25.28610"
