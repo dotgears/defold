@@ -19,8 +19,8 @@
 # $ mkdir iPhoneOS12.1.sdk && tar xf ../new_packages/iPhoneOS12.1.sdk.tar.gz -C iPhoneOS12.1.sdk --strip-components 1
 
 # Original command lines:
-# $ (cd /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs && tar zcf ~/work/defold/footest/iPhoneOS12.1.sdk.tar.gz iPhoneOS.sdk)
-# $ (cd /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs && tar zcf ./local_sdks/iPhoneOS13.5.sdk.tar.gz iPhoneOS13.5.sdk)
+# $ (cd /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs && tar zcf ~/work/defold/footest/iPhoneOS13.5.sdk.tar.gz iPhoneOS.sdk)
+# $ (cd /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs && tar zcf ~/work/defold/footest/iPhoneOS13.5.sdk.tar.gz iPhoneOS.sdk)
 
 set -e
 
@@ -106,4 +106,3 @@ package_xcode "XcodeDefault"
 
 echo "PACKAGES"
 ls -la ${TARGET_DIR}/*.gz
-
