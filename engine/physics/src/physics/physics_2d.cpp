@@ -225,12 +225,13 @@ namespace dmPhysics
         context->m_StepPerFrame           = params.m_StepPerFrame;
         context->m_VelocityIteration      = params.m_VelocityIteration;
         context->m_PositionIteration      = params.m_PositionIteration;
-        printf("======================================\n");
-        printf("physics_2d -- Config Box2D context:\n");
-        printf("physics_2d -- m_StepPerFrame      = %i\n", context->m_StepPerFrame);
-        printf("physics_2d -- m_PositionIteration = %i\n", context->m_PositionIteration);
-        printf("physics_2d -- m_VelocityIteration = %i\n", context->m_VelocityIteration);
-        printf("======================================\n");
+        /// Debug Log Physics << Game.Project
+        printf("======================================================================\n");
+        printf("physics_2d -- NewContext2D: Step: %i -- Velocity: %i -- Position: %i\n", 
+        context->m_StepPerFrame,  
+        context->m_VelocityIteration,
+        context->m_PositionIteration);
+        printf("======================================================================\n");
         /// End
         context->m_InvScale               = 1.0f / params.m_Scale;
         context->m_ContactImpulseLimit    = params.m_ContactImpulseLimit * params.m_Scale;
@@ -277,12 +278,14 @@ namespace dmPhysics
             return 0x0;
         }
         World2D* world = new World2D(context, params);
-        printf("======================================\n");
-        printf("physics_2d -- NewWorld2D(context)(%i/%i)\n", current, size);
-        printf("physics_2d -- StepPerFrame      = %i\n", world->m_Context->m_StepPerFrame);
-        printf("physics_2d -- PositionIteration = %i\n", world->m_Context->m_PositionIteration);
-        printf("physics_2d -- VelocityIteration = %i\n", world->m_Context->m_VelocityIteration);
-        printf("======================================\n");
+        /// Added by dotGears/TrungB
+        /// 
+        /// Debug Log:
+        printf("physics_2d -- NewWorld2D: Step: %i -- Velocity: %i -- Position: %i\n", 
+        context->m_StepPerFrame,  
+        context->m_VelocityIteration,
+        context->m_PositionIteration);
+        /// End
         world->m_World.SetDebugDraw(&world->m_DebugDraw);
         world->m_World.SetContactListener(&world->m_ContactListener);
         world->m_World.SetContinuousPhysics(false);
@@ -510,10 +513,10 @@ namespace dmPhysics
                     }
                 }
                 world->m_World.Step(deltaStep, context->m_VelocityIteration, context->m_PositionIteration);
-                dmLogInfo("physics_2d #4 -- step_timer (%f) - velocity (%i) - position (%i)\n",
-                          deltaStep,
-                          context->m_VelocityIteration,
-                          context->m_PositionIteration);
+                // dmLogInfo("physics_2d -- #1 step_timer (%f) - velocity (%i) - position (%i)\n",
+                //           deltaStep,
+                //           context->m_VelocityIteration,
+                //           context->m_PositionIteration);
             }
 
             // Update transforms of dynamic bodies
