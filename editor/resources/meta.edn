@@ -607,9 +607,9 @@
    :help "minimum API Level required for the application to run (android:minSdkVersion)"
    :default 16
    :path ["android" "minimum_sdk_version"]}
-  {:type :integer
-   :help "the API Level that the application targets (android:targetSdkVersion)"
-   :default 28
+  {:type :integer,
+   :help "the API Level that the application targets (android:targetSdkVersion)",
+   :default 29,
    :path ["android" "target_sdk_version"]}
   {:type :string
    :help "package identifier"
@@ -645,9 +645,13 @@
    :help "hide the navigation and status bars and lets your app capture all touch events on the screen"
    :default false
    :path ["android" "immersive_mode"]}
-  {:type :boolean
-   :help "helps you debug the application and also get files from the application"
-   :default false
+  {:type :boolean,
+   :help "extend to display cutout",
+   :default true,
+   :path ["android" "display_cutout"]}
+  {:type :boolean,
+   :help "helps you debug the application and also get files from the application",
+   :default false,
    :path ["android" "debuggable"]}
   {:type :resource
    :filter "pro"

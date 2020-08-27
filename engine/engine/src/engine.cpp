@@ -91,7 +91,7 @@ using namespace Vectormath::Aos;
 extern "C"
 {
     extern void _glfwAndroidSetInputMethod(int);
-    extern void _glfwAndroidSetImmersiveMode(int);
+    extern void _glfwAndroidSetFullscreenParameters(int, int);
 }
 #endif
 
@@ -472,7 +472,8 @@ namespace dmEngine
         dmLogInfo("Defold Engine %s (%.7s)", dmEngineVersion::VERSION, dmEngineVersion::VERSION_SHA1);
 
         dmSys::EngineInfoParam engine_info;
-        engine_info.m_Version     = dmEngineVersion::VERSION;
+        // engine_info.m_Platform = dmEngineVersion::PLATFORM;
+        engine_info.m_Version = dmEngineVersion::VERSION;
         engine_info.m_VersionSHA1 = dmEngineVersion::VERSION_SHA1;
         engine_info.m_IsDebug     = dLib::IsDebugMode();
         dmSys::SetEngineInfo(engine_info);
@@ -1152,7 +1153,8 @@ namespace dmEngine
         }
         {
             int immersive_mode = dmConfigFile::GetInt(engine->m_Config, "android.immersive_mode", 0);
-            _glfwAndroidSetImmersiveMode(immersive_mode);
+            int display_cutout = dmConfigFile::GetInt(engine->m_Config, "android.display_cutout", 1);
+            _glfwAndroidSetFullscreenParameters(immersive_mode, display_cutout);
         }
 #endif
 
@@ -1297,6 +1299,11 @@ namespace dmEngine
                 if (!engine->m_WasIconified)
                 {
                     engine->m_WasIconified = true;
+
+                    if (!engine->m_RunWhileIconified)
+                    {
+                        dmSound::Pause(true);
+                    }
                 }
 
                 if (!engine->m_RunWhileIconified)
@@ -1326,6 +1333,8 @@ namespace dmEngine
                 if (engine->m_WasIconified)
                 {
                     engine->m_WasIconified = false;
+
+                    dmSound::Pause(false);
                 }
             }
 
