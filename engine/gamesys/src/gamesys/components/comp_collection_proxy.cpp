@@ -252,7 +252,10 @@ namespace dmGameSystem
                 if (proxy->m_Enabled)
                 {
                     dmGameObject::UpdateContext uc;
-
+                    /// added by dotGears / TrungB
+                    ///
+                    uc.m_factor = proxy->m_TimeStepFactor;
+                    /// end
                     float warped_dt = params.m_UpdateContext->m_DT * proxy->m_TimeStepFactor;
                     switch (proxy->m_TimeStepMode)
                     {

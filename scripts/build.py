@@ -1219,7 +1219,7 @@ class Configuration(object):
         skip_tests = '--skip-tests' if self.skip_tests or self.target_platform != self.host else ''
         self._log('Building API docs')
         cwd = join(self.defold_root, 'engine/docs')
-        cmd = 'python %s/ext/bin/waf configure --prefix=%s %s distclean configure build -j%d install' % (self.dynamo_home, self.dynamo_home, skip_tests, multiprocessing.cpu_count())
+        cmd = 'python %s/ext/bin/waf configure --prefix=%s %s distclean configure build -j%d install' % (self.dynamo_home, self.dynamo_home, skip_tests, multiprocessing.cpu_count() * 2)
         run.env_command(self._form_env(), cmd.split() + self.waf_options, cwd = cwd)
         with open(join(self.dynamo_home, 'share', 'ref-doc.zip'), 'wb') as f:
             self._ziptree(join(self.dynamo_home, 'share', 'doc'), outfile = f, directory = join(self.dynamo_home, 'share'))

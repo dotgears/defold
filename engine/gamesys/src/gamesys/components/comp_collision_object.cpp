@@ -923,6 +923,12 @@ namespace dmGameSystem
         contact_user_data.m_Count = 0;
 
         dmPhysics::StepWorldContext step_world_context;
+        /// added by dotGears / TrungB
+        /// 
+        /// This is for blending factor with fixed delta time inside physics_2d.cpp
+        ///
+        step_world_context.m_factor = params.m_UpdateContext->m_factor;
+        /// End
         step_world_context.m_DT = params.m_UpdateContext->m_DT;
         step_world_context.m_CollisionCallback = CollisionCallback;
         step_world_context.m_CollisionUserData = &collision_user_data;

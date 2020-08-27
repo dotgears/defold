@@ -23,6 +23,8 @@
 
 #include "physics_2d.h"
 
+#define FIXED_DELTA_TIME 1.0/60.0
+
 namespace dmPhysics
 {
     Context2D::Context2D()
@@ -425,6 +427,7 @@ namespace dmPhysics
     {
         HContext2D context = world->m_Context;
         float dt           = step_context.m_DT;
+        float factor       = step_context.m_factor;
         float scale        = context->m_Scale;
         // Epsilon defining what transforms are considered noise and not
         // Values are picked by inspection, current rot value is roughly equivalent to 1 degree
@@ -479,7 +482,7 @@ namespace dmPhysics
 
             float inv_scale = context->m_InvScale;
             /// Added by .Gears/TrungB
-            float deltaStep = dt / context->m_StepPerFrame;
+            float deltaStep = dt == 0 ? 0 : (FIXED_DELTA_TIME * factor) / context->m_StepPerFrame;
 
             for (int i = 0; i < context->m_StepPerFrame; i++)
             {
@@ -500,13 +503,17 @@ namespace dmPhysics
 
                             body->SetTransform(b2position, b2angle);
                         }
+                        if (body->isHavingMasterBody())
+                        {
+                            body->UpdateStateFromMasterBody();
+                        }
                     }
                 }
                 world->m_World.Step(deltaStep, context->m_VelocityIteration, context->m_PositionIteration);
-                // dmLogInfo("physics_2d #3 -- step (%i) - velocity (%i) - position (%i)\n",
-                //           context->m_StepPerFrame,
-                //           context->m_VelocityIteration,
-                //           context->m_PositionIteration);
+                dmLogInfo("physics_2d #4 -- step_timer (%f) - velocity (%i) - position (%i)\n",
+                          deltaStep,
+                          context->m_VelocityIteration,
+                          context->m_PositionIteration);
             }
 
             // Update transforms of dynamic bodies
@@ -516,11 +523,11 @@ namespace dmPhysics
                 {
                     if (body->IsActive())
                     {
-                        if (body->isHavingMasterBody())
-                        {
-                            //    dmLogInfo("bodyA has master body");
-                            body->UpdateStateFromMasterBody();
-                        }
+                        // if (body->isHavingMasterBody())
+                        // {
+                        //     //    dmLogInfo("bodyA has master body");
+                        //     body->UpdateStateFromMasterBody();
+                        // }
 
                         //Update transformation to Defold Objects
                         Vectormath::Aos::Point3 position;

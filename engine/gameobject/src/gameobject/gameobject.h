@@ -141,6 +141,8 @@ namespace dmGameObject
     {
         /// Time step
         float m_DT;
+        /// Time factor
+        float m_factor;
     };
 
     extern const dmhash_t UNNAMED_IDENTIFIER;
