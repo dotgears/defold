@@ -27,7 +27,7 @@ WAF_CONF="(cd $3;PREFIX=\$DYNAMO_HOME waf configure --platform=$2)"
 COPY_ENGINE="sh cmd.sh --copy $2"
 COPY_ENGINE_X8664="sh cmd.sh --copy x86_64-darwin"
 
-BUILD_ENGINE="sudo ./scripts/build.py build_engine --platform=$2 --skip-docs --skip-bob-light --skip-tests -- --skip-build-tests"
+BUILD_ENGINE="sudo ./scripts/build.py build_engine --platform=$2 --skip-docs --skip-tests -- --skip-build-tests"
 BUILD_BUILTIN="sudo ./scripts/build.py build_builtins"
 BUILD_BOB="sudo ./scripts/build.py build_bob --skip-tests"
 BUILD_DOC="sudo ./scripts/build.py build_docs --platform=x86_64-darwin"
