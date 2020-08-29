@@ -20,4 +20,4 @@ def configure(conf):
         Logs.info("physics disabled")
         conf.env['STATICLIB_PHYSICS'] = ['physics_null']
     else:
-        conf.env['STATICLIB_PHYSICS'] = ['physics', 'BulletDynamics', 'BulletCollision', 'LinearMath', 'Box2D']
+        conf.env['STATICLIB_PHYSICS'] = ['physics', 'BulletDynamics', 'BulletCollision', 'LinearMath', 'box2d']
