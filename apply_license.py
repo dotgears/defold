@@ -58,7 +58,7 @@ exluded_patterns = [
     "com.dynamo.cr.bob/generated",
     "luajit",
     "jagatoo",
-    "Box2D",
+    "box2d",
     "jsmn",
     "msbranco"
 ]
