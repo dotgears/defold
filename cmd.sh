@@ -1,3 +1,4 @@
+CD_DEFOLD_LINUX="echo \"#Shorthand for entering defold folder\nalias cd_defold='cd $PWD'\" >> ~/.bash_aliases"
 CD_DEFOLD_MOJAVE="echo \"#Shorthand for entering defold folder\nalias cd_defold='cd $PWD'\" >> ~/.bash_profile"
 CD_DEFOLD_CATALINA="echo \"#Shorthand for entering defold folder\nalias cd_defold='cd $PWD'\" >> ~/.zshrc"
 
@@ -5,6 +6,8 @@ SHELL="./scripts/build.py shell --platform=$2 --package-path=./local_sdks/"
 EXPORT_DYNAMO_HOME="export DYNAMO_HOME=${PWD}/tmp/dynamo_home"
 
 SHELL_INTRO="echo \"#Shorthand for Defold Build Shell Command\" >> ~/.bash_profile"
+
+SHELL_LINUX_x86_64="echo \"alias shell_defold_x86_64='./scripts/build.py shell --platform=x86_64-linux --package-path=./local_sdks/'\" >> ~/.bash_aliases"
 
 SHELL_MOJAVE_x86_64="echo \"alias shell_defold_x86_64='./scripts/build.py shell --platform=x86_64-darwin --package-path=./local_sdks/'\" >> ~/.bash_profile"
 SHELL_MOJAVE__armv7="echo \"alias shell_defold_armv7='./scripts/build.py shell --platform=armv7-darwin --package-path=./local_sdks/'\" >> ~/.bash_profile"
@@ -47,10 +50,16 @@ EDITOR_PATH="./editor/tmp/unpack/$2/bin/"
 RUN_DOCKER="/Applications/Docker.app/Contents/MacOS/Docker Desktop.app &"
 RUN_EXTENDER="(cd ../extender/server/scripts/;./run-local.sh &)"
 
+COPY_LEIN="sudo cp lein /bin && chmod a+x /usr/bin/lein && lein"
+
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
+  --lein_install)
+    echo "Installing lein.."
+    eval $COPY_LEIN
+    ;;
   -F | --full )
     start=$SECONDS
     eval $BUILD_ENGINE
@@ -75,14 +84,6 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     eval $FORCE
     exit
     ;;
-  -cdm | --cd_mojave )
-    eval $CD_DEFOLD_MOJAVE
-    exit
-    ;;
-  -cdc | --cd_catalina )
-    eval $CD_DEFOLD_CATALINA
-    exit
-    ;;
   -nf | --notify )
     eval $PLAY_SOUND
     exit
@@ -100,6 +101,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
         eval $SHELL_MOJAVE__arm64
         eval $SHELL_MOJAVE__armv7a
         eval $SHELL_MOJAVE__arm64a
+        eval $CD_DEFOLD_MOJAVE
         ;;
       catalina)
         eval $SHELL_CATALINA_x86_64
@@ -107,6 +109,11 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
         eval $SHELL_CATALINA__arm64
         eval $SHELL_CATALINA__armv7a
         eval $SHELL_CATALINA__arm64a
+        eval $CD_DEFOLD_CATALINA
+        ;;
+      linux)
+        eval $SHELL_LINUX_x86_64
+        eval $CD_DEFOLD_LINUX
         ;;
     esac
     exit
