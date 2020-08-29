@@ -220,6 +220,7 @@ class Configuration(object):
                  skip_docs = True,
                  skip_builtins = True,
                  skip_bob_light = True,
+                 use_mprocessing = False,
                  disable_ccache = False,
                  no_colors = False,
                  archive_path = None,
@@ -263,6 +264,7 @@ class Configuration(object):
         self.skip_docs = skip_docs
         self.skip_builtins = skip_builtins
         self.skip_bob_light = skip_bob_light
+        self.use_mprocessing = use_mprocessing
         self.disable_ccache = disable_ccache
         self.no_colors = no_colors
         self.archive_path = archive_path
@@ -952,6 +954,7 @@ class Configuration(object):
     def _build_engine_cmd(self, skip_tests, skip_codesign, disable_ccache, prefix):
         prefix = prefix and prefix or self.dynamo_home
         return 'python %s/ext/bin/waf --prefix=%s %s %s %s distclean configure build -j%d install' % (self.dynamo_home, prefix, skip_tests, skip_codesign, disable_ccache, multiprocessing.cpu_count())
+        # return 'python %s/ext/bin/waf --prefix=%s %s %s %s distclean configure build install' % (self.dynamo_home, prefix, skip_tests, skip_codesign, disable_ccache)
 
     def _build_engine_lib(self, args, lib, platform, skip_tests = False, dir = 'engine'):
         self._log('Building %s for %s' % (lib, platform))
@@ -981,14 +984,15 @@ class Configuration(object):
     def build_engine(self):
         self.check_sdk()
         
-        # Use thread pool attempt:
-        futures = []
-        if not self.thread_pool:    
-            #
-            # base on each system core count
-            self.thread_pool = ThreadPool(multiprocessing.cpu_count()) 
-            #
-            # Added by dotGears / TrungB
+        # Added by dotGears / TrungB
+        if self.use_mprocessing:
+            # Use thread pool attempt:
+            futures = []
+            if not self.thread_pool:    
+                #
+                # base on each system core count
+                self.thread_pool = ThreadPool(multiprocessing.cpu_count()) 
+                #
         
         # We want random folder to thoroughly test bob-light
         # We dont' want it to unpack for _every_ single invocation during the build
@@ -1005,15 +1009,18 @@ class Configuration(object):
         # Make sure we build these for the host platform for the toolchain (bob light)
         for lib in ['dlib', 'texc']:
             skip_tests = host != self.target_platform
-            f = Future(self.thread_pool, self._build_engine_lib, args, lib, host, skip_tests)
-            futures.append(f)
-        # Execute :
-        for f in futures:
-            f()
-            # self._build_engine_lib(args, lib, host, skip_tests = skip_tests)
+            if self.use_mprocessing:
+                f = Future(self.thread_pool, self._build_engine_lib, args, lib, host, skip_tests)
+                futures.append(f)
+            else:
+                self._build_engine_lib(args, lib, host, skip_tests = skip_tests)
         
-        # cleaning up queue
-        futures = []
+        if self.use_mprocessing:
+            # Execute :
+            for f in futures:
+                f()
+            # cleaning up queue
+            futures = []
 
         if not self.skip_bob_light:
             # We must build bob-light, which builds content during the engine build
@@ -1026,14 +1033,18 @@ class Configuration(object):
                 engine_libs.insert(1, 'texc')
 
         for lib in engine_libs:
-            f = Future(self.thread_pool, self._build_engine_lib, args, lib, target_platform)
-            futures.append(f)
-        #
-        # Execute queued tasks:
-        #     
-        for f in futures:
-            f()
-            # self._build_engine_lib(args, lib, target_platform)
+            if self.use_mprocessing:
+                f = Future(self.thread_pool, self._build_engine_lib, args, lib, target_platform)
+                futures.append(f)
+            else:
+                self._build_engine_lib(args, lib, target_platform)
+            
+        if self.use_mprocessing:
+            # Execute queued tasks:
+            #     
+            for f in futures:
+                f()
+
         self._build_engine_lib(args, 'extender', target_platform, dir = 'share')
         if not self.skip_docs:
             self.build_docs()
@@ -2031,6 +2042,11 @@ To pass on arbitrary options to waf: build.py OPTIONS COMMANDS -- WAF_OPTIONS
                       default = False,
                       help = 'skip building bob-light when building the engine. Default is false')
 
+    parser.add_option('--use-mp', dest='use_mprocessing',
+                      action = 'store_true',
+                      default = False,
+                      help = 'use multithreading to compile faster. Default is false')
+                      
     parser.add_option('--disable-ccache', dest='disable_ccache',
                       action = 'store_true',
                       default = False,
@@ -2112,6 +2128,7 @@ To pass on arbitrary options to waf: build.py OPTIONS COMMANDS -- WAF_OPTIONS
                       skip_docs = options.skip_docs,
                       skip_builtins = options.skip_builtins,
                       skip_bob_light = options.skip_bob_light,
+                      use_mprocessing=options.use_mprocessing,
                       disable_ccache = options.disable_ccache,
                       no_colors = options.no_colors,
                       archive_path = options.archive_path,
