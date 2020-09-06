@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Copyright 2020 The Defold Foundation
 # Licensed under the Defold License version 1.0 (the "License"); you may not use
 # this file except in compliance with the License.
@@ -10,14 +12,19 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 
-# config
-echo "Please config your OSX/IOS SDK version in /common.sh if you get error."
-OSX_SDK_VERSION=10.15
+
+set -e
+
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 IOS_SDK_VERSION=13.2
 IOS_SIMULATOR_SDK_VERSION=13.2
-PACKAGE_XCODE_TOOLCHAIN=XcodeDefault11.3.1.xctoolchain
 IOS_MIN_SDK_VERSION=8.0
+OSX_SDK_VERSION=10.15
 OSX_MIN_SDK_VERSION=10.7
+PACKAGE_XCODE_TOOLCHAIN=XcodeDefault11.5.xctoolchain
+# config
+echo "Please config your OSX/IOS SDK version in /common.sh if you get error."
 
 OSX_SDK_ROOT=${DYNAMO_HOME}/ext/SDKs/MacOSX${OSX_SDK_VERSION}.sdk
 IOS_SDK_ROOT=${DYNAMO_HOME}/ext/SDKs/iPhoneOS${IOS_SDK_VERSION}.sdk
@@ -44,6 +51,7 @@ TAR_INCLUDES=0
 function download() {
     mkdir -p ../download
     [ ! -f ../download/$FILE_URL ] && $CURL $BASE_URL/$FILE_URL && mv $FILE_URL ../download
+    echo "Downloaded to ../download/$FILE_URL"
 }
 
 function cmi_make() {
@@ -54,10 +62,12 @@ function cmi_make() {
 }
 
 function cmi_unpack() {
-    tar xfz ../../download/$FILE_URL --strip-components=1
+    echo "Unpacking $SCRIPTDIR/download/$FILE_URL"
+    tar xfz $SCRIPTDIR/download/$FILE_URL --strip-components=1
 }
 
 function cmi_configure() {
+    echo CONFIGURE_ARGS=$CONFIGURE_ARGS $2
     ${CONFIGURE_WRAPPER} ./configure $CONFIGURE_ARGS $2 \
         --disable-shared \
         --prefix=${PREFIX} \
@@ -78,7 +88,7 @@ function cmi_patch() {
 function cmi_do() {
     rm -rf $PREFIX
     rm -rf tmp
-    mkdir tmp
+    mkdir -p tmp
     mkdir -p $PREFIX
     pushd tmp  >/dev/null
     cmi_unpack
@@ -150,6 +160,10 @@ function save_function() {
 
 function windows_path_to_posix() {
     echo "/$1" | sed -e 's/\\/\//g' -e 's/C:/c/' -e 's/ /\\ /g' -e 's/(/\\(/g' -e 's/)/\\)/g'
+}
+
+function path_to_posix() {
+    echo "$1" | sed -e 's/\\/\//g' -e 's/C:/c/' -e 's/ /\\ /g' -e 's/(/\\(/g' -e 's/)/\\)/g'
 }
 
 function cmi_setup_vs2015_env() {
@@ -378,7 +392,12 @@ function cmi() {
             ;;
 
         *)
-            echo "Unknown target $1" && exit 1
+            if [ -f "$SCRIPTDIR/common_private.sh" ]; then
+                source $SCRIPTDIR/common_private.sh
+                cmi_private $@
+            else
+                echo "Unknown target $1" && exit 1
+            fi
             ;;
     esac
 }

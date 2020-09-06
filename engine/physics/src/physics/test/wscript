@@ -1,9 +1,10 @@
 #! /usr/bin/env python
+from waf_dynamo import platform_supports_feature
 
 def build(bld):
     test_physics = bld.new_task_gen(features = 'cxx cprogram test',
                                     source = 'test_physics.cpp',
-                                    uselib = 'DLIB PLATFORM_THREAD BULLET',
+                                    uselib = 'TESTMAIN DLIB PLATFORM_THREAD BULLET',
                                     uselib_local = 'physics box2d',
                                     includes = ['../../../src', '../../../src/b2d'],
                                     target = 'test_physics')
@@ -12,7 +13,7 @@ def build(bld):
 
     test_physics_2d = bld.new_task_gen(features = 'cxx cprogram test',
                                     source = 'test_physics_2d.cpp',
-                                    uselib = 'DLIB PLATFORM_THREAD BULLET',
+                                    uselib = 'TESTMAIN DLIB PLATFORM_THREAD BULLET',
                                     uselib_local = 'physics_2d box2d',
                                     includes = ['../../../src', '../../../src/b2d'],
                                     target = 'test_physics_2d')
@@ -24,7 +25,7 @@ def build(bld):
     # We do this by removing the 'test' feature which excludes it from the test run
     null_test = bld.new_task_gen(features = 'cxx cprogram',
                                     source = 'test_physics.cpp',
-                                    uselib = 'DLIB GTEST PLATFORM_THREAD BULLET',
+                                    uselib = 'TESTMAIN DLIB GTEST PLATFORM_THREAD BULLET',
                                     uselib_local = 'physics_null',
                                     includes = ['../../../src', '../../../src/b2d'],
                                     target = 'test_physics_null')
@@ -33,7 +34,7 @@ def build(bld):
 
     null_test = bld.new_task_gen(features = 'cxx cprogram',
                                     source = 'test_physics_2d.cpp',
-                                    uselib = 'DLIB GTEST PLATFORM_THREAD BULLET',
+                                    uselib = 'TESTMAIN DLIB GTEST PLATFORM_THREAD BULLET',
                                     uselib_local = 'physics_null',
                                     includes = ['../../../src', '../../../src/b2d'],
                                     target = 'test_physics_2d_null')
