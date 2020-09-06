@@ -21,6 +21,8 @@ SHELL_CATALINA__arm64="echo \"alias shell_defold_arm64='./scripts/build.py shell
 SHELL_CATALINA__armv7a="echo \"alias shell_defold_armv7a='./scripts/build.py shell --platform=armv7-android --package-path=./local_sdks/'\" >> ~/.zshrc"
 SHELL_CATALINA__arm64a="echo \"alias shell_defold_arm64a='./scripts/build.py shell --platform=arm64-android --package-path=./local_sdks/'\" >> ~/.zshrc"
 
+INSTALL_EXT="sudo ./scripts/build.py install_ext --platform=$2 --package-path=packages/"
+
 SETUP="sh setup_env.sh"
 BUNDLE="sh bundle_editor.sh $2"
 
@@ -60,13 +62,16 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
+  --ext)
+    echo "Installing extension packages for $2.."
+    eval $INSTALL_EXT
+    ;;
   --lein)
     echo "Installing lein.."
     eval $COPY_LEIN
     ;;
   -f | --fast )
     eval $SUB_MODULE
-    eval $COPY_ENGINE_X8664
     exit
     ;;
   --waf )
