@@ -226,10 +226,10 @@ namespace dmPhysics
         context->m_VelocityIteration      = params.m_VelocityIteration;
         context->m_PositionIteration      = params.m_PositionIteration;
         /// Debug Log Physics << Game.Project
-        printf("physics_2d -- NewContext2D: Step: %i -- Velocity: %i -- Position: %i\n", 
-        context->m_StepPerFrame,  
-        context->m_VelocityIteration,
-        context->m_PositionIteration);
+        // printf("physics_2d -- NewContext2D: Step: %i -- Velocity: %i -- Position: %i\n", 
+        // context->m_StepPerFrame,  
+        // context->m_VelocityIteration,
+        // context->m_PositionIteration);
         /// End
         context->m_InvScale               = 1.0f / params.m_Scale;
         context->m_ContactImpulseLimit    = params.m_ContactImpulseLimit * params.m_Scale;
@@ -279,10 +279,10 @@ namespace dmPhysics
         /// Added by dotGears/TrungB
         /// 
         /// Debug Log:
-        printf("physics_2d -- NewWorld2D: Step: %i -- Velocity: %i -- Position: %i\n", 
-        context->m_StepPerFrame,  
-        context->m_VelocityIteration,
-        context->m_PositionIteration);
+        // printf("physics_2d -- NewWorld2D: Step: %i -- Velocity: %i -- Position: %i\n", 
+        // context->m_StepPerFrame,  
+        // context->m_VelocityIteration,
+        // context->m_PositionIteration);
         /// End
         world->m_World.SetDebugDraw(&world->m_DebugDraw);
         world->m_World.SetContactListener(&world->m_ContactListener);

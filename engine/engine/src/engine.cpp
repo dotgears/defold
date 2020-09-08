@@ -888,10 +888,10 @@ namespace dmEngine
         physics_params.m_PositionIteration      = dmConfigFile::GetInt(engine->m_Config, "physics.position_iteration", 8);
         physics_params.m_VelocityIteration      = dmConfigFile::GetInt(engine->m_Config, "physics.velocity_iteration", 16);
         printf("==================================\n");
-        printf("engine -- Fetch << game.project\n");
-        printf("engine -- m_StepPerFrame      = %i\n", physics_params.m_StepPerFrame);
-        printf("engine -- m_PositionIteration = %i\n", physics_params.m_PositionIteration);
-        printf("engine -- m_VelocityIteration = %i\n", physics_params.m_VelocityIteration);
+        printf("Engine -- Fetch << config << S:%i -- P:%i -- V:%i\n", 
+        physics_params.m_StepPerFrame, 
+        physics_params.m_PositionIteration, 
+        physics_params.m_VelocityIteration);
         printf("==================================\n");
         /// End
         physics_params.m_RayCastLimit2D         = dmConfigFile::GetInt(engine->m_Config, "physics.ray_cast_limit_2d", 64);
