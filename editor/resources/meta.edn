@@ -7,9 +7,13 @@
    :help "application version"
    :default "1.0"
    :path ["project" "version"]}
-  {:type :boolean
-   :help "Write log file to disk"
-   :default false
+  {:type :string,
+   :help "publisher name",
+   :default "",
+   :path ["project" "publisher"]}
+  {:type :boolean,
+   :help "Write log file to disk",
+   :default false,
    :path ["project" "write_log"]}
   {:type :boolean
    :help "compress archive (not for Android)"
@@ -361,14 +365,18 @@
    :help "max number of models, 128 by default"
    :default 128
    :path ["model" "max_count"]}
-  {:type :integer
-   :help "max number of gui components per collection, 64 by default"
-   :default 64
-   :path ["gui" "max_count"]}
-  {:type :integer
+  {:type :integer,
+   :help "max number of mesh components, 128 by default",
+   :default 128,
+   :path ["mesh" "max_count"]}
+  {:type :integer,
+   :help "max number of gui components per collection, 64 by default",
+   :default 64,
+   :path ["gui" "max_count"]},
+  {:type :integer,
    :help
-   "max number of particlefx nodes per collection"
-   :default 64
+   "max number of particlefx nodes per collection",
+   :default 64,
    :path ["gui" "max_particlefx_count"]}
   {:type :integer
    :help
