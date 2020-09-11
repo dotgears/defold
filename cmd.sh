@@ -21,6 +21,9 @@ SHELL_CATALINA__arm64="echo \"alias shell_defold_arm64='./scripts/build.py shell
 SHELL_CATALINA__armv7a="echo \"alias shell_defold_armv7a='./scripts/build.py shell --platform=armv7-android --package-path=./local_sdks/'\" >> ~/.zshrc"
 SHELL_CATALINA__arm64a="echo \"alias shell_defold_arm64a='./scripts/build.py shell --platform=arm64-android --package-path=./local_sdks/'\" >> ~/.zshrc"
 
+BOB_COMMENT="echo \"#bob.jar shorthand for Defold CLI\" >> ~/."
+BOB="echo \"alias bob='java -jar ${PWD}/tmp/dynamo_home/share/java/bob.jar'\" >> ~/."
+
 SETUP="sh setup_env.sh"
 BUNDLE="sh bundle_editor.sh $2"
 
@@ -60,6 +63,21 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
+  --bob)
+    echo "copying bob path.."
+    _PATH=""
+    if [[ "$2" == "linux"* ]]; then  
+      _PATH="bash_alias"
+    elif [[ "$2" == "mojave"* ]]; then
+      _PATH="bash_profile"
+    elif [[ "$2" == "catalina"* ]]; then
+      _PATH="zshrc"
+    fi
+    BOB=$BOB$_PATH
+    BOB_COMMENT=$BOB_COMMENT$_PATH
+    eval $BOB_COMMENT
+    eval $BOB
+    ;;
   --lein)
     echo "Installing lein.."
     eval $COPY_LEIN
@@ -199,6 +217,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     echo $BUILD_EDITOR
     echo $RUN_EDITOR
     echo $BUNDLE
+    echo $BOB
     ;;
 esac; shift; done
 if [[ "$1" == '--' ]]; then shift; fi
