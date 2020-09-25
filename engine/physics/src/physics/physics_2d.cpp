@@ -971,13 +971,12 @@ namespace dmPhysics
                 def.type = b2_staticBody;
                 break;
             //Added by dotGEARS / TrungVu 
-            //Trigger to be of Dynamic body type with zero gravity scale.
-            case dmPhysics::COLLISION_OBJECT_TYPE_TRIGGER:
+            //TriggerDynamic to be of Dynamic body type with zero gravity scale.
+            case dmPhysics::COLLISION_OBJECT_TYPE_TRIGGER_DYNAMIC:
                 def.type = b2_dynamicBody;
                 def.gravityScale = 0.0;
                 break;
             //Modification ends
-            
             default:
                 def.type = b2_kinematicBody;
                 break;
@@ -1015,7 +1014,10 @@ namespace dmPhysics
             f_def.density      = data.m_Mass / mass_data.mass;
             f_def.friction     = data.m_Friction;
             f_def.restitution  = data.m_Restitution;
-            f_def.isSensor     = data.m_Type == COLLISION_OBJECT_TYPE_TRIGGER;
+            if ((data.m_Type == COLLISION_OBJECT_TYPE_TRIGGER_DYNAMIC) || (data.m_Type == COLLISION_OBJECT_TYPE_TRIGGER))
+            {
+                f_def.isSensor  =  true;
+            }
             b2Fixture* fixture = body->CreateFixture(&f_def);
             (void)fixture;
         }

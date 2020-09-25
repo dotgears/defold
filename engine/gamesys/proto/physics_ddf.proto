@@ -80,6 +80,7 @@ enum CollisionObjectType
     COLLISION_OBJECT_TYPE_KINEMATIC = 1 [(displayName) = "Kinematic"];
     COLLISION_OBJECT_TYPE_STATIC = 2 [(displayName) = "Static"];
     COLLISION_OBJECT_TYPE_TRIGGER = 3 [(displayName) = "Trigger"];
+    COLLISION_OBJECT_TYPE_TRIGGER_DYNAMIC = 4 [(displayName) = "TriggerDynamic"];
 }
 
 message CollisionObjectDesc
