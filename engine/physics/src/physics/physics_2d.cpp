@@ -970,6 +970,14 @@ namespace dmPhysics
             case dmPhysics::COLLISION_OBJECT_TYPE_STATIC:
                 def.type = b2_staticBody;
                 break;
+            //Added by dotGEARS / TrungVu 
+            //Trigger to be of Dynamic body type with zero gravity scale.
+            case dmPhysics::COLLISION_OBJECT_TYPE_TRIGGER:
+                def.type = b2_dynamicBody;
+                def.gravityScale = 0.0;
+                break;
+            //Modification ends
+            
             default:
                 def.type = b2_kinematicBody;
                 break;
