@@ -81,6 +81,16 @@ namespace dmCrypt
      * @note                    Call this function with *dst_len = 0 to obtain the required buffer size in *dst_len
      */
     bool Base64Decode(const uint8_t* src, uint32_t src_len, uint8_t* dst, uint32_t* dst_len);
+
+
+    /*# RSA Sign Key
+     * @name dmCrypt::RS256SignKey
+     * @param signing_content   The content to be signed
+     * @param private_key       The RSA private key to sign
+     * @return                  signed RSA-SHA256 raw data
+     * @note                    Call this function if you need signing RSA/SHA256 on private key
+     */
+    unsigned char * RS256SignKey( unsigned char * signing_content, unsigned char * private_key );
 }
 
 #endif /* DMSDK_CRYPT_H */
