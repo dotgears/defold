@@ -1226,20 +1226,19 @@ namespace dmGameSystem
     /*# Set active for collision object.
      * Added by dotGears/TrungB
      *
-     * @name physics.set_active
-     * @param  collisionobject [type:string|hash|url] target body.
-     * @param  flag [type:boolean] mark a body to active or not.
+     * @name physics.set_factor
+     * @param  factor [type:number] set factor of physics.
      *
      * @examples
      *
      * ```lua
      * function init(self)
-     *     physics.set_bullet("#body", true)
+     *     physics.set_factor(1.0)
      * end
      * ```
      */
     static int
-    Physics_SetActive(lua_State* L)
+    Physics_SetFactor(lua_State* L)
     {
         DM_LUA_STACK_CHECK(L, 0);
 
@@ -1258,9 +1257,9 @@ namespace dmGameSystem
             return DM_LUA_ERROR("couldn't find collision object"); // todo: add url
         }
 
-        bool flag = lua_toboolean(L, 2);
+        float factor = lua_tonumber(L, 2);
 
-        dmGameSystem::SetActive(comp, flag);
+        dmGameSystem::SetFactor(comp_world, factor);
 
         return 0;
     }
@@ -1571,7 +1570,7 @@ namespace dmGameSystem
         { "set_controllable", Physics_SetControllable },
         { "set_delta_value", Physics_SetDeltaValue },
         { "set_bullet", Physics_SetBullet },
-        { "set_active", Physics_SetActive },
+        { "set_factor", Physics_SetFactor },
         { "is_world_locked", Physics_IsWorldLocked },
 
         // Config Body/World

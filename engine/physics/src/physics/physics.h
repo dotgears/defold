@@ -262,11 +262,13 @@ namespace dmPhysics
         uint32_t m_WorldCount;
         /// How the physics worlds are scaled in relation to the game world
         float m_Scale;
+        /// set amount of speed that physics will happen. Added by dotGears/TrungB
+        float m_Factor;
         /// set amount of physics step running per frame.
         uint32_t m_StepPerFrame;
         /// set iteration of position per step.
         uint32_t m_PositionIteration;
-        /// set velocity of position per step.
+        /// set velocity of position per step. End Adding dotGears/
         uint32_t m_VelocityIteration;
         /// Contacts with impulses below this limit will not be reported through callbacks
         float m_ContactImpulseLimit;
@@ -870,13 +872,12 @@ namespace dmPhysics
     void SetBullet(HCollisionObject2D collision_object, bool flag);
 
     /**
-     * Set Active  to an object body.
+     * Physics factor to slow down, speed up or stop physics.
      * Added by dotGears / TrungB
-     * @param context Physics context
-     * @param collision_object Collision object.
-     * @param flag to disable or enable sleeping.
+     * @param world Collision object.
+     * @param factor factor x scale.
      */
-    void SetActive(HCollisionObject2D collision_object, bool flag);
+    void SetFactor(HWorld2D world, float factor);
 
     /**
      * Return if the world is locked or not.

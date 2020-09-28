@@ -1508,10 +1508,10 @@ namespace dmGameSystem
         dmPhysics::SetBullet(component->m_Object2D, flag);
     }
 
-    void SetActive(void* comp, bool flag)
+    void SetFactor(void * comp, float factor)
     {
-        CollisionComponent* component = (CollisionComponent*)comp;
-        dmPhysics::SetActive(component->m_Object2D, flag);
+        CollisionWorld * world = (CollisionWorld*)comp;
+        dmPhysics::SetFactor(world->m_World2D, factor);
     }
 
     bool IsWorldLocked(void* _world)

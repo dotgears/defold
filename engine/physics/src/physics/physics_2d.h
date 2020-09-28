@@ -68,6 +68,7 @@ namespace dmPhysics
         dmMessage::HSocket m_Socket;
         float m_Scale;
         /// Added by dotGears/TrungB
+        float m_Factor;
         int m_StepPerFrame;
         int m_VelocityIteration;
         int m_PositionIteration;

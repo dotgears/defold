@@ -67,7 +67,7 @@ namespace dmGameSystem
     void SetDeltaValue(void* comp, float alphaX, float alphaY, float alphaZ);
     void SetControllable(void* comp, bool flag);
     void SetBullet(void* comp, bool flag);
-    void SetActive(void* comp, bool flag);
+    void SetFactor(void* comp, float factor);
     bool IsWorldLocked(void* _world);
 
     void SetGravityScale(void* comp, float gravityScale);

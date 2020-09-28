@@ -34,6 +34,7 @@ namespace dmPhysics
         , m_Socket(0)
         , m_Scale(1.0f)
         /// Added by dotGears / TrungB
+        , m_Factor(1.0)
         , m_StepPerFrame(1)
         , m_VelocityIteration(16)
         , m_PositionIteration(8)
@@ -222,6 +223,7 @@ namespace dmPhysics
         ToB2(params.m_Gravity, context->m_Gravity, params.m_Scale);
         context->m_Scale                  = params.m_Scale;
         /// Added by dotGears/TrungB
+        context->m_Factor                 = params.m_Factor;
         context->m_StepPerFrame           = params.m_StepPerFrame;
         context->m_VelocityIteration      = params.m_VelocityIteration;
         context->m_PositionIteration      = params.m_PositionIteration;
@@ -428,7 +430,7 @@ namespace dmPhysics
     {
         HContext2D context = world->m_Context;
         float dt           = step_context.m_DT;
-        float factor       = step_context.m_factor;
+        float factor       = step_context.m_factor * context->m_Factor; // Added by dotGears/TrungB
         float scale        = context->m_Scale;
         // Epsilon defining what transforms are considered noise and not
         // Values are picked by inspection, current rot value is roughly equivalent to 1 degree
@@ -1162,14 +1164,10 @@ namespace dmPhysics
         return world->m_World.IsLocked();
     }
 
-    void SetActive(HCollisionObject2D collision_object, bool flag)
+    void SetFactor(HWorld2D world, float factor)
     {
-        b2Body* b2_body = (b2Body*)collision_object;
-        if (b2_body != NULL)
-        {
-            b2_body->SetActive(flag);
-            // printf("physics_2d.cpp -- set_active: (%s)\n", flag ? "true":"false");
-        }
+        world->m_Context->m_Factor = factor;
+        // dmLogInfo("physics_2d -- SetFactor: %f -> %f", factor ,world->m_Context->m_Factor);
     }
 
     void SetDeltaValue(HCollisionObject2D collision_object, float alphaX, float alphaY, float alphaZ)
