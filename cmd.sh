@@ -200,11 +200,11 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     echo "sh cmd.sh --misc   : build bob + builtin"
     echo "sh cmd.sh --doc    : build editor document"
     echo "sh cmd.sh --docker : to run Docker local server from /extender"
-    echo "sh cmd.sh --fast   : -f taptic_engine"
+    echo "sh cmd.sh --fast   : -f moduleA moduleB moduleC"
     echo "sh cmd.sh --waf    : --waf <platform> <path-to-module>"
     echo "sh cmd.sh --force  : enable CLI when 'Operation is not permitted'"
     echo "sh cmd.sh --run    : run editor"
-    echo "sh cmd.sh --bundle : bundle editor into ./editor/release with given platform & version"
+    echo "sh cmd.sh --bundle : bundle editor into ./editor/release as: --bundle <platform> <version>"
     echo "______________________________________________"
     echo "You can also run each script separately as :"
     echo $SETUP

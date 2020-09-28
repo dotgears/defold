@@ -19,6 +19,7 @@
 #include <dmsdk/lua/lauxlib.h>
 #include <dmsdk/lua/lua.h>
 #include <dmsdk/dlib/time.h>
+#include <dmsdk/dlib/crypt.h>
 #include <dmsdk/dlib/condition_variable.h>
 #include <dmsdk/dlib/align.h>
 #include <dmsdk/dlib/shared_library.h>
