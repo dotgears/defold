@@ -1328,7 +1328,7 @@ namespace dmPhysics
         b2Body* body = ((b2Body*)collision_object);
         b2Vec2 b2_position;
         ToB2(position, b2_position, 1.0);
-        body->SetTransform(b2_position, 1.0);
+        body->SetTransform(b2_position, body->GetAngle());
     }
 
     void SetBodyAngle2D(HCollisionObject2D collision_object, float angle)
