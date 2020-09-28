@@ -283,6 +283,15 @@ namespace dmCrypt
             printf( "\ncrypt -- error: mbedtls_pk_sign returned %d\n", ret );       goto exit;
         }
 
+        /* obtain the expected length */
+        size_t dlen = 0;
+        size_t buflen = strlen((char*)buf);
+        mbedtls_base64_encode(NULL, 0, &dlen, buf, buflen);
+        unsigned char * dst;
+        mbedtls_base64_encode(dst, dlen, &olen, buf, buflen);
+
+        return dst;
+
     exit:
         /*
          * free resources.
