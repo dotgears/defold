@@ -226,6 +226,9 @@ namespace dmCrypt
         return true;
     }
 
+    /* Added by dotGears/TrungB
+     * This function will sign your content with given private key by RSA PKCS v15, and digest with SHA256.
+     */
     unsigned char * RS256SignKey( unsigned char * signing_content, unsigned char * private_key )
     {
         int ret = 1;
@@ -252,21 +255,24 @@ namespace dmCrypt
          */
         if(( ret = mbedtls_ctr_drbg_seed( &ctr_drbg,  mbedtls_entropy_func,  &entropy, (const unsigned char *) pers, strlen( pers ))) != 0 )
         {
-             printf( "\ncrypt -- error: mbedtls_ctr_drbg_seed returned %d", ret ); // goto exit;
+             printf( "\ncrypt -- error: mbedtls_ctr_drbg_seed returned %d", ret ); 
+             goto exit;
         }
         /* 
          * Parse private key, wonder why pkey_len had to +1 ? 
          */
         if(( ret = mbedtls_pk_parse_key( &pk, private_key, pkey_len, NULL, NULL)) != 0)
         {
-            printf( "  ! mbedtls_pk_parse_public_keyfile returned %d", ret );      // goto exit;
+            printf( "  ! mbedtls_pk_parse_public_keyfile returned %d", ret );      
+            goto exit;
         }
         /* 
          * Check for valid RSA key. 
          */
         if( !mbedtls_pk_can_do( &pk, MBEDTLS_PK_RSA )) 
         {
-            printf( "\ncrypt -- error: Key is not an RSA key: %s\n", private_key); // goto exit;
+            printf( "\ncrypt -- error: Key is not an RSA key: %s\n", private_key); 
+            goto exit;
         }
         /* 
          * Important: MBEDTLS_RSA_PKCS_V21 won't work for Google OAuth v2, but V15. 
@@ -277,14 +283,16 @@ namespace dmCrypt
          */
         if(( ret = mbedtls_md(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256), signing_content, strlen((char*)signing_content), hash)) != 0 )
         {
-            printf( "\ncrypt -- mbedtls_md_info_from_type\n" );                    // goto exit;
+            printf( "\ncrypt -- mbedtls_md_info_from_type\n" );                    
+            goto exit;
         }
         /*
          * then calculate the RSA signature of the hash.
          */
         if(( ret = mbedtls_pk_sign(&pk, MBEDTLS_MD_SHA256, hash, 0, buf, &olen, mbedtls_ctr_drbg_random, &ctr_drbg)) != 0 )
         {
-            printf( "\ncrypt -- error: mbedtls_pk_sign returned %d\n", ret );      // goto exit;
+            printf( "\ncrypt -- error: mbedtls_pk_sign returned %d\n", ret );      
+            goto exit;
         }
         /* 
          * encode given signature > base64
@@ -299,7 +307,6 @@ namespace dmCrypt
         mbedtls_entropy_free( &entropy );
         mbedtls_pk_free(&pk);
         
-        // return buf;
         return dst;
     }
 }
