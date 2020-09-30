@@ -224,6 +224,7 @@ namespace dmPhysics
         context->m_Scale                  = params.m_Scale;
         /// Added by dotGears/TrungB
         context->m_Factor                 = params.m_Factor;
+        printf("[physics_2d] factor: %f", params.m_Factor);
         context->m_StepPerFrame           = params.m_StepPerFrame;
         context->m_VelocityIteration      = params.m_VelocityIteration;
         context->m_PositionIteration      = params.m_PositionIteration;

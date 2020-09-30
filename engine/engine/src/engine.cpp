@@ -906,6 +906,7 @@ namespace dmEngine
         physics_params.m_Gravity.setZ(dmConfigFile::GetFloat(engine->m_Config, "physics.gravity_z", 0.0f));
         physics_params.m_Scale                  = dmConfigFile::GetFloat(engine->m_Config, "physics.scale", 1.0f);
         /// Added by dotGears / TrungB
+        physics_params.m_Factor                 = 1.0;
         physics_params.m_StepPerFrame           = dmConfigFile::GetInt(engine->m_Config, "physics.step_per_frame", 8);
         physics_params.m_PositionIteration      = dmConfigFile::GetInt(engine->m_Config, "physics.position_iteration", 8);
         physics_params.m_VelocityIteration      = dmConfigFile::GetInt(engine->m_Config, "physics.velocity_iteration", 16);
