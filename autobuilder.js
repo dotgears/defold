@@ -16,9 +16,9 @@ app.listen(7000, () => { console.log('Server running on port 7000') })
 
 
 let BUILD_SERVER_IP = 'http://192.168.0.100:9000'
-let DYNAMO_HOME = '/Users/thetrung/Documents/defold'
-let INPUT_PATH = '../HTM5_saving/'
-let OUTPUT_PATH = INPUT_PATH + 'build/'
+let DYNAMO_HOME = '/Users/defold/Projects/Project_Defold/defold'
+let INPUT_PATH = '../BoopDF/SourceCode/'
+// let OUTPUT_PATH = '../../../Downloads/js-web/BoopWeb/'
 
 let run_command = (cmd) => {
     const util = require('util')
@@ -51,6 +51,12 @@ let rebuild_engine_web = () => {
         `sh cmd.sh --engine js-web;sh cmd.sh --engine wasm-web;sh cmd.sh --notify`)
 }
 
+let update_git = () => {
+    return run_command(
+        `(cd ${INPUT_PATH};git pull origin editor)`
+    )
+}
+
 //
 // process GET request
 //
@@ -74,6 +80,16 @@ app.get("/rebuild_engine", (req, res, next) => {
     (async () => {
         shell_platform('x86_64-darwin')
         let result = await rebuild_engine_web()
+        await res.json([result])
+    })()
+})
+//
+// process update git request
+//
+app.get("/pull_git", (req, res, next) => {
+    (async () => {
+        shell_platform('x86_64-darwin')
+        let result = await update_git()
         await res.json([result])
     })()
 })
