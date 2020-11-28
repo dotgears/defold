@@ -13,7 +13,7 @@
 #ifndef PHYSICS_DEBUG_DRAW_2D_H
 #define PHYSICS_DEBUG_DRAW_2D_H
 
-#include "Box2D/Box2D.h"
+#include "Box2D/box2d.h"
 
 #include "physics.h"
 
@@ -31,10 +31,10 @@ namespace dmPhysics
         virtual void DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color);
 
         /// Draw a circle.
-        virtual void DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color);
+        virtual void DrawCircle(const b2Vec2& center, float radius, const b2Color& color);
 
         /// Draw a solid circle.
-        virtual void DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color);
+        virtual void DrawSolidCircle(const b2Vec2& center, float radius, const b2Vec2& axis, const b2Color& color);
 
         /// Draw a line segment.
         virtual void DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color);
@@ -47,6 +47,12 @@ namespace dmPhysics
         /// @param p position.
         /// @param d direction.
         virtual void DrawArrow(const b2Vec2& p, const b2Vec2& d, const b2Color& color);
+
+        /// Draw a point.
+        virtual void DrawPoint(const b2Vec2& p, float size, const b2Color& color);
+
+        /// Draw a line.
+        virtual void DrawLine(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color);
 
     private:
         DebugCallbacks* m_Callbacks;

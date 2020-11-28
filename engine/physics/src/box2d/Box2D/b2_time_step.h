@@ -19,54 +19,55 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+#ifndef B2_TIME_STEP_H
+#define B2_TIME_STEP_H
 
-#ifndef BOX2D_H
-#define BOX2D_H
+#include "b2_math.h"
 
-/**
-\mainpage Box2D API Documentation
+/// Profiling data. Times are in milliseconds.
+struct b2Profile
+{
+	float step;
+	float collide;
+	float solve;
+	float solveInit;
+	float solveVelocity;
+	float solvePosition;
+	float broadphase;
+	float solveTOI;
+};
 
-\section intro_sec Getting Started
+/// This is an internal structure.
+struct b2TimeStep
+{
+	float dt;			// time step
+	float inv_dt;		// inverse time step (0 if dt == 0).
+	float dtRatio;	// dt * inv_dt0
+	int32 velocityIterations;
+	int32 positionIterations;
+	bool warmStarting;
+};
 
-For documentation please see http://box2d.org/documentation.html
+/// This is an internal structure.
+struct b2Position
+{
+	b2Vec2 c;
+	float a;
+};
 
-For discussion please visit http://box2d.org/forum
-*/
+/// This is an internal structure.
+struct b2Velocity
+{
+	b2Vec2 v;
+	float w;
+};
 
-// These include files constitute the main Box2D API
-
-#include "b2_settings.h"
-#include "b2_draw.h"
-#include "b2_timer.h"
-
-#include "b2_chain_shape.h"
-#include "b2_circle_shape.h"
-#include "b2_edge_shape.h"
-#include "b2_polygon_shape.h"
-
-#include "b2_broad_phase.h"
-#include "b2_dynamic_tree.h"
-
-#include "b2_body.h"
-#include "b2_contact.h"
-#include "b2_fixture.h"
-#include "b2_time_step.h"
-#include "b2_world.h"
-#include "b2_world_callbacks.h"
-
-#include "b2_distance_joint.h"
-#include "b2_friction_joint.h"
-#include "b2_gear_joint.h"
-#include "b2_motor_joint.h"
-#include "b2_mouse_joint.h"
-#include "b2_prismatic_joint.h"
-#include "b2_pulley_joint.h"
-#include "b2_revolute_joint.h"
-#include "b2_rope_joint.h"
-#include "b2_weld_joint.h"
-#include "b2_wheel_joint.h"
-
-// Added by dotGears/ Defold Modification
-#include "b2_grid_shape.h"
+/// Solver Data
+struct b2SolverData
+{
+	b2TimeStep step;
+	b2Position* positions;
+	b2Velocity* velocities;
+};
 
 #endif

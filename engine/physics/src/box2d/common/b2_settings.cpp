@@ -20,53 +20,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BOX2D_H
-#define BOX2D_H
+#include "../Box2D/b2_settings.h"
+#include <stdio.h>
+#include <stdarg.h>
+#include <stdlib.h>
 
-/**
-\mainpage Box2D API Documentation
+b2Version b2_version = {2, 4, 0};
 
-\section intro_sec Getting Started
+// Memory allocators. Modify these to use your own allocator.
+void* b2Alloc(int32 size)
+{
+	return malloc(size);
+}
 
-For documentation please see http://box2d.org/documentation.html
+void b2Free(void* mem)
+{
+	free(mem);
+}
 
-For discussion please visit http://box2d.org/forum
-*/
-
-// These include files constitute the main Box2D API
-
-#include "b2_settings.h"
-#include "b2_draw.h"
-#include "b2_timer.h"
-
-#include "b2_chain_shape.h"
-#include "b2_circle_shape.h"
-#include "b2_edge_shape.h"
-#include "b2_polygon_shape.h"
-
-#include "b2_broad_phase.h"
-#include "b2_dynamic_tree.h"
-
-#include "b2_body.h"
-#include "b2_contact.h"
-#include "b2_fixture.h"
-#include "b2_time_step.h"
-#include "b2_world.h"
-#include "b2_world_callbacks.h"
-
-#include "b2_distance_joint.h"
-#include "b2_friction_joint.h"
-#include "b2_gear_joint.h"
-#include "b2_motor_joint.h"
-#include "b2_mouse_joint.h"
-#include "b2_prismatic_joint.h"
-#include "b2_pulley_joint.h"
-#include "b2_revolute_joint.h"
-#include "b2_rope_joint.h"
-#include "b2_weld_joint.h"
-#include "b2_wheel_joint.h"
-
-// Added by dotGears/ Defold Modification
-#include "b2_grid_shape.h"
-
-#endif
+// You can modify this to use your logging facility.
+void b2Log(const char* string, ...)
+{
+	va_list args;
+	va_start(args, string);
+	vprintf(string, args);
+	va_end(args);
+}

@@ -20,53 +20,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BOX2D_H
-#define BOX2D_H
+#ifndef B2_BLOCK_ALLOCATOR_H
+#define B2_BLOCK_ALLOCATOR_H
 
-/**
-\mainpage Box2D API Documentation
+#include "../Box2D/b2_settings.h"
 
-\section intro_sec Getting Started
+const int32 b2_chunkSize = 16 * 1024;
+const int32 b2_maxBlockSize = 640;
+const int32 b2_blockSizes = 14;
+const int32 b2_chunkArrayIncrement = 128;
 
-For documentation please see http://box2d.org/documentation.html
+struct b2Block;
+struct b2Chunk;
 
-For discussion please visit http://box2d.org/forum
-*/
+/// This is a small object allocator used for allocating small
+/// objects that persist for more than one time step.
+/// See: http://www.codeproject.com/useritems/Small_Block_Allocator.asp
+class b2BlockAllocator
+{
+public:
+	b2BlockAllocator();
+	~b2BlockAllocator();
 
-// These include files constitute the main Box2D API
+	/// Allocate memory. This will use b2Alloc if the size is larger than b2_maxBlockSize.
+	void* Allocate(int32 size);
 
-#include "b2_settings.h"
-#include "b2_draw.h"
-#include "b2_timer.h"
+	/// Free memory. This will use b2Free if the size is larger than b2_maxBlockSize.
+	void Free(void* p, int32 size);
 
-#include "b2_chain_shape.h"
-#include "b2_circle_shape.h"
-#include "b2_edge_shape.h"
-#include "b2_polygon_shape.h"
+	void Clear();
 
-#include "b2_broad_phase.h"
-#include "b2_dynamic_tree.h"
+private:
 
-#include "b2_body.h"
-#include "b2_contact.h"
-#include "b2_fixture.h"
-#include "b2_time_step.h"
-#include "b2_world.h"
-#include "b2_world_callbacks.h"
+	b2Chunk* m_chunks;
+	int32 m_chunkCount;
+	int32 m_chunkSpace;
 
-#include "b2_distance_joint.h"
-#include "b2_friction_joint.h"
-#include "b2_gear_joint.h"
-#include "b2_motor_joint.h"
-#include "b2_mouse_joint.h"
-#include "b2_prismatic_joint.h"
-#include "b2_pulley_joint.h"
-#include "b2_revolute_joint.h"
-#include "b2_rope_joint.h"
-#include "b2_weld_joint.h"
-#include "b2_wheel_joint.h"
+	b2Block* m_freeLists[b2_blockSizes];
 
-// Added by dotGears/ Defold Modification
-#include "b2_grid_shape.h"
+	static int32 s_blockSizes[b2_blockSizes];
+	static uint8 s_blockSizeLookup[b2_maxBlockSize + 1];
+	static bool s_blockSizeLookupInitialized;
+};
 
 #endif

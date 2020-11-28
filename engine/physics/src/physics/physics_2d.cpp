@@ -20,7 +20,7 @@
 #include <dlib/math.h>
 #include <dlib/profile.h>
 
-#include "Box2D/Box2D.h"
+#include "Box2D/box2d.h"
 
 #include "physics_2d.h"
 
@@ -83,7 +83,7 @@ namespace dmPhysics
         /// @param normal the normal vector at the point of intersection
         /// @return -1 to filter, 0 to terminate, fraction to clip the ray for
         /// closest hit, 1 to continue
-        virtual float32 ReportFixture(b2Fixture* fixture, int32 index, const b2Vec2& point, const b2Vec2& normal, float32 fraction);
+        virtual float ReportFixture(b2Fixture* fixture, int32 index, const b2Vec2& point, const b2Vec2& normal, float fraction);
 
         HContext2D                  m_Context;
         RayCastResponse             m_Response;
@@ -97,7 +97,7 @@ namespace dmPhysics
         uint16_t                :15;
     };
 
-    float32 ProcessRayCastResultCallback2D::ReportFixture(b2Fixture* fixture, int32_t index, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
+    float ProcessRayCastResultCallback2D::ReportFixture(b2Fixture* fixture, int32_t index, const b2Vec2& point, const b2Vec2& normal, float fraction)
     {
         // Never hit triggers
         if (fixture->IsSensor())
@@ -277,7 +277,7 @@ namespace dmPhysics
     static void FlipPolygon(b2PolygonShape* shape, float horizontal, float vertical)
     {
         shape->m_centroid = FlipPoint(shape->m_centroid, horizontal, vertical);
-        int count = shape->m_vertexCount;
+        int count = shape->m_count;
 
         for (int i = 0; i < count; ++i)
         {
@@ -996,7 +996,7 @@ namespace dmPhysics
         ToB2(force, b2_force, scale);
         b2Vec2 b2_position;
         ToB2(position, b2_position, scale);
-        ((b2Body*)collision_object)->ApplyForce(b2_force, b2_position);
+        ((b2Body*)collision_object)->ApplyForce(b2_force, b2_position, true);
     }
 
     Vectormath::Aos::Vector3 GetTotalForce2D(HContext2D context, HCollisionObject2D collision_object)

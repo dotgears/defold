@@ -20,53 +20,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BOX2D_H
-#define BOX2D_H
+#ifndef B2_CIRCLE_SHAPE_H
+#define B2_CIRCLE_SHAPE_H
 
-/**
-\mainpage Box2D API Documentation
+#include "b2_shape.h"
 
-\section intro_sec Getting Started
+/// A circle shape.
+class b2CircleShape : public b2Shape
+{
+public:
+	b2CircleShape();
 
-For documentation please see http://box2d.org/documentation.html
+	/// Implement b2Shape.
+	b2Shape* Clone(b2BlockAllocator* allocator) const override;
 
-For discussion please visit http://box2d.org/forum
-*/
+	/// @see b2Shape::GetChildCount
+	int32 GetChildCount() const override;
 
-// These include files constitute the main Box2D API
+	/// Implement b2Shape.
+	bool TestPoint(const b2Transform& transform, const b2Vec2& p) const override;
 
-#include "b2_settings.h"
-#include "b2_draw.h"
-#include "b2_timer.h"
+	/// Implement b2Shape.
+	bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input,
+				const b2Transform& transform, int32 childIndex) const override;
 
-#include "b2_chain_shape.h"
-#include "b2_circle_shape.h"
-#include "b2_edge_shape.h"
-#include "b2_polygon_shape.h"
+	/// @see b2Shape::ComputeAABB
+	void ComputeAABB(b2AABB* aabb, const b2Transform& transform, int32 childIndex) const override;
 
-#include "b2_broad_phase.h"
-#include "b2_dynamic_tree.h"
+	/// @see b2Shape::ComputeMass
+	void ComputeMass(b2MassData* massData, float density) const override;
 
-#include "b2_body.h"
-#include "b2_contact.h"
-#include "b2_fixture.h"
-#include "b2_time_step.h"
-#include "b2_world.h"
-#include "b2_world_callbacks.h"
+	/// Position
+	b2Vec2 m_p;
+};
 
-#include "b2_distance_joint.h"
-#include "b2_friction_joint.h"
-#include "b2_gear_joint.h"
-#include "b2_motor_joint.h"
-#include "b2_mouse_joint.h"
-#include "b2_prismatic_joint.h"
-#include "b2_pulley_joint.h"
-#include "b2_revolute_joint.h"
-#include "b2_rope_joint.h"
-#include "b2_weld_joint.h"
-#include "b2_wheel_joint.h"
-
-// Added by dotGears/ Defold Modification
-#include "b2_grid_shape.h"
+inline b2CircleShape::b2CircleShape()
+{
+	m_type = e_circle;
+	m_radius = 0.0f;
+	m_p.SetZero();
+}
 
 #endif

@@ -20,53 +20,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BOX2D_H
-#define BOX2D_H
+#ifndef B2_TIME_OF_IMPACT_H
+#define B2_TIME_OF_IMPACT_H
 
-/**
-\mainpage Box2D API Documentation
+#include "b2_math.h"
+#include "b2_distance.h"
 
-\section intro_sec Getting Started
+/// Input parameters for b2TimeOfImpact
+struct b2TOIInput
+{
+	b2DistanceProxy proxyA;
+	b2DistanceProxy proxyB;
+	b2Sweep sweepA;
+	b2Sweep sweepB;
+	float tMax;		// defines sweep interval [0, tMax]
+};
 
-For documentation please see http://box2d.org/documentation.html
+/// Output parameters for b2TimeOfImpact.
+struct b2TOIOutput
+{
+	enum State
+	{
+		e_unknown,
+		e_failed,
+		e_overlapped,
+		e_touching,
+		e_separated
+	};
 
-For discussion please visit http://box2d.org/forum
-*/
+	State state;
+	float t;
+};
 
-// These include files constitute the main Box2D API
-
-#include "b2_settings.h"
-#include "b2_draw.h"
-#include "b2_timer.h"
-
-#include "b2_chain_shape.h"
-#include "b2_circle_shape.h"
-#include "b2_edge_shape.h"
-#include "b2_polygon_shape.h"
-
-#include "b2_broad_phase.h"
-#include "b2_dynamic_tree.h"
-
-#include "b2_body.h"
-#include "b2_contact.h"
-#include "b2_fixture.h"
-#include "b2_time_step.h"
-#include "b2_world.h"
-#include "b2_world_callbacks.h"
-
-#include "b2_distance_joint.h"
-#include "b2_friction_joint.h"
-#include "b2_gear_joint.h"
-#include "b2_motor_joint.h"
-#include "b2_mouse_joint.h"
-#include "b2_prismatic_joint.h"
-#include "b2_pulley_joint.h"
-#include "b2_revolute_joint.h"
-#include "b2_rope_joint.h"
-#include "b2_weld_joint.h"
-#include "b2_wheel_joint.h"
-
-// Added by dotGears/ Defold Modification
-#include "b2_grid_shape.h"
+/// Compute the upper bound on time before two shapes penetrate. Time is represented as
+/// a fraction between [0,tMax]. This uses a swept separating axis and may miss some intermediate,
+/// non-tunneling collisions. If you change the time interval, you should call this function
+/// again.
+/// Note: use b2Distance to compute the contact point and normal at the time of impact.
+void b2TimeOfImpact(b2TOIOutput* output, const b2TOIInput* input);
 
 #endif

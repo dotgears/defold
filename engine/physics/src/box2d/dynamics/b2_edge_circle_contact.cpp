@@ -20,53 +20,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BOX2D_H
-#define BOX2D_H
+#include "b2_edge_circle_contact.h"
 
-/**
-\mainpage Box2D API Documentation
+#include "../Box2D/b2_block_allocator.h"
+#include "../Box2D/b2_fixture.h"
 
-\section intro_sec Getting Started
+#include <new>
 
-For documentation please see http://box2d.org/documentation.html
+b2Contact* b2EdgeAndCircleContact::Create(b2Fixture* fixtureA, int32, b2Fixture* fixtureB, int32, b2BlockAllocator* allocator)
+{
+	void* mem = allocator->Allocate(sizeof(b2EdgeAndCircleContact));
+	return new (mem) b2EdgeAndCircleContact(fixtureA, fixtureB);
+}
 
-For discussion please visit http://box2d.org/forum
-*/
+void b2EdgeAndCircleContact::Destroy(b2Contact* contact, b2BlockAllocator* allocator)
+{
+	((b2EdgeAndCircleContact*)contact)->~b2EdgeAndCircleContact();
+	allocator->Free(contact, sizeof(b2EdgeAndCircleContact));
+}
 
-// These include files constitute the main Box2D API
+b2EdgeAndCircleContact::b2EdgeAndCircleContact(b2Fixture* fixtureA, b2Fixture* fixtureB)
+: b2Contact(fixtureA, 0, fixtureB, 0)
+{
+	b2Assert(m_fixtureA->GetType() == b2Shape::e_edge);
+	b2Assert(m_fixtureB->GetType() == b2Shape::e_circle);
+}
 
-#include "b2_settings.h"
-#include "b2_draw.h"
-#include "b2_timer.h"
-
-#include "b2_chain_shape.h"
-#include "b2_circle_shape.h"
-#include "b2_edge_shape.h"
-#include "b2_polygon_shape.h"
-
-#include "b2_broad_phase.h"
-#include "b2_dynamic_tree.h"
-
-#include "b2_body.h"
-#include "b2_contact.h"
-#include "b2_fixture.h"
-#include "b2_time_step.h"
-#include "b2_world.h"
-#include "b2_world_callbacks.h"
-
-#include "b2_distance_joint.h"
-#include "b2_friction_joint.h"
-#include "b2_gear_joint.h"
-#include "b2_motor_joint.h"
-#include "b2_mouse_joint.h"
-#include "b2_prismatic_joint.h"
-#include "b2_pulley_joint.h"
-#include "b2_revolute_joint.h"
-#include "b2_rope_joint.h"
-#include "b2_weld_joint.h"
-#include "b2_wheel_joint.h"
-
-// Added by dotGears/ Defold Modification
-#include "b2_grid_shape.h"
-
-#endif
+void b2EdgeAndCircleContact::Evaluate(b2Manifold* manifold, const b2Transform& xfA, const b2Transform& xfB)
+{
+	b2CollideEdgeAndCircle(	manifold,
+								(b2EdgeShape*)m_fixtureA->GetShape(), xfA,
+								(b2CircleShape*)m_fixtureB->GetShape(), xfB);
+}
