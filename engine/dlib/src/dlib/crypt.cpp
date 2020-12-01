@@ -28,7 +28,8 @@
 #include <mbedtls/rsa.h>
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
-
+//Added by dotGears
+#include <mbedtls/md.h>
 
 #include <dlib/log.h> // For debugging the manifest verification issue
 
@@ -224,7 +225,92 @@ namespace dmCrypt
         *dst_len = (uint32_t)out_len;
         return true;
     }
+    
+    /* Added by dotGears/TrungB
+     * This function will sign your content with given private key by RSA PKCS v15, and digest with SHA256.
+     */
+    unsigned char * RS256SignKey( unsigned char * signing_content, unsigned char * private_key )
+    {
+        int ret = 1;
+        mbedtls_pk_context pk;
+        mbedtls_entropy_context entropy;
+        mbedtls_ctr_drbg_context ctr_drbg;
+        
+        mbedtls_pk_init( &pk );
+        mbedtls_entropy_init( &entropy );
+        mbedtls_ctr_drbg_init( &ctr_drbg );
+
+        unsigned char hash[32];
+        unsigned char buf[MBEDTLS_MPI_MAX_SIZE]; // As [1024]
+        
+        size_t  olen = 0, 
+                dlen = 344+1, 
+                buflen = 256;
+        unsigned char dst[344+1]; 
+
+        const char * pers = "rsa_sign_pss";
+        size_t pkey_len = strlen((char*)private_key)+1;
+        /* 
+         * Key Sign need a Random Generator Function, so here's one : 
+         */
+        if(( ret = mbedtls_ctr_drbg_seed( &ctr_drbg,  mbedtls_entropy_func,  &entropy, (const unsigned char *) pers, strlen( pers ))) != 0 )
+        {
+             printf( "\ncrypt -- error: mbedtls_ctr_drbg_seed returned %d", ret ); 
+             goto exit;
+        }
+        /* 
+         * Parse private key, wonder why pkey_len had to +1 ? 
+         */
+        if(( ret = mbedtls_pk_parse_key( &pk, private_key, pkey_len, NULL, NULL)) != 0)
+        {
+            printf( "  ! mbedtls_pk_parse_public_keyfile returned %d", ret );      
+            goto exit;
+        }
+        /* 
+         * Check for valid RSA key. 
+         */
+        if( !mbedtls_pk_can_do( &pk, MBEDTLS_PK_RSA )) 
+        {
+            printf( "\ncrypt -- error: Key is not an RSA key: %s\n", private_key); 
+            goto exit;
+        }
+        /* 
+         * Important: MBEDTLS_RSA_PKCS_V21 won't work for Google OAuth v2, but V15. 
+         */
+        mbedtls_rsa_set_padding( mbedtls_pk_rsa(pk), MBEDTLS_RSA_PKCS_V15, MBEDTLS_MD_SHA256 );
+        /*
+         * Compute the SHA-256 hash of the input file.
+         */
+        if(( ret = mbedtls_md(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256), signing_content, strlen((char*)signing_content), hash)) != 0 )
+        {
+            printf( "\ncrypt -- mbedtls_md_info_from_type\n" );                    
+            goto exit;
+        }
+        /*
+         * then calculate the RSA signature of the hash.
+         */
+        if(( ret = mbedtls_pk_sign(&pk, MBEDTLS_MD_SHA256, hash, 0, buf, &olen, mbedtls_ctr_drbg_random, &ctr_drbg)) != 0 )
+        {
+            printf( "\ncrypt -- error: mbedtls_pk_sign returned %d\n", ret );      
+            goto exit;
+        }
+        /* 
+         * encode given signature > base64
+         */
+        mbedtls_base64_encode(dst, dlen, &olen, buf, buflen);
+
+    exit:
+        /*
+         * free resources.
+         */
+        mbedtls_ctr_drbg_free( &ctr_drbg );
+        mbedtls_entropy_free( &entropy );
+        mbedtls_pk_free(&pk);
+        
+        return dst;
+    }
 }
+
 
 extern "C" {
     DM_DLLEXPORT int EncryptXTeaCTR(uint8_t* data, uint32_t datalen, const uint8_t* key, uint32_t keylen)

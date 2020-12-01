@@ -1556,4 +1556,55 @@ namespace dmGameSystem
         component->m_FlippedY = flip;
     }
 
+    //Added by dotGears
+    void SetGravityScale(void* comp, float gravityScale)
+    {
+        CollisionComponent* component = (CollisionComponent*)comp;
+        dmPhysics::SetGravityScale(component->m_Object2D, gravityScale);
+    }
+
+    void SetControllable(void* comp, bool flag)
+    {
+        CollisionComponent* component = (CollisionComponent*)comp;
+        dmPhysics::SetControllable(component->m_Object2D, flag);
+    }
+    void SetDeltaValue(void* comp, float alphaX, float alphaY, float alphaZ)
+    {
+        CollisionComponent* component = (CollisionComponent*)comp;
+        dmPhysics::SetDeltaValue(component->m_Object2D, alphaX, alphaY, alphaZ);
+    }
+
+    void SetMasterBody(void * comp, void * master_body)
+    {
+      CollisionComponent* component = (CollisionComponent*)comp;
+      CollisionComponent* master = (CollisionComponent*)master_body;
+      dmPhysics::SetMasterBody(component->m_Object2D, master->m_Object2D);
+    }
+
+    void CopyState(void* comp, uint16_t state, float ratio, float offset)
+    {
+        CollisionComponent* component = (CollisionComponent*)comp;
+        dmPhysics::CopyState(component->m_Object2D, state, ratio, offset);
+    }
+
+    void SetStateLimit(void* comp, uint16_t state, float min, float max)
+    {
+        CollisionComponent* component = (CollisionComponent*)comp;
+        dmPhysics::SetStateLimit(component->m_Object2D, state, min, max);
+    }
+
+    void SetSleepingAllowed(void* comp, bool allow_sleep)
+    {
+        CollisionComponent* component = (CollisionComponent*)comp;
+        dmPhysics::SetSleepingAllowed(component->m_Object2D, allow_sleep);
+    }
+
+    void SetBullet(void* comp, bool flag)
+    {
+        CollisionComponent* component = (CollisionComponent*)comp;
+        dmPhysics::SetBullet(component->m_Object2D, flag);
+    }
+
+
+    //End
 }

@@ -51,6 +51,11 @@ namespace dmPhysics
         SetWorldTransformCallback   m_SetWorldTransformCallback;
         uint8_t                     m_AllowDynamicTransforms:1;
         uint8_t                     :7;
+        //Added by dotGears for custom physics iteration
+        uint8_t m_stepIteration;
+        uint8_t m_velocityIteration;
+        uint8_t m_positionIteration;
+        //End
     };
 
     struct Context2D
@@ -69,6 +74,11 @@ namespace dmPhysics
         int                         m_TriggerOverlapCapacity;
         uint8_t                     m_AllowDynamicTransforms:1;
         uint8_t                     :7;
+        //Added by dotGears
+        int m_StepPerFrame;
+        int m_VelocityIteration;
+        int m_PositionIteration;
+        //End
     };
 
     inline void ToB2(const Vectormath::Aos::Point3& p0, b2Vec2& p1, float scale)

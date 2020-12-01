@@ -33,6 +33,7 @@ namespace dmPhysics
         COLLISION_OBJECT_TYPE_KINEMATIC,
         COLLISION_OBJECT_TYPE_STATIC,
         COLLISION_OBJECT_TYPE_TRIGGER,
+        COLLISION_OBJECT_TYPE_TRIGGER_DYNAMIC,
         COLLISION_OBJECT_TYPE_COUNT
     };
 
@@ -242,6 +243,12 @@ namespace dmPhysics
         /// If true, the collision objects will retrieve the position of its game object
         uint8_t m_AllowDynamicTransforms:1;
         uint8_t :7;
+
+        //Added by dotGears
+        uint32_t m_StepPerFrame;
+        uint32_t m_VelocityIteration;
+        uint32_t m_PositionIteration;
+        //End
     };
 
     /**
@@ -1315,6 +1322,108 @@ namespace dmPhysics
     void FlipH2D(HCollisionObject2D collision_object);
     void FlipV2D(HCollisionObject2D collision_object);
 
+    //Added by dotGears
+    enum CopyState
+    {
+        COPY_POSITION_X = 1 << 0,
+        COPY_POSITION_Y = 1 << 1,
+        COPY_ROTATION_Z = 1 << 2,
+        COPY_LINEAR_VEC = 1 << 3,
+        COPY_ANGULAR_VEC = 1 << 4
+    };
+
+    /**
+     * Set Gravity Scale of an object body.
+     *
+     * @param body Physics body
+     * @param gravityScale the scale of gravity in Box2D
+     */
+    void SetGravityScale(HCollisionObject2D collision_object, float gravityScale);
+
+    /**
+     * Set the world position of the specified 2D collision object.
+     *
+     * @param collision_object Collision object handle
+     * @param position object position in vector3
+     */
+    void SetWorldPosition2D(HCollisionObject2D collision_object, const Vectormath::Aos::Vector3& position);
+
+    /**
+     * Return the angle of the specified 2D collision object.
+     *
+     * @param collision_object Collision object
+     * @return the angle
+     */
+    float GetBodyAngle2D(HCollisionObject2D collision_object);
+
+    /**
+     * Set the world angle of the specified 2D collision object.
+     *
+     * @param collision_object Collision object handle
+     * @param angle object angle in float
+     */
+    void SetBodyAngle2D(HCollisionObject2D collision_object, float angle);
+
+    /**
+     * Set Master Body to an object body
+     *
+     * @param slave_body slave body
+     * @param master_body master body
+     */
+    void SetMasterBody(HCollisionObject2D slave_body, HCollisionObject2D master_body);
+    
+    /**
+     * Set state to copy from the master body
+     * 
+     * @param collision_object Collision object that acts as slave
+     * @param state can be position, rotation or velocity
+     * @param ratio copy ratio
+     * @param offset offset between master body and slave
+     */
+    void CopyState(HCollisionObject2D collision_object, uint16_t state, float ratio, float offset);
+
+    /**
+     * Set Limits for Slave Body
+     * 
+     * @param collision_object Collision object that acts as slave
+     * @param state can be position, rotation or velocity
+     * @param min minimum value
+     * @param max maximum value
+     */
+    void SetStateLimit(HCollisionObject2D collision_object, uint16_t state, float min, float max);
+
+    /**
+     * Set Controllable Tag to an object
+     *
+     * @param collision_object Collision object receiving the force
+     * @param flag enable delta Value update or not
+     */
+    void SetControllable(HCollisionObject2D collision_object, bool flag);
+
+    /**
+     * Set delta Value to an object body, which will update its transform along with world step.
+     *
+     * @param collision_object Collision object receiving the force
+     * @param deltaX Set deltaX position update
+     * @param deltaY Set deltaY position update
+     * @param deltaZ Set deltaZ position update
+     */
+    void SetDeltaValue(HCollisionObject2D collision_object, float alphaX, float alphaY, float alphaZ );
+
+    /**
+     * Set Allow Sleeping to an object body
+     * @param collision_object Collision object
+     * @param flag to disable or enable sleeping
+     */
+    void SetSleepingAllowed(HCollisionObject2D collision_object, bool flag);
+
+    /**
+     * Set Bullet to an object body.
+     * @param collision_object Collision object
+     * @param flag to disable or enable bullet
+     */
+    void SetBullet(HCollisionObject2D collision_object, bool flag);
+    //End
 }
 
 #endif // PHYSICS_H

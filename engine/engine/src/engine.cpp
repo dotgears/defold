@@ -899,6 +899,12 @@ namespace dmEngine
         physics_params.m_Gravity.setY(dmConfigFile::GetFloat(engine->m_Config, "physics.gravity_y", -10.0f));
         physics_params.m_Gravity.setZ(dmConfigFile::GetFloat(engine->m_Config, "physics.gravity_z", 0.0f));
         physics_params.m_Scale = dmConfigFile::GetFloat(engine->m_Config, "physics.scale", 1.0f);
+        /// Added by dotGears 
+        physics_params.m_StepPerFrame           = dmConfigFile::GetInt(engine->m_Config, "physics.step_per_frame", 8);
+        physics_params.m_PositionIteration      = dmConfigFile::GetInt(engine->m_Config, "physics.position_iteration", 8);
+        physics_params.m_VelocityIteration      = dmConfigFile::GetInt(engine->m_Config, "physics.velocity_iteration", 16);
+        /// End
+
         physics_params.m_RayCastLimit2D = dmConfigFile::GetInt(engine->m_Config, "physics.ray_cast_limit_2d", 64);
         physics_params.m_RayCastLimit3D = dmConfigFile::GetInt(engine->m_Config, "physics.ray_cast_limit_3d", 128);
         physics_params.m_TriggerOverlapCapacity = dmConfigFile::GetInt(engine->m_Config, "physics.trigger_overlap_capacity", 16);

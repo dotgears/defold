@@ -39,6 +39,11 @@ namespace dmPhysics
     , m_RayCastLimit(0)
     , m_TriggerOverlapCapacity(0)
     , m_AllowDynamicTransforms(0)
+    //Added by dotGears
+    , m_StepPerFrame(1)
+    , m_VelocityIteration(16)
+    , m_PositionIteration(8)
+    //End
     {
 
     }
@@ -53,6 +58,11 @@ namespace dmPhysics
     , m_GetWorldTransformCallback(params.m_GetWorldTransformCallback)
     , m_SetWorldTransformCallback(params.m_SetWorldTransformCallback)
     , m_AllowDynamicTransforms(context->m_AllowDynamicTransforms)
+    //Added by dotGears
+    , m_stepIteration(context->m_StepPerFrame)
+    , m_velocityIteration(context->m_VelocityIteration)
+    , m_positionIteration(context->m_PositionIteration)
+    //End
     {
     	m_RayCastRequests.SetCapacity(context->m_RayCastLimit);
         OverlapCacheInit(&m_TriggerOverlaps);
@@ -223,6 +233,13 @@ namespace dmPhysics
             DeleteContext2D(context);
             return 0x0;
         }
+
+        //Added by dotGears
+        context->m_StepPerFrame = params.m_StepPerFrame;
+        context->m_VelocityIteration = params.m_VelocityIteration;
+        context->m_PositionIteration = params.m_PositionIteration;
+        //End
+
         return context;
     }
 
@@ -440,14 +457,44 @@ namespace dmPhysics
         {
             DM_PROFILE(Physics, "StepSimulation");
             world->m_ContactListener.SetStepWorldContext(&step_context);
-            world->m_World.Step(dt, 10, 10);
+
+            //Added by dotGears to step physics multiple times 
+            for (int i = 0; i < context->m_StepPerFrame; i++)
+            {
+                for(b2Body* body = world->m_World.GetBodyList(); body; body = body->GetNext())
+                {
+                    if (body->IsActive())
+                    {
+                        if (body->IsControllable())
+                        {
+                            b2Vec2 b2position = body->GetPosition();
+
+                            b2position.x += (body->GetDeltaX() / context->m_StepPerFrame);
+                            b2position.y += (body->GetDeltaY() / context->m_StepPerFrame);
+
+                            float b2angle = body->GetAngle();
+                            b2angle += body->GetDeltaZ() / context->m_StepPerFrame;
+
+                            body->SetTransform(b2position, b2angle);
+                        }
+                        if (body->isHavingMasterBody())
+                        {
+                            body->UpdateStateFromMasterBody();
+                        }
+                    }
+                }
+                world->m_World.Step(dt, context->m_VelocityIteration, context->m_PositionIteration);
+            }
+            //End
+            // world->m_World.Step(dt, 10, 10);
+
             float inv_scale = world->m_Context->m_InvScale;
             // Update transforms of dynamic bodies
             if (world->m_SetWorldTransformCallback)
             {
                 for (b2Body* body = world->m_World.GetBodyList(); body; body = body->GetNext())
                 {
-                    if (body->GetType() == b2_dynamicBody && body->IsActive())
+                    if ((body->GetType() == b2_dynamicBody || body->GetType() == b2_kinematicBody) && body->IsActive())
                     {
                         Vectormath::Aos::Point3 position;
                         FromB2(body->GetPosition(), position, inv_scale);
@@ -901,6 +948,12 @@ namespace dmPhysics
             case dmPhysics::COLLISION_OBJECT_TYPE_STATIC:
                 def.type = b2_staticBody;
                 break;
+            //Added by dotGears
+            //Dynamic body with fixture as sensor
+            case dmPhysics::COLLISION_OBJECT_TYPE_TRIGGER_DYNAMIC:
+                def.type = b2_dynamicBody;
+                def.gravityScale = 0.0;
+            //End
             default:
                 def.type = b2_kinematicBody;
                 break;
@@ -937,7 +990,13 @@ namespace dmPhysics
             f_def.density = data.m_Mass / mass_data.mass;
             f_def.friction = data.m_Friction;
             f_def.restitution = data.m_Restitution;
-            f_def.isSensor = data.m_Type == COLLISION_OBJECT_TYPE_TRIGGER;
+            //Modified by dotGears
+            //f_def.isSensor = data.m_Type == COLLISION_OBJECT_TYPE_TRIGGER;
+            if ((data.m_Type == COLLISION_OBJECT_TYPE_TRIGGER_DYNAMIC) || (data.m_Type == COLLISION_OBJECT_TYPE_TRIGGER))
+            {
+                f_def.isSensor  =  true;
+            }
+            //End
             b2Fixture* fixture = body->CreateFixture(&f_def);
             (void)fixture;
         }
@@ -1500,4 +1559,109 @@ namespace dmPhysics
         torque = joint->GetReactionTorque(inv_dt) * inv_scale;
         return true;
     }
+
+    //Added by dotGears
+    void SetMasterBody(HCollisionObject2D slave_body, HCollisionObject2D master_body)
+    {
+        b2Body* master = (b2Body*)master_body;
+        b2Body* slave = (b2Body*)slave_body;
+
+        if (master != NULL && slave != NULL)
+        {
+            slave->SetMasterBody(master);
+        }
+    }
+
+    void CopyState(HCollisionObject2D collision_object, uint16_t state, float ratio, float offset)
+    {
+        b2Body* b2_body = (b2Body*)collision_object;
+        if (b2_body != NULL)
+        {
+            b2_body->CopyState(state, ratio, offset);
+            // dmLogInfo("physics_2d.cpp -- CopyState:(%i) > (%i)", state, b2_body->GetCopyState());
+        }
+    }
+
+    void SetStateLimit(HCollisionObject2D collision_object, uint16_t state, float min, float max)
+    {
+        b2Body* b2_body = (b2Body*)collision_object;
+        if (b2_body != NULL)
+        {
+            b2_body->SetStateLimit(state, min, max);
+        }
+    }
+
+     void SetControllable(HCollisionObject2D collision_object, bool flag)
+    {
+        b2Body* b2_body = (b2Body*)collision_object;
+        if (b2_body != NULL)
+        {
+            b2_body->SetControllable(flag);
+        }
+    }
+
+    void SetSleepingAllowed(HCollisionObject2D collision_object, bool flag)
+    {
+        b2Body* b2_body = (b2Body*)collision_object;
+        if (b2_body != NULL)
+        {
+            b2_body->SetSleepingAllowed(flag);
+        }
+    }
+
+    void SetBullet(HCollisionObject2D collision_object, bool flag)
+    {
+        b2Body* b2_body = (b2Body*)collision_object;
+        if (b2_body != NULL)
+        {
+            b2_body->SetBullet(flag);
+        }
+    }
+
+    void SetDeltaValue(HCollisionObject2D collision_object, float alphaX, float alphaY, float alphaZ)
+    {
+        b2Body* b2_body = (b2Body*)collision_object;
+        if (b2_body != NULL)
+        {
+            b2_body->SetDeltaValue(alphaX, alphaY, alphaZ);
+        }
+    }
+    
+    void SetGravityScale(HCollisionObject2D collision_object, float gravityScale)
+    {
+        b2Body* b2_body = (b2Body*)collision_object;
+        if (b2_body != NULL)
+        {
+            b2_body->SetGravityScale(gravityScale);
+        }
+    }
+
+    void SetWorldPosition2D(HCollisionObject2D collision_object, const Vectormath::Aos::Vector3& position)
+    {
+        b2Body* b2_body = ((b2Body*)collision_object);
+        if (b2_body != NULL)
+        {
+            b2Vec2 b2_position;
+            ToB2(position, b2_position, 1.0);
+            b2_body->SetTransform(b2_position, b2_body->GetAngle());
+        }
+    }
+
+    void SetBodyAngle2D(HCollisionObject2D collision_object, float angle)
+    {
+        b2Body* b2_body = ((b2Body*)collision_object);
+        if (b2_body != NULL)
+        {
+            b2_body->SetTransform(b2_body->GetPosition(), angle);
+        }
+        
+    }
+
+    float GetBodyAngle2D(HCollisionObject2D collision_object)
+    {
+        b2Body* b2_body = ((b2Body*)collision_object);
+        return b2_body->GetAngle();
+    }
+
+    //End
 }
