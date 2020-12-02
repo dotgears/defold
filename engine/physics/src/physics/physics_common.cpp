@@ -31,6 +31,11 @@ namespace dmPhysics
     , m_RayCastLimit3D(0)
     , m_TriggerOverlapCapacity(0)
     , m_AllowDynamicTransforms(0)
+    //Added by dotGears
+    , m_StepPerFrame(1)
+    , m_VelocityIteration(16)
+    , m_PositionIteration(8)
+    //End
     {
 
     }

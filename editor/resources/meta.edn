@@ -216,6 +216,21 @@
    "maximum number of overlapping triggers that can be detected, 16 by default",
    :default 16,
    :path ["physics" "trigger_overlap_capacity"]},
+  {:type :integer,
+   :help
+   "dotGears: number of physics simulation per frame",
+   :default 1,
+   :path ["physics" "step_per_frame"]},
+  {:type :integer,
+   :help
+   "dotGears: physics velocity iteration",
+   :default 16,
+   :path ["physics" "velocity_iteration"]},
+  {:type :integer,
+   :help
+   "dotGears: physics position iteration",
+   :default 8,
+   :path ["physics" "position_iteration"]},
   {:type :string,
    :help
    "which filtering to use for min filtering, linear (default) or nearest",

@@ -59,7 +59,7 @@ namespace dmPhysics
     , m_SetWorldTransformCallback(params.m_SetWorldTransformCallback)
     , m_AllowDynamicTransforms(context->m_AllowDynamicTransforms)
     //Added by dotGears
-    , m_stepIteration(context->m_StepPerFrame)
+    , m_stepPerFrame(context->m_StepPerFrame)
     , m_velocityIteration(context->m_VelocityIteration)
     , m_positionIteration(context->m_PositionIteration)
     //End
@@ -406,6 +406,10 @@ namespace dmPhysics
     {
         float dt = step_context.m_DT;
         HContext2D context = world->m_Context;
+        //Added by dotGears
+        float sub_dt = dt / context->m_StepPerFrame;
+        //End
+
         float scale = context->m_Scale;
         // Epsilon defining what transforms are considered noise and not
         // Values are picked by inspection, current rot value is roughly equivalent to 1 degree
@@ -483,7 +487,7 @@ namespace dmPhysics
                         }
                     }
                 }
-                world->m_World.Step(dt, context->m_VelocityIteration, context->m_PositionIteration);
+                world->m_World.Step(sub_dt, context->m_VelocityIteration, context->m_PositionIteration);
             }
             //End
             // world->m_World.Step(dt, 10, 10);
@@ -1626,7 +1630,7 @@ namespace dmPhysics
             b2_body->SetDeltaValue(alphaX, alphaY, alphaZ);
         }
     }
-    
+
     void SetGravityScale(HCollisionObject2D collision_object, float gravityScale)
     {
         b2Body* b2_body = (b2Body*)collision_object;

@@ -52,7 +52,7 @@ namespace dmPhysics
         uint8_t                     m_AllowDynamicTransforms:1;
         uint8_t                     :7;
         //Added by dotGears for custom physics iteration
-        uint8_t m_stepIteration;
+        uint8_t m_stepPerFrame;
         uint8_t m_velocityIteration;
         uint8_t m_positionIteration;
         //End
