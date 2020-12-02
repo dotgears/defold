@@ -39,7 +39,7 @@ let run_command = (cmd) => {
     }
     return result()
 } 
-let shell_platform = (platform) => { run_command(`./scripts/build.py shell --platform=${platform} --package-path=./local_sdks/`) }
+let shell_platform = (platform) => { run_command(`./scripts/build.py shell --platform=${platform} --package-path=local_sdks`) }
 
 let bundle_web = () => { 
     return run_command(

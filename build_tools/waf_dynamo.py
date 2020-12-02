@@ -57,6 +57,7 @@ def transform_runnable_path(platform, path):
     return waf_dynamo_private.transform_runnable_path(platform, path)
 
 # Note that some of these version numbers are also present in build.py (TODO: put in a waf_versions.py or similar)
+
 SDK_ROOT=os.path.join(os.environ['DYNAMO_HOME'], 'ext', 'SDKs')
 ANDROID_ROOT=SDK_ROOT
 ANDROID_BUILD_TOOLS_VERSION = '29.0.3'
@@ -69,12 +70,8 @@ ANDROID_GCC_VERSION='4.9'
 ANDROID_64_NDK_API_VERSION='21' # Android 5.0
 EMSCRIPTEN_ROOT=os.environ.get('EMSCRIPTEN', '')
 
-# NOTE: Added by dotGears/TrungB, to auto-detect version fast.
-# 
-env = dict(os.environ)
-IOS_SDK_VERSION           = env['IOS_SDK_VERSION'] if env.__contains__('IOS_SDK_VERSION') else ''
-IOS_SIMULATOR_SDK_VERSION = env['IOS_SIMULATOR_SDK_VERSION'] if env.__contains__('IOS_SIMULATOR_SDK_VERSION') else ''
-PACKAGES_XCODE_TOOLCHAIN   = env['PACKAGES_XCODE_TOOLCHAIN'] if env.__contains__('PACKAGES_XCODE_TOOLCHAIN') else ''
+IOS_SDK_VERSION           = "13.5"
+IOS_SIMULATOR_SDK_VERSION = "13.5"
 
 # NOTE: Minimum iOS-version is also specified in Info.plist-files
 # (MinimumOSVersion and perhaps DTPlatformVersion)
@@ -83,8 +80,10 @@ MIN_IOS_SDK_VERSION="8.0"
 OSX_SDK_VERSION="10.15"
 MIN_OSX_SDK_VERSION="10.7"
 
-DARWIN_TOOLCHAIN_ROOT=os.path.join(os.environ['DYNAMO_HOME'], 'ext', 'SDKs', PACKAGES_XCODE_TOOLCHAIN)#'XcodeDefault%s.xctoolchain' % XCODE_VERSION)
+XCODE_VERSION="11.5"
 
+SDK_ROOT=os.path.join(os.environ['DYNAMO_HOME'], 'ext', 'SDKs')
+DARWIN_TOOLCHAIN_ROOT=os.path.join(SDK_ROOT,'XcodeDefault%s.xctoolchain' % XCODE_VERSION)
 LINUX_TOOLCHAIN_ROOT=os.path.join(SDK_ROOT, 'linux')
 
 # Workaround for a strange bug with the combination of ccache and clang
@@ -357,8 +356,10 @@ def default_flags(self):
         if 'linux' in self.env['BUILD_PLATFORM']:
             target_triplet='arm-apple-darwin14'
             extra_ccflags += ['-target', target_triplet, '-fclang-abi-compat=6']
-            extra_linkflags += ['-target', target_triplet, '-L%s' % os.path.join(DARWIN_TOOLCHAIN_ROOT,'usr/lib/clang/11.0.3/lib/darwin'),
-                                '-lclang_rt.ios', '-Wl,-force_load', '-Wl,%s' % os.path.join(DARWIN_TOOLCHAIN_ROOT, 'usr/lib/arc/libarclite_iphoneos.a')]
+            # extra_linkflags += ['-target', target_triplet, '-L%s' % os.path.join(DARWIN_TOOLCHAIN_ROOT,'usr/lib/clang/11.0.3/lib/darwin'),
+                                # '-lclang_rt.ios', '-Wl,-force_load', '-Wl,%s' % os.path.join(DARWIN_TOOLCHAIN_ROOT, 'usr/lib/arc/libarclite_iphoneos.a')]
+            extra_linkflags += ['-target', target_triplet, '-L%s' % os.path.join('/Users/defold/Projects/Project_Defold/defold/tmp/dynamo_home/ext/SDKs/XcodeDefault11.5.xctoolchain','usr/lib/clang/11.0.3/lib/darwin'),
+                                '-lclang_rt.ios', '-Wl,-force_load', '-Wl,%s' % os.path.join('/Users/defold/Projects/Project_Defold/defold/tmp/dynamo_home/ext/SDKs/XcodeDefault11.5.xctoolchain', 'usr/lib/arc/libarclite_iphoneos.a')]
         else:
             extra_linkflags += ['-fobjc-link-runtime']
 
@@ -1550,7 +1551,7 @@ def detect(conf):
         # NOTE: If we are to use clang for OSX-builds the wrapper script must be qualifed, e.g. clang-ios.sh or similar
         if 'linux' in build_platform:
             bin_dir=os.path.join(LINUX_TOOLCHAIN_ROOT,'clang-9.0.0','bin')
-
+            
             conf.env['CC']      = '%s/clang' % bin_dir
             conf.env['CXX']     = '%s/clang++' % bin_dir
             conf.env['LINK_CC'] = '%s/clang' % bin_dir
@@ -1566,8 +1567,10 @@ def detect(conf):
             # # This bug is at least prevalent in "Apple clang version 3.0 (tags/Apple/clang-211.12) (based on LLVM 3.0svn)"
             # clang_wrapper = create_clang_wrapper(conf, 'clang')
             # clangxx_wrapper = create_clang_wrapper(conf, 'clang++')
-            bin_dir = '%s/usr/bin' % (DARWIN_TOOLCHAIN_ROOT)
 
+
+            bin_dir = '%s/usr/bin' % (DARWIN_TOOLCHAIN_ROOT)
+            
             conf.env['CC']      = '%s/clang' % bin_dir
             conf.env['CXX']     = '%s/clang++' % bin_dir
             conf.env['LINK_CC'] = '%s/clang' % bin_dir

@@ -2,26 +2,26 @@ CD_DEFOLD_LINUX="echo \"#Shorthand for entering defold folder\nalias cd_defold='
 CD_DEFOLD_MOJAVE="echo \"#Shorthand for entering defold folder\nalias cd_defold='cd $PWD'\" >> ~/.bash_profile"
 CD_DEFOLD_CATALINA="echo \"#Shorthand for entering defold folder\nalias cd_defold='cd $PWD'\" >> ~/.zshrc"
 
-SHELL="./scripts/build.py shell --platform=$2 --package-path=./local_sdks/"
+SHELL="./scripts/build.py shell --platform=$2 --package-path=local_sdks"
 EXPORT_DYNAMO_HOME="export DYNAMO_HOME=${PWD}/tmp/dynamo_home"
 
 SHELL_INTRO="echo \"#Shorthand for Defold Build Shell Command\" >> ~/.bash_profile"
 
-SHELL_LINUX_x86_64="echo \"alias shell_defold_x86_64='./scripts/build.py shell --platform=x86_64-linux --package-path=./local_sdks/'\" >> ~/.bash_aliases"
+SHELL_LINUX_x86_64="echo \"alias shell_defold_x86_64='./scripts/build.py shell --platform=x86_64-linux --package-path=local_sdks'\" >> ~/.bash_aliases"
 
-SHELL_MOJAVE_x86_64="echo \"alias shell_defold_x86_64='./scripts/build.py shell --platform=x86_64-darwin --package-path=./local_sdks/'\" >> ~/.bash_profile"
-SHELL_MOJAVE__armv7="echo \"alias shell_defold_armv7='./scripts/build.py shell --platform=armv7-darwin --package-path=./local_sdks/'\" >> ~/.bash_profile"
-SHELL_MOJAVE__arm64="echo \"alias shell_defold_arm64='./scripts/build.py shell --platform=arm64-darwin --package-path=./local_sdks/'\" >> ~/.bash_profile"
-SHELL_MOJAVE__armv7a="echo \"alias shell_defold_armv7a='./scripts/build.py shell --platform=armv7-android --package-path=./local_sdks/'\" >> ~/.bash_profile"
-SHELL_MOJAVE__arm64a="echo \"alias shell_defold_arm64a='./scripts/build.py shell --platform=arm64-android --package-path=./local_sdks/'\" >> ~/.bash_profile"
+SHELL_MOJAVE_x86_64="echo \"alias shell_defold_x86_64='./scripts/build.py shell --platform=x86_64-darwin --package-path=local_sdks'\" >> ~/.bash_profile"
+SHELL_MOJAVE__armv7="echo \"alias shell_defold_armv7='./scripts/build.py shell --platform=armv7-darwin --package-path=local_sdks'\" >> ~/.bash_profile"
+SHELL_MOJAVE__arm64="echo \"alias shell_defold_arm64='./scripts/build.py shell --platform=arm64-darwin --package-path=local_sdks'\" >> ~/.bash_profile"
+SHELL_MOJAVE__armv7a="echo \"alias shell_defold_armv7a='./scripts/build.py shell --platform=armv7-android --package-path=local_sdks'\" >> ~/.bash_profile"
+SHELL_MOJAVE__arm64a="echo \"alias shell_defold_arm64a='./scripts/build.py shell --platform=arm64-android --package-path=local_sdks'\" >> ~/.bash_profile"
 
-SHELL_CATALINA_x86_64="echo \"alias shell_defold_x86_64='./scripts/build.py shell --platform=x86_64-darwin --package-path=./local_sdks/'\" >> ~/.zshrc"
-SHELL_CATALINA__armv7="echo \"alias shell_defold_armv7='./scripts/build.py shell --platform=armv7-darwin --package-path=./local_sdks/'\" >> ~/.zshrc"
-SHELL_CATALINA__arm64="echo \"alias shell_defold_arm64='./scripts/build.py shell --platform=arm64-darwin --package-path=./local_sdks/'\" >> ~/.zshrc"
-SHELL_CATALINA__armv7a="echo \"alias shell_defold_armv7a='./scripts/build.py shell --platform=armv7-android --package-path=./local_sdks/'\" >> ~/.zshrc"
-SHELL_CATALINA__arm64a="echo \"alias shell_defold_arm64a='./scripts/build.py shell --platform=arm64-android --package-path=./local_sdks/'\" >> ~/.zshrc"
+SHELL_CATALINA_x86_64="echo \"alias shell_defold_x86_64='./scripts/build.py shell --platform=x86_64-darwin --package-path=local_sdks'\" >> ~/.zshrc"
+SHELL_CATALINA__armv7="echo \"alias shell_defold_armv7='./scripts/build.py shell --platform=armv7-darwin --package-path=local_sdks'\" >> ~/.zshrc"
+SHELL_CATALINA__arm64="echo \"alias shell_defold_arm64='./scripts/build.py shell --platform=arm64-darwin --package-path=local_sdks'\" >> ~/.zshrc"
+SHELL_CATALINA__armv7a="echo \"alias shell_defold_armv7a='./scripts/build.py shell --platform=armv7-android --package-path=local_sdks'\" >> ~/.zshrc"
+SHELL_CATALINA__arm64a="echo \"alias shell_defold_arm64a='./scripts/build.py shell --platform=arm64-android --package-path=local_sdks'\" >> ~/.zshrc"
 
-INSTALL_EXT="sudo ./scripts/build.py install_ext --platform=$2 --package-path=packages/"
+INSTALL_EXT="sudo ./scripts/build.py install_ext --platform=$2 --package-path=packages"
 BOB_COMMENT="echo \"#bob.jar shorthand for Defold CLI\" >> ~/."
 BOB="echo \"alias bob='java -jar ${PWD}/tmp/dynamo_home/share/java/bob.jar'\" >> ~/."
 
