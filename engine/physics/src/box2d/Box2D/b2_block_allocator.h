@@ -23,7 +23,7 @@
 #ifndef B2_BLOCK_ALLOCATOR_H
 #define B2_BLOCK_ALLOCATOR_H
 
-#include "../Box2D/b2_settings.h"
+#include "b2_settings.h"
 
 const int32 b2_chunkSize = 16 * 1024;
 const int32 b2_maxBlockSize = 640;
