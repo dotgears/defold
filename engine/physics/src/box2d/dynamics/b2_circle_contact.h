@@ -23,7 +23,7 @@
 #ifndef B2_CIRCLE_CONTACT_H
 #define B2_CIRCLE_CONTACT_H
 
-#include "../Box2D/b2_contact.h"
+#include "b2_contact.h"
 
 class b2BlockAllocator;
 

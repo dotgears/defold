@@ -1,13 +1,13 @@
 #include <assert.h>
 #include <string.h>
-#include "../Box2D/b2_settings.h"
-#include "../Box2D/b2_grid_shape.h"
-#include "../Box2D/b2_polygon_shape.h"
-#include "../Box2D/b2_edge_shape.h"
-#include "../Box2D/b2_broad_phase.h"
-#include "../Box2D/b2_fixture.h"
-#include "../Box2D/b2_world.h"
-#include "../Box2D/b2_body.h"
+#include "b2_settings.h"
+#include "b2_grid_shape.h"
+#include "b2_polygon_shape.h"
+#include "b2_edge_shape.h"
+#include "b2_broad_phase.h"
+#include "b2_fixture.h"
+#include "b2_world.h"
+#include "b2_body.h"
 #include <new>
 using namespace std;
 

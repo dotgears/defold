@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../Box2D/b2_body.h"
-#include "../Box2D/b2_mouse_joint.h"
-#include "../Box2D/b2_time_step.h"
+#include "b2_body.h"
+#include "b2_mouse_joint.h"
+#include "b2_time_step.h"
 
 //Added by Dong Nguyen
-#include "../Box2D/b2_world.h"
+#include "b2_world.h"
 // p = attached point, m = mouse point
 // C = p - m
 // Cdot = v

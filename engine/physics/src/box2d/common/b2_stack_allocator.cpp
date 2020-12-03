@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../Box2D/b2_stack_allocator.h"
-#include "../Box2D/b2_math.h"
+#include "b2_stack_allocator.h"
+#include "b2_math.h"
 
 b2StackAllocator::b2StackAllocator()
 {

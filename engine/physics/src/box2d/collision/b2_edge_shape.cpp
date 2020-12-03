@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../Box2D/b2_edge_shape.h"
-#include "../Box2D/b2_block_allocator.h"
+#include "b2_edge_shape.h"
+#include "b2_block_allocator.h"
 #include <new>
 
 void b2EdgeShape::Set(const b2Vec2& v1, const b2Vec2& v2)

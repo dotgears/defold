@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../Box2D/b2_draw.h"
-#include "../Box2D/b2_rope.h"
+#include "b2_draw.h"
+#include "b2_rope.h"
 
 struct b2RopeStretch
 {

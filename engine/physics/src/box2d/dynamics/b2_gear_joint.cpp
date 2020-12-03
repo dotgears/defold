@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../Box2D/b2_gear_joint.h"
-#include "../Box2D/b2_revolute_joint.h"
-#include "../Box2D/b2_prismatic_joint.h"
-#include "../Box2D/b2_body.h"
-#include "../Box2D/b2_time_step.h"
+#include "b2_gear_joint.h"
+#include "b2_revolute_joint.h"
+#include "b2_prismatic_joint.h"
+#include "b2_body.h"
+#include "b2_time_step.h"
 
 //Added by Dong Nguyen
-#include "../Box2D/b2_world.h"
+#include "b2_world.h"
 // Gear Joint:
 // C0 = (coordinate1 + ratio * coordinate2)_initial
 // C = (coordinate1 + ratio * coordinate2) - C0 = 0
