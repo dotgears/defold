@@ -20,7 +20,7 @@
 #include <dlib/math.h>
 #include <dlib/profile.h>
 
-#include "../box2d/Box2D/box2d.h"
+#include "Box2D/box2d.h"
 
 #include "physics_2d.h"
 
