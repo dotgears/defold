@@ -2,7 +2,7 @@ def configure(conf):
     pass
 
 def build(bld):
-    box2d = bld.new_task_gen(features = 'cxx cstaticlib',
+    Box2D = bld.new_task_gen(features = 'cxx cstaticlib',
                                    includes = '.',
-                                   target = 'box2d')
-    box2d.find_sources_in_dirs('. ./../collision ./../common ./../dynamics ./../rope')
+                                   target = 'Box2D')
+    Box2D.find_sources_in_dirs('. ./../collision ./../common ./../dynamics ./../rope')

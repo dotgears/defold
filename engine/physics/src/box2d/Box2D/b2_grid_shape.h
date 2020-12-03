@@ -1,9 +1,9 @@
 #ifndef B2_TILE_SHAPE_H
 #define B2_TILE_SHAPE_H
 
-#include "../Box2D/b2_math.h"
-#include "../Box2D/b2_shape.h"
-#include "../Box2D/b2_body.h"
+#include "b2_math.h"
+#include "b2_shape.h"
+#include "b2_body.h"
 #include <string.h>
 
 struct b2HullSet
