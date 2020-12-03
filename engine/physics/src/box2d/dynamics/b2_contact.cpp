@@ -29,14 +29,14 @@
 #include "b2_polygon_circle_contact.h"
 #include "b2_polygon_contact.h"
 
-#include "../Box2D/b2_contact.h"
-#include "../Box2D/b2_block_allocator.h"
-#include "../Box2D/b2_body.h"
-#include "../Box2D/b2_collision.h"
-#include "../Box2D/b2_fixture.h"
-#include "../Box2D/b2_shape.h"
-#include "../Box2D/b2_time_of_impact.h"
-#include "../Box2D/b2_world.h"
+#include "b2_contact.h"
+#include "b2_block_allocator.h"
+#include "b2_body.h"
+#include "b2_collision.h"
+#include "b2_fixture.h"
+#include "b2_shape.h"
+#include "b2_time_of_impact.h"
+#include "b2_world.h"
 
 b2ContactRegister b2Contact::s_registers[b2Shape::e_typeCount][b2Shape::e_typeCount];
 bool b2Contact::s_initialized = false;

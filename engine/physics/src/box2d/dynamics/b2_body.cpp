@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../Box2D/b2_body.h"
-#include "../Box2D/b2_contact.h"
-#include "../Box2D/b2_fixture.h"
-#include "../Box2D/b2_joint.h"
-#include "../Box2D/b2_world.h"
+#include "b2_body.h"
+#include "b2_contact.h"
+#include "b2_fixture.h"
+#include "b2_joint.h"
+#include "b2_world.h"
 
 b2Body::b2Body(const b2BodyDef* bd, b2World* world)
 {

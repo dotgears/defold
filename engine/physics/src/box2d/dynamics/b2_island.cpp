@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../Box2D/b2_body.h"
-#include "../Box2D/b2_contact.h"
-#include "../Box2D/b2_distance.h"
-#include "../Box2D/b2_fixture.h"
-#include "../Box2D/b2_joint.h"
-#include "../Box2D/b2_stack_allocator.h"
-#include "../Box2D/b2_timer.h"
-#include "../Box2D/b2_world.h"
+#include "b2_body.h"
+#include "b2_contact.h"
+#include "b2_distance.h"
+#include "b2_fixture.h"
+#include "b2_joint.h"
+#include "b2_stack_allocator.h"
+#include "b2_timer.h"
+#include "b2_world.h"
 
 #include "b2_island.h"
 #include "../dynamics/b2_contact_solver.h"

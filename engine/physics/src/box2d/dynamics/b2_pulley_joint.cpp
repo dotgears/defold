@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../Box2D/b2_body.h"
-#include "../Box2D/b2_pulley_joint.h"
-#include "../Box2D/b2_time_step.h"
+#include "b2_body.h"
+#include "b2_pulley_joint.h"
+#include "b2_time_step.h"
 
 //Added by Dong Nguyen
-#include "../Box2D/b2_world.h"
+#include "b2_world.h"
 // Pulley:
 // length1 = norm(p1 - s1)
 // length2 = norm(p2 - s2)

@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../Box2D/b2_collision.h"
-#include "../Box2D/b2_distance.h"
-#include "../Box2D/b2_circle_shape.h"
-#include "../Box2D/b2_polygon_shape.h"
-#include "../Box2D/b2_time_of_impact.h"
-#include "../Box2D/b2_timer.h"
+#include "b2_collision.h"
+#include "b2_distance.h"
+#include "b2_circle_shape.h"
+#include "b2_polygon_shape.h"
+#include "b2_time_of_impact.h"
+#include "b2_timer.h"
 
 #include <stdio.h>
 

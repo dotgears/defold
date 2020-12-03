@@ -22,11 +22,11 @@
 
 #include "b2_polygon_contact.h"
 
-#include "../Box2D/b2_block_allocator.h"
-#include "../Box2D/b2_body.h"
-#include "../Box2D/b2_fixture.h"
-#include "../Box2D/b2_time_of_impact.h"
-#include "../Box2D/b2_world_callbacks.h"
+#include "b2_block_allocator.h"
+#include "b2_body.h"
+#include "b2_fixture.h"
+#include "b2_time_of_impact.h"
+#include "b2_world_callbacks.h"
 
 #include <new>
 

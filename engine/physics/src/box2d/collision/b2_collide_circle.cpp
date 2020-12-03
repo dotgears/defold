@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../Box2D/b2_collision.h"
-#include "../Box2D/b2_circle_shape.h"
-#include "../Box2D/b2_polygon_shape.h"
+#include "b2_collision.h"
+#include "b2_circle_shape.h"
+#include "b2_polygon_shape.h"
 
 void b2CollideCircles(
 	b2Manifold* manifold,
