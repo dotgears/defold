@@ -1435,6 +1435,15 @@ namespace dmGameSystem
         SETCONSTANT(JOINT_TYPE_HINGE)
         SETCONSTANT(JOINT_TYPE_SLIDER)
 
+        //Added by dotGears
+        // This is for CopyState enum as physics.COPY_
+        SETCONSTANT(COPY_POSITION_X)
+        SETCONSTANT(COPY_POSITION_Y)
+        SETCONSTANT(COPY_ROTATION_Z)
+        SETCONSTANT(COPY_LINEAR_VEC)
+        SETCONSTANT(COPY_ANGULAR_VEC)
+        //End
+
  #undef SETCONSTANT
 
         lua_pop(L, 1);
