@@ -1015,17 +1015,21 @@ namespace dmPhysics
 
         OverlapCacheRemove(&world->m_TriggerOverlaps, collision_object);
         b2Body* body = (b2Body*)collision_object;
-        b2Fixture* fixture = body->GetFixtureList();
-        while (fixture)
-        {
-            // We must save next fixture. The next pointer is set to null in DestoryFixture()
-            b2Fixture* save_next = fixture->GetNext();
 
-            b2Shape* shape = fixture->GetShape();
-            body->DestroyFixture(fixture);
-            FreeShape(shape); // NOTE: shape can't be freed prior to DestroyFixture
-            fixture = save_next;
-        }
+        //Modified by dotGears : fixtures are deallocated inside Box2D engine
+
+        // b2Fixture* fixture = body->GetFixtureList();
+        // while (fixture)
+        // {
+        //     // We must save next fixture. The next pointer is set to null in DestoryFixture()
+        //     b2Fixture* save_next = fixture->GetNext();
+
+        //     b2Shape* shape = fixture->GetShape();
+        //     body->DestroyFixture(fixture);
+        //     FreeShape(shape); // NOTE: shape can't be freed prior to DestroyFixture
+        //     fixture = save_next;
+        // }
+
         world->m_World.DestroyBody(body);
     }
 

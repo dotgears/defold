@@ -1347,9 +1347,7 @@ namespace dmGameSystem
         return 0;
     }
 
-        /*# Set sleep allow for collision object.
-     * Added by dotGears/TrungA
-     *
+    /*# Set sleep allow for collision object.
      * @name physics.set_allow_sleep
      * @param  collisionobject [type:string|hash|url] target body.
      * @param  flag [type:boolean] mark a body to allow sleeping or not.
