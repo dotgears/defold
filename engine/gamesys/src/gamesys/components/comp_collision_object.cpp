@@ -1312,7 +1312,7 @@ namespace dmGameSystem
             }
             else
             {
-                dmPhysics::SetWorldPosition2D(physics_context->m_Context2D,component->m_Object2D,
+                dmPhysics::SetWorldPosition2D(component->m_Object2D,
                                               Vectormath::Aos::Vector3(
                                                   params.m_Value.m_V4[0],
                                                   params.m_Value.m_V4[1],
