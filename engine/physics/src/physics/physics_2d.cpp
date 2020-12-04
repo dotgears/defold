@@ -1076,7 +1076,10 @@ namespace dmPhysics
     {
         const b2Vec2& b2_position = ((b2Body*)collision_object)->GetPosition();
         Vectormath::Aos::Point3 position;
-        FromB2(b2_position, position, context->m_InvScale);
+        //Modified by dotGears to get true physics number
+        // FromB2(b2_position, position, context->m_InvScale);
+        FromB2(b2_position, position, 1.0);
+
         return position;
     }
 
