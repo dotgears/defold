@@ -186,16 +186,16 @@ public:
 	/// Get the angle in radians.
 	/// @return the current world rotation angle in radians.
 	float GetAngle() const;
-    /// Get the alphaX.
-    /// @return the current alphaX position.
+    /// Get the deltaX.
+    /// @return the current deltaX position.
     float GetDeltaX() const;
 
-    /// Get the alphaY.
-    /// @return the current alphaY position.
+    /// Get the deltaY.
+    /// @return the current deltaY position.
     float GetDeltaY() const;
 
-    /// Get the alphaZ.
-    /// @return the current alphaZ position.
+    /// Get the deltaZ.
+    /// @return the current deltaZ position.
     float GetDeltaZ() const;
 
     /// Get the world position of the center of mass.

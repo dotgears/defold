@@ -457,10 +457,9 @@ namespace dmPhysics
         {
             DM_PROFILE(Physics, "StepSimulation");
             world->m_ContactListener.SetStepWorldContext(&step_context);
-            //Added by dotGears
-            float sub_dt = dt / context->m_StepPerFrame;
-            //End
             //Added by dotGears to step physics multiple times 
+            float sub_dt = dt / context->m_StepPerFrame;
+
             for (int i = 0; i < context->m_StepPerFrame; i++)
             {
                 for(b2Body* body = world->m_World.GetBodyList(); body; body = body->GetNext())
@@ -497,7 +496,7 @@ namespace dmPhysics
             {
                 for (b2Body* body = world->m_World.GetBodyList(); body; body = body->GetNext())
                 {
-                    if ((body->GetType() == b2_dynamicBody || body->GetType() == b2_kinematicBody) && body->IsActive())
+                    if (body->IsActive())
                     {
                         Vectormath::Aos::Point3 position;
                         FromB2(body->GetPosition(), position, inv_scale);
@@ -1625,12 +1624,12 @@ namespace dmPhysics
         }
     }
 
-    void SetDeltaValue(HCollisionObject2D collision_object, float alphaX, float alphaY, float alphaZ)
+    void SetDeltaValue(HCollisionObject2D collision_object, float deltaX, float deltaY, float deltaZ)
     {
         b2Body* b2_body = (b2Body*)collision_object;
         if (b2_body != NULL)
         {
-            b2_body->SetDeltaValue(alphaX, alphaY, alphaZ);
+            b2_body->SetDeltaValue(deltaX, deltaY, deltaZ);
         }
     }
 

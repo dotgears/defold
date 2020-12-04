@@ -1686,10 +1686,10 @@ namespace dmGameSystem
         CollisionComponent* component = (CollisionComponent*)comp;
         dmPhysics::SetControllable(component->m_Object2D, flag);
     }
-    void SetDeltaValue(void* comp, float alphaX, float alphaY, float alphaZ)
+    void SetDeltaValue(void* comp, float deltaX, float deltaY, float deltaZ)
     {
         CollisionComponent* component = (CollisionComponent*)comp;
-        dmPhysics::SetDeltaValue(component->m_Object2D, alphaX, alphaY, alphaZ);
+        dmPhysics::SetDeltaValue(component->m_Object2D, deltaX, deltaY, deltaZ);
     }
 
     void SetMasterBody(void * comp, void * master_body)
@@ -1711,10 +1711,10 @@ namespace dmGameSystem
         dmPhysics::SetStateLimit(component->m_Object2D, state, min, max);
     }
 
-    void SetSleepingAllowed(void* comp, bool allow_sleep)
+    void SetSleepingAllowed(void* comp, bool flag)
     {
         CollisionComponent* component = (CollisionComponent*)comp;
-        dmPhysics::SetSleepingAllowed(component->m_Object2D, allow_sleep);
+        dmPhysics::SetSleepingAllowed(component->m_Object2D, flag);
     }
 
     void SetBullet(void* comp, bool flag)

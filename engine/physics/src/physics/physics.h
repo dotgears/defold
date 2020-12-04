@@ -1408,7 +1408,7 @@ namespace dmPhysics
      * @param deltaY Set deltaY position update
      * @param deltaZ Set deltaZ position update
      */
-    void SetDeltaValue(HCollisionObject2D collision_object, float alphaX, float alphaY, float alphaZ );
+    void SetDeltaValue(HCollisionObject2D collision_object, float deltaX, float deltaY, float deltaZ );
 
     /**
      * Set Allow Sleeping to an object body
