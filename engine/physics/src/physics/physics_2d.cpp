@@ -1616,6 +1616,11 @@ namespace dmPhysics
         {
             b2_body->SetSleepingAllowed(flag);
         }
+        else
+        {
+            dmLogWarning("SetSleepingAllowed - NULL Body");
+        }
+        
     }
 
     void SetBullet(HCollisionObject2D collision_object, bool flag)
@@ -1648,11 +1653,16 @@ namespace dmPhysics
     void SetWorldPosition2D(HCollisionObject2D collision_object, const Vectormath::Aos::Vector3& position)
     {
         b2Body* b2_body = ((b2Body*)collision_object);
+
         if (b2_body != NULL)
         {
             b2Vec2 b2_position;
             ToB2(position, b2_position, 1.0);
             b2_body->SetTransform(b2_position, b2_body->GetAngle());
+        }
+        else 
+        {
+            dmLogWarning("SetWorldPosition2D - null body");
         }
     }
 

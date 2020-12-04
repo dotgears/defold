@@ -42,7 +42,6 @@ namespace dmGameSystem
     static const dmhash_t PROP_LINEAR_VELOCITY = dmHashString64("linear_velocity");
     static const dmhash_t PROP_ANGULAR_VELOCITY = dmHashString64("angular_velocity");
     static const dmhash_t PROP_MASS = dmHashString64("mass");
-
     //Added by dotGears
     static const dmhash_t PROP_BODY_ANGLE    = dmHashString64("body_angle");
     static const dmhash_t PROP_BODY_POSITION = dmHashString64("body_position");
