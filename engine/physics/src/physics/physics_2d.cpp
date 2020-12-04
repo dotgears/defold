@@ -406,10 +406,6 @@ namespace dmPhysics
     {
         float dt = step_context.m_DT;
         HContext2D context = world->m_Context;
-        //Added by dotGears
-        float sub_dt = dt / context->m_StepPerFrame;
-        //End
-
         float scale = context->m_Scale;
         // Epsilon defining what transforms are considered noise and not
         // Values are picked by inspection, current rot value is roughly equivalent to 1 degree
@@ -461,7 +457,9 @@ namespace dmPhysics
         {
             DM_PROFILE(Physics, "StepSimulation");
             world->m_ContactListener.SetStepWorldContext(&step_context);
-
+            //Added by dotGears
+            float sub_dt = dt / context->m_StepPerFrame;
+            //End
             //Added by dotGears to step physics multiple times 
             for (int i = 0; i < context->m_StepPerFrame; i++)
             {
@@ -481,6 +479,7 @@ namespace dmPhysics
 
                             body->SetTransform(b2position, b2angle);
                         }
+
                         if (body->isHavingMasterBody())
                         {
                             body->UpdateStateFromMasterBody();
