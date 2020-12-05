@@ -406,10 +406,6 @@ namespace dmPhysics
     {
         float dt = step_context.m_DT;
         HContext2D context = world->m_Context;
-        //Added by dotGears
-        float sub_dt = dt / context->m_StepPerFrame;
-        //End
-
         float scale = context->m_Scale;
         // Epsilon defining what transforms are considered noise and not
         // Values are picked by inspection, current rot value is roughly equivalent to 1 degree
@@ -461,8 +457,9 @@ namespace dmPhysics
         {
             DM_PROFILE(Physics, "StepSimulation");
             world->m_ContactListener.SetStepWorldContext(&step_context);
-
             //Added by dotGears to step physics multiple times 
+            float sub_dt = dt / context->m_StepPerFrame;
+
             for (int i = 0; i < context->m_StepPerFrame; i++)
             {
                 for(b2Body* body = world->m_World.GetBodyList(); body; body = body->GetNext())
@@ -481,6 +478,7 @@ namespace dmPhysics
 
                             body->SetTransform(b2position, b2angle);
                         }
+
                         if (body->isHavingMasterBody())
                         {
                             body->UpdateStateFromMasterBody();
@@ -498,7 +496,7 @@ namespace dmPhysics
             {
                 for (b2Body* body = world->m_World.GetBodyList(); body; body = body->GetNext())
                 {
-                    if ((body->GetType() == b2_dynamicBody || body->GetType() == b2_kinematicBody) && body->IsActive())
+                    if (body->IsActive())
                     {
                         Vectormath::Aos::Point3 position;
                         FromB2(body->GetPosition(), position, inv_scale);
@@ -957,6 +955,7 @@ namespace dmPhysics
             case dmPhysics::COLLISION_OBJECT_TYPE_TRIGGER_DYNAMIC:
                 def.type = b2_dynamicBody;
                 def.gravityScale = 0.0;
+                break;
             //End
             default:
                 def.type = b2_kinematicBody;
@@ -1016,17 +1015,21 @@ namespace dmPhysics
 
         OverlapCacheRemove(&world->m_TriggerOverlaps, collision_object);
         b2Body* body = (b2Body*)collision_object;
-        b2Fixture* fixture = body->GetFixtureList();
-        while (fixture)
-        {
-            // We must save next fixture. The next pointer is set to null in DestoryFixture()
-            b2Fixture* save_next = fixture->GetNext();
 
-            b2Shape* shape = fixture->GetShape();
-            body->DestroyFixture(fixture);
-            FreeShape(shape); // NOTE: shape can't be freed prior to DestroyFixture
-            fixture = save_next;
-        }
+        //Modified by dotGears : fixtures are deallocated inside Box2D engine
+
+        // b2Fixture* fixture = body->GetFixtureList();
+        // while (fixture)
+        // {
+        //     // We must save next fixture. The next pointer is set to null in DestoryFixture()
+        //     b2Fixture* save_next = fixture->GetNext();
+
+        //     b2Shape* shape = fixture->GetShape();
+        //     body->DestroyFixture(fixture);
+        //     FreeShape(shape); // NOTE: shape can't be freed prior to DestroyFixture
+        //     fixture = save_next;
+        // }
+
         world->m_World.DestroyBody(body);
     }
 
@@ -1074,7 +1077,10 @@ namespace dmPhysics
     {
         const b2Vec2& b2_position = ((b2Body*)collision_object)->GetPosition();
         Vectormath::Aos::Point3 position;
-        FromB2(b2_position, position, context->m_InvScale);
+        //Modified by dotGears to get true physics number
+        // FromB2(b2_position, position, context->m_InvScale);
+        FromB2(b2_position, position, 1.0);
+
         return position;
     }
 
@@ -1611,6 +1617,11 @@ namespace dmPhysics
         {
             b2_body->SetSleepingAllowed(flag);
         }
+        else
+        {
+            dmLogWarning("SetSleepingAllowed - NULL Body");
+        }
+        
     }
 
     void SetBullet(HCollisionObject2D collision_object, bool flag)
@@ -1622,12 +1633,12 @@ namespace dmPhysics
         }
     }
 
-    void SetDeltaValue(HCollisionObject2D collision_object, float alphaX, float alphaY, float alphaZ)
+    void SetDeltaValue(HCollisionObject2D collision_object, float deltaX, float deltaY, float deltaZ)
     {
         b2Body* b2_body = (b2Body*)collision_object;
         if (b2_body != NULL)
         {
-            b2_body->SetDeltaValue(alphaX, alphaY, alphaZ);
+            b2_body->SetDeltaValue(deltaX, deltaY, deltaZ);
         }
     }
 
@@ -1643,11 +1654,16 @@ namespace dmPhysics
     void SetWorldPosition2D(HCollisionObject2D collision_object, const Vectormath::Aos::Vector3& position)
     {
         b2Body* b2_body = ((b2Body*)collision_object);
+
         if (b2_body != NULL)
         {
             b2Vec2 b2_position;
             ToB2(position, b2_position, 1.0);
             b2_body->SetTransform(b2_position, b2_body->GetAngle());
+        }
+        else 
+        {
+            dmLogWarning("SetWorldPosition2D - null body");
         }
     }
 

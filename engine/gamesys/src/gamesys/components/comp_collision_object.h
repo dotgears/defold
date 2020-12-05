@@ -70,10 +70,10 @@ namespace dmGameSystem
 
     //Added by dotGears
     void SetGravityScale(void* comp, float gravityScale);
-    void SetDeltaValue(void* comp, float alphaX, float alphaY, float alphaZ);
+    void SetDeltaValue(void* comp, float deltaX, float deltaY, float deltaZ);
     void SetControllable(void* comp, bool flag);
     void SetBullet(void* comp, bool flag);
-    void SetSleepingAllowed(void* comp, bool allow_sleep);
+    void SetSleepingAllowed(void* comp, bool flag);
     void SetMasterBody(void* comp, void* master_body);
     void CopyState(void* comp, uint16_t state, float ratio, float offset);
     void SetStateLimit(void* comp, uint16_t state, float min, float max);

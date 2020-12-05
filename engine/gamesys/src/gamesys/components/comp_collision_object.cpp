@@ -42,6 +42,10 @@ namespace dmGameSystem
     static const dmhash_t PROP_LINEAR_VELOCITY = dmHashString64("linear_velocity");
     static const dmhash_t PROP_ANGULAR_VELOCITY = dmHashString64("angular_velocity");
     static const dmhash_t PROP_MASS = dmHashString64("mass");
+    //Added by dotGears
+    static const dmhash_t PROP_BODY_ANGLE    = dmHashString64("body_angle");
+    static const dmhash_t PROP_BODY_POSITION = dmHashString64("body_position");
+    //End
 
     struct CollisionComponent;
     struct JointEndPoint;
@@ -1061,6 +1065,52 @@ namespace dmGameSystem
                 return dmGameObject::UPDATE_RESULT_UNKNOWN_ERROR;
             }
         }
+        //Added by dotGears
+         else if (params.m_Message->m_Id == dmPhysicsDDF::RequestBodyPosition::m_DDFDescriptor->m_NameHash)
+        {
+            dmPhysicsDDF::BodyPositionResponse response;
+            if (physics_context->m_3D)
+            {
+                response.m_BodyPosition = Vector3(dmPhysics::GetWorldPosition3D(
+                    physics_context->m_Context3D, component->m_Object3D));
+            }
+            else
+            {
+                response.m_BodyPosition = Vector3(dmPhysics::GetWorldPosition2D(
+                    physics_context->m_Context2D, component->m_Object2D));
+            }
+            dmhash_t message_id      = dmPhysicsDDF::BodyPositionResponse::m_DDFDescriptor->m_NameHash;
+            uintptr_t descriptor     = (uintptr_t)dmPhysicsDDF::BodyPositionResponse::m_DDFDescriptor;
+            uint32_t data_size       = sizeof(dmPhysicsDDF::BodyPositionResponse);
+            dmMessage::Result result = dmMessage::Post(&params.m_Message->m_Receiver, &params.m_Message->m_Sender, message_id, 0, descriptor, &response, data_size, 0);
+            if (result != dmMessage::RESULT_OK)
+            {
+                dmLogError("Could not send %s to component, result: %d.",   dmPhysicsDDF::BodyPositionResponse::m_DDFDescriptor->m_Name, result);
+                return dmGameObject::UPDATE_RESULT_UNKNOWN_ERROR;
+            }
+        }
+        else if (params.m_Message->m_Id == dmPhysicsDDF::RequestBodyAngle::m_DDFDescriptor->m_NameHash)
+        {
+            dmPhysicsDDF::BodyAngleResponse response;
+            if (physics_context->m_3D)
+            {
+                //TO-DO
+            }
+            else
+            {
+                response.m_BodyAngle = dmPhysics::GetBodyAngle2D(component->m_Object2D);
+            }
+            dmhash_t message_id      = dmPhysicsDDF::BodyAngleResponse::m_DDFDescriptor->m_NameHash;
+            uintptr_t descriptor     = (uintptr_t)dmPhysicsDDF::BodyAngleResponse::m_DDFDescriptor;
+            uint32_t data_size       = sizeof(dmPhysicsDDF::BodyAngleResponse);
+            dmMessage::Result result = dmMessage::Post(&params.m_Message->m_Receiver, &params.m_Message->m_Sender, message_id, 0, descriptor, &response, data_size, 0);
+            if (result != dmMessage::RESULT_OK)
+            {
+                dmLogError("Could not send %s to component, result: %d.", dmPhysicsDDF::BodyAngleResponse::m_DDFDescriptor->m_Name, result);
+                return dmGameObject::UPDATE_RESULT_UNKNOWN_ERROR;
+            }
+        }
+        //End
         else if (params.m_Message->m_Id == dmPhysicsDDF::SetGridShapeHull::m_DDFDescriptor->m_NameHash)
         {
             if (physics_context->m_3D)
@@ -1172,7 +1222,38 @@ namespace dmGameSystem
                 out_value.m_Variant = dmGameObject::PropertyVar(dmPhysics::GetAngularDamping2D(component->m_Object2D));
             }
             return dmGameObject::PROPERTY_RESULT_OK;
-        } else {
+        }
+        //Added by dotGears
+        else if (params.m_PropertyId == PROP_BODY_POSITION)
+        {
+            if (physics_context->m_3D)
+            {
+                Vectormath::Aos::Vector3 vec3 = Vectormath::Aos::Vector3(dmPhysics::GetWorldPosition3D(physics_context->m_Context3D, component->m_Object3D));
+                out_value.m_Variant           = dmGameObject::PropertyVar(vec3);
+            }
+            else
+            {
+                Vectormath::Aos::Vector3 vec3 = Vectormath::Aos::Vector3(dmPhysics::GetWorldPosition2D(physics_context->m_Context2D, component->m_Object2D));
+                out_value.m_Variant           = dmGameObject::PropertyVar(vec3);
+            }
+            return dmGameObject::PROPERTY_RESULT_OK;
+        }
+        else if (params.m_PropertyId == PROP_BODY_ANGLE)
+        {
+            if (physics_context->m_3D)
+            {
+                float angle         = 0.0f;//dmPhysics::GetBodyAngle2D(physics_context);
+                out_value.m_Variant = dmGameObject::PropertyVar(angle);
+            }
+            else
+            {
+                float angle         = dmPhysics::GetBodyAngle2D(physics_context);
+                out_value.m_Variant = dmGameObject::PropertyVar(angle);
+            }
+            return dmGameObject::PROPERTY_RESULT_OK;
+        } 
+        //End
+        else {
             return dmGameObject::PROPERTY_RESULT_NOT_FOUND;
         }
     }
@@ -1217,7 +1298,43 @@ namespace dmGameSystem
                 dmPhysics::SetAngularDamping2D(component->m_Object2D, params.m_Value.m_Number);
             }
             return dmGameObject::PROPERTY_RESULT_OK;
-        } else {
+        }
+
+        //Added by dotGears
+        else if (params.m_PropertyId == PROP_BODY_POSITION)
+        {
+            if (params.m_Value.m_Type != dmGameObject::PROPERTY_TYPE_VECTOR3)
+                return dmGameObject::PROPERTY_RESULT_TYPE_MISMATCH;
+            if (physics_context->m_3D)
+            {
+                //TODO: Undefined
+            }
+            else
+            {
+                dmPhysics::SetWorldPosition2D(component->m_Object2D,
+                                              Vectormath::Aos::Vector3(
+                                                  params.m_Value.m_V4[0],
+                                                  params.m_Value.m_V4[1],
+                                                  params.m_Value.m_V4[2]));
+            }
+            return dmGameObject::PROPERTY_RESULT_OK;
+        }
+        else if (params.m_PropertyId == PROP_BODY_ANGLE)
+        {
+            if (params.m_Value.m_Type != dmGameObject::PROPERTY_TYPE_NUMBER)
+                return dmGameObject::PROPERTY_RESULT_TYPE_MISMATCH;
+            if (physics_context->m_3D)
+            {
+                //TODO: Undefined
+            }
+            else
+            {
+                dmPhysics::SetBodyAngle2D(component->m_Object2D, params.m_Value.m_Number);
+            }
+            return dmGameObject::PROPERTY_RESULT_OK;
+        }
+        //End 
+        else {
             return dmGameObject::PROPERTY_RESULT_NOT_FOUND;
         }
     }
@@ -1568,10 +1685,10 @@ namespace dmGameSystem
         CollisionComponent* component = (CollisionComponent*)comp;
         dmPhysics::SetControllable(component->m_Object2D, flag);
     }
-    void SetDeltaValue(void* comp, float alphaX, float alphaY, float alphaZ)
+    void SetDeltaValue(void* comp, float deltaX, float deltaY, float deltaZ)
     {
         CollisionComponent* component = (CollisionComponent*)comp;
-        dmPhysics::SetDeltaValue(component->m_Object2D, alphaX, alphaY, alphaZ);
+        dmPhysics::SetDeltaValue(component->m_Object2D, deltaX, deltaY, deltaZ);
     }
 
     void SetMasterBody(void * comp, void * master_body)
@@ -1593,10 +1710,10 @@ namespace dmGameSystem
         dmPhysics::SetStateLimit(component->m_Object2D, state, min, max);
     }
 
-    void SetSleepingAllowed(void* comp, bool allow_sleep)
+    void SetSleepingAllowed(void* comp, bool flag)
     {
         CollisionComponent* component = (CollisionComponent*)comp;
-        dmPhysics::SetSleepingAllowed(component->m_Object2D, allow_sleep);
+        dmPhysics::SetSleepingAllowed(component->m_Object2D, flag);
     }
 
     void SetBullet(void* comp, bool flag)

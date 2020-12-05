@@ -1297,13 +1297,13 @@ namespace dmGameSystem
             return DM_LUA_ERROR("couldn't find collision object"); // todo: add url
         }
 
-        float alphaX = lua_tonumber(L, 2);
-        float alphaY = lua_tonumber(L, 3);
-        float alphaZ = lua_tonumber(L, 4);
+        float deltaX = lua_tonumber(L, 2);
+        float deltaY = lua_tonumber(L, 3);
+        float deltaZ = lua_tonumber(L, 4);
         ///
         /// Need correct place to cast down pointer :
         ///
-        dmGameSystem::SetDeltaValue(comp, alphaX, alphaY, alphaZ);
+        dmGameSystem::SetDeltaValue(comp, deltaX, deltaY, deltaZ);
 
         return 0;
     }
@@ -1347,9 +1347,7 @@ namespace dmGameSystem
         return 0;
     }
 
-        /*# Set sleep allow for collision object.
-     * Added by dotGears/TrungA
-     *
+    /*# Set sleep allow for collision object.
      * @name physics.set_allow_sleep
      * @param  collisionobject [type:string|hash|url] target body.
      * @param  flag [type:boolean] mark a body to allow sleeping or not.
@@ -1380,9 +1378,9 @@ namespace dmGameSystem
             return DM_LUA_ERROR("couldn't find collision object"); // todo: add url
         }
 
-        bool allow_sleep = lua_tonumber(L, 2);
+        bool flag = lua_tonumber(L, 2);
 
-        dmGameSystem::SetSleepingAllowed(comp, allow_sleep);
+        dmGameSystem::SetSleepingAllowed(comp, flag);
 
         return 0;
     }
@@ -1434,6 +1432,15 @@ namespace dmGameSystem
         SETCONSTANT(JOINT_TYPE_FIXED)
         SETCONSTANT(JOINT_TYPE_HINGE)
         SETCONSTANT(JOINT_TYPE_SLIDER)
+
+        //Added by dotGears
+        // This is for CopyState enum as physics.COPY_
+        SETCONSTANT(COPY_POSITION_X)
+        SETCONSTANT(COPY_POSITION_Y)
+        SETCONSTANT(COPY_ROTATION_Z)
+        SETCONSTANT(COPY_LINEAR_VEC)
+        SETCONSTANT(COPY_ANGULAR_VEC)
+        //End
 
  #undef SETCONSTANT
 

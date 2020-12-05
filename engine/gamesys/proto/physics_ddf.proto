@@ -336,3 +336,19 @@ message EnableGridShapeLayer
     required uint32 shape = 1;
     required uint32 enable = 2;
 }
+
+//Added by dotGears
+message RequestBodyPosition {}
+
+message BodyPositionResponse
+{
+    required dmMath.Vector3 body_position     = 1;
+}
+
+message RequestBodyAngle {}
+
+message BodyAngleResponse
+{
+    required float body_angle     = 1;
+}
+//End
