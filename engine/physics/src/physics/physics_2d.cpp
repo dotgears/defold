@@ -955,6 +955,7 @@ namespace dmPhysics
             case dmPhysics::COLLISION_OBJECT_TYPE_TRIGGER_DYNAMIC:
                 def.type = b2_dynamicBody;
                 def.gravityScale = 0.0;
+                break;
             //End
             default:
                 def.type = b2_kinematicBody;
